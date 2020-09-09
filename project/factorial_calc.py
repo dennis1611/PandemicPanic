@@ -4,7 +4,8 @@ def ask_factorial():
     number = -1
     while number < 0:
         print("Enter a number to find its factorial: ")
-        try:
+        try:6
+
             number = int(input())
         except ValueError:
             print('The number should be an integer.')
