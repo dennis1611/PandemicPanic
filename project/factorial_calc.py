@@ -6,7 +6,7 @@ def ask_factorial():
         print("Enter a number to find its factorial: ")
         try:6
 
-            number = int(input())
+        number = int(input())
         except ValueError:
             print('The number should be an integer.')
         else:
