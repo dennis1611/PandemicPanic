@@ -1,27 +1,29 @@
-def update_infected():
-    # += infected * R / 2, -= people who recovered (maybe  - infected[i-3] or something)
-    pass
 
-def display_report():
-    pass
+import Regions
 
-def choose_measure():
-    update_R()
-
-def update_R():
-    pass
 
 population = 17000000
 infected = population * 0.0001  # ideally save as list
 R = 1.1
-
 week = 0
-while True:
-    update_infected()
 
-    display_report()
 
-    choose_measure()
+country = []
+country.append(region("South-Holland",population))
+
+
+running = True
+while running:
+    # def update infected ( += infected*R/2, -= people who recovered (maybe  - infected[i-3]  or something))
+
+    # def display report in terminal
+
+    # def choose 1 measure (with "none" as option too)
+
+    # def update R based on chosen measure
 
     week += 1
 
+    break
+
+print("Normal end")
