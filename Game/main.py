@@ -22,8 +22,7 @@ scr = pg.display.set_mode(res)
 
 
 # Init model
-# x = 0.
-# v = 0.
+
 
 
 # Set up loop & timing
@@ -41,16 +40,14 @@ while running:
     # get key input
     keys = pg.key.get_pressed()
 
-    # Model: calculate forces & accelerations
 
-    # Integrate
-    # v = v + a*dt
-    # x = x + v*dt
+    # Model: update data
+
+
 
     # Clear screen
     scr.fill(bgcolour)
-    # ballrect.center = int(x),int(y)
-    # scr.blit(ballimg,ballrect)
+
 
     # Show frame
     pg.display.flip()
