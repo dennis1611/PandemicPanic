@@ -5,7 +5,7 @@ print("pip gebruiken in de terminal van Pycharm lijkt te werken")
 
 
 
-"""
+
 import pygame as pg
 import numpy as np
 
@@ -78,6 +78,6 @@ while running:
 pg.quit()
 
 print("Normal end.")
-"""
+
 
 
