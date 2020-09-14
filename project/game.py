@@ -1,5 +1,5 @@
 import numpy as np
-from project import Regions
+from project.region import Region
 
 
 # create general setup
@@ -11,16 +11,16 @@ R = [1.1]
 # create regions
 country = []
 
-regions_data = np.genfromtxt("Regions_data.txt", dtype=str)
+regions_data = np.genfromtxt("regions_data.txt", dtype=str)
 
 try:
     # if multiple regions are present and activated this code runs
     for reg in range(len(regions_data)):
-        country.append(Regions.region(regions_data[reg, 0], int(regions_data[reg, 1]), 0))
+        country.append(Region(regions_data[reg, 0], int(regions_data[reg, 1]), 0))
 except:
     # if there is only 1 region present, an exception will occur, making this code run
     # exception occurs since the array is only 1D instead of 2D
-    country.append(Regions.region(regions_data[0], int(regions_data[1]), infected))
+    country.append(Region(regions_data[0], int(regions_data[1]), infected))
     # todo: have a random region start with a random amount of infections
 
 

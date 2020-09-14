@@ -1,6 +1,6 @@
 # This is a W.I.P., I'll improve it when Nigel finishes his class
 
-class measure:
+class Measure:
     def __init__(self, name, number, influence, type):
         #
         self.name = name

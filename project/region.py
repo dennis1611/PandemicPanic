@@ -3,7 +3,7 @@ File that contains the region class.
 """
 
 
-class region:
+class Region:
     """
     Class that contains all information of a certain region.
     """

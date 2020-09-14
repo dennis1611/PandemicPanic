@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pandas import read_csv
 
-data = read_csv('Data_prov.csv', skiprows=[0, 1, 2, 4], delimiter=";", index_col=0, skipinitialspace=True, decimal=',',
+data = read_csv('data_prov.csv', skiprows=[0, 1, 2, 4], delimiter=";", index_col=0, skipinitialspace=True, decimal=',',
                 skipfooter=1, engine='python')
 
 names = list(data)
