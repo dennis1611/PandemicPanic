@@ -9,7 +9,7 @@ class region:
     """
 
     def __init__(self,name,inhabitants):
-        pass
+        print("check")
 
 
 
