@@ -1,4 +1,4 @@
-### This is a W.I.P., I'll improve it when Nigel finishes his class
+# This is a W.I.P., I'll improve it when Nigel finishes his class
 
 class measure:
     def __init__(self, name, number, influence, type):
@@ -10,9 +10,9 @@ class measure:
 
     def __repr__(self,):
         return f'''This measure has the following effects:
-        Reduce the R-value for the chosen regions with a factor {effect}
+        Reduce the R-value for the chosen regions with a factor {self.effect}
         '''
 
     def effect(self, R_old):
-        R_new = R_old * influence
+        R_new = R_old * self.influence
         return R_new

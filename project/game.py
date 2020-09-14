@@ -2,44 +2,36 @@ import numpy as np
 from project import Regions
 
 
-
 # create general setup
-#population = 17000000
-infected = 100 #[population * 0.0001]
+# population = 17000000
+infected = 100  # [population * 0.0001]
 R = [1.1]
-
-
 
 
 # create regions
 country = []
 
-regions_data = np.genfromtxt("Regions_data.txt",dtype=str)
+regions_data = np.genfromtxt("Regions_data.txt", dtype=str)
 
 try:
-    #if multiple regions are present and activated this code runs
+    # if multiple regions are present and activated this code runs
     for reg in range(len(regions_data)):
-        country.append(Regions.region(regions_data[reg,0],int(regions_data[reg,1]),0))
+        country.append(Regions.region(regions_data[reg, 0], int(regions_data[reg, 1]), 0))
 except:
-    #if there is only 1 region present, an exception will occur, making this code run
-    #exception occurs since the array is only 1D instead of 2D
+    # if there is only 1 region present, an exception will occur, making this code run
+    # exception occurs since the array is only 1D instead of 2D
     country.append(Regions.region(regions_data[0], int(regions_data[1]), infected))
-    #todo: have a random region start with a random amount of infections
-
-
+    # todo: have a random region start with a random amount of infections
 
 
 # create measures
 def initialise_measures():
     """"Creates and returns a list of all measures"""
     # TODO: replace by real measures, when class is made & measures are chosen
-    measures = ['measure 1', 'measure 2', 'measure 3']
-    return measures
+    return ['measure 1', 'measure 2', 'measure 3']
 
 
 measures = initialise_measures()
-
-
 
 
 # START weekly methods
@@ -73,8 +65,6 @@ def update_R():
 # END weekly methods
 
 
-
-
 week = 0
 running = True
 while running:
@@ -88,19 +78,14 @@ while running:
 
     week += 1
 
-
-    #basically the display report.
+    # basically the display report.
     print("*"*50)
-    print("Region\t\t","Healthy","Sick","Dead",sep="\t")
+    print("Region\t\t", "Healthy", "Sick", "Dead", sep="\t")
     for reg in range(len(country)):
-        print(country[reg].name,country[reg].healthy,country[reg].infected,country[reg].dead,sep="\t")
+        print(country[reg].name, country[reg].healthy, country[reg].infected, country[reg].dead, sep="\t")
     print("*" * 50)
 
-
-
-    break
-
-
+    break  # TODO: remove break after testing
 
 
 print()
