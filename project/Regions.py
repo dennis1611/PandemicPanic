@@ -8,10 +8,11 @@ class region:
     Class that contains all information of a certain region.
     """
 
-    def __init__(self,name,inhabitants):
-
+    def __init__(self,name,inhabitants,infected):
         self.name = name
-        self.inhabitants = inhabitants
+        self.healthy = inhabitants - infected
+        self.infected = infected
+        self.dead = 0
 
 
 

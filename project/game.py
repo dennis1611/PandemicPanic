@@ -2,16 +2,26 @@ import numpy as np
 from project import Regions
 
 
+
+# create general setup
 population = 17000000
 infected = [population * 0.0001]
 R = [1.1]
 
+
+
 # create regions
 country = []
 
-regions_data = np.genfromtxt("Regions_data.txt")
+regions_data = np.genfromtxt("Regions_data.txt",dtype=str)
 
-country.append(Regions.region("South-Holland",population))
+try:
+    for reg in range(len(regions_data)):
+        country.append(Regions.region(regions_data[reg,0],int(regions_data[reg,1]),0))
+except:
+    country.append(Regions.region(regions_data[0], int(regions_data[1]), 0))
+
+
 
 
 # create measures
@@ -56,9 +66,12 @@ def update_R():
 # END weekly methods
 
 
+
+
 week = 0
 running = True
 while running:
+
     print(f'\n This is week {week}')
     update_infected()
 
@@ -68,4 +81,16 @@ while running:
 
     week += 1
 
-    print(country[0].name, country[0].inhabitants)
+
+    #basically the display report.
+    print("*"*50)
+    print("Region\t\t","Healthy","Sick","Dead",sep="\t")
+    for reg in range(len(country)):
+        print(country[reg].name,country[reg].healthy,country[reg].infected,country[reg].dead,sep="\t")
+    print("*" * 50)
+
+    break
+
+
+print()
+print("Normal end.")
