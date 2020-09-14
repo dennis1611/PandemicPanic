@@ -1,6 +1,7 @@
 
 
 print("ff uitzoeken hoe we die modules kunnen installeren")
+print("pip gebruiken in de terminal van Pycharm lijkt te werken")
 
 
 
