@@ -1,15 +1,27 @@
+def update_infected():
+    # += infected * R / 2, -= people who recovered (maybe  - infected[i-3] or something)
+    pass
+
+def display_report():
+    pass
+
+def choose_measure():
+    update_R()
+
+def update_R():
+    pass
+
 population = 17000000
 infected = population * 0.0001  # ideally save as list
 R = 1.1
 
 week = 0
 while True:
-    # def update infected ( += infected*R/2, -= people who recovered (maybe  - infected[i-3]  or something))
+    update_infected()
 
-    # def display report in terminal
+    display_report()
 
-    # def choose 1 measure (with "none" as option too)
-
-    # def update R based on chosen measure
+    choose_measure()
 
     week += 1
+
