@@ -9,7 +9,9 @@ class region:
     """
 
     def __init__(self,name,inhabitants):
-        print("check")
+
+        self.name = name
+        self.inhabitants = inhabitants
 
 
 
