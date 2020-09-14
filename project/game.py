@@ -1,8 +1,20 @@
+import numpy as np
+from project import Regions
+
+
 population = 17000000
 infected = [population * 0.0001]
 R = [1.1]
 
+# create regions
+country = []
 
+regions_data = np.genfromtxt("Regions_data.txt")
+
+country.append(Regions.region("South-Holland",population))
+
+
+# create measures
 def initialise_measures():
     """"Creates and returns a list of all measures"""
     # TODO: replace by real measures, when class is made & measures are chosen
@@ -45,7 +57,8 @@ def update_R():
 
 
 week = 0
-while True:
+running = True
+while running:
     print(f'\n This is week {week}')
     update_infected()
 
@@ -54,3 +67,5 @@ while True:
     choose_measure()
 
     week += 1
+
+    print(country[0].name, country[0].inhabitants)
