@@ -1,83 +1,84 @@
 from pandas import read_csv
 
-# Provincie data verzamelen en in een DataFrame stoppen
-prov_data = read_csv('Data_provincies.csv', skiprows=[0, 1, 2, 4], delimiter=";",
+# Collect Dutch Provinces data including age ranges and population density
+prov_data = read_csv('Data_provinces.csv', skiprows=[0, 1, 2, 4], delimiter=";",
                      index_col=0, skipinitialspace=True, decimal=',', skipfooter=1, engine='python')
 
-# COROP data verzamelen en in een DataFrame stoppen
-cor_data = read_csv('Data_coroppen.csv', skiprows=0, delimiter=";",
+# Collect Dutch COROP-areas data including age ranges and population density
+cor_data = read_csv('Data_corops.csv', skiprows=0, delimiter=";",
                     index_col=1, skipinitialspace=True, decimal=',', skipfooter=1, engine='python')
 
-# Bepalen welke dataset je wilt gebruiken: de code is zo geschreven dat het allebei werkt
+# Decide which areas you want to use; COROP or Provinces (both work)
 data = cor_data
 
-# Eerste kolom weghalen; onnodige informatie
+# Remove the first column which includes unneeded information
 data = data.iloc[:, 1:]
 
 # Rename columns
-columns = ['Bevolking', '0 tot 5 (%)', '5 tot 10 (%)', '10 tot 15 (%)', '15 tot 20 (%)', '20 tot 25 (%)',
-           '25 tot 45 (%)', '45 tot 65 (%)', '65 tot 80 (%)', '80 tot 120 (%)', 'Dichtheid']
-data.columns = columns
+data.columns = ['Population', '0 tot 5 (%)', '5 tot 10 (%)', '10 tot 15 (%)', '15 tot 20 (%)', '20 tot 25 (%)',
+                '25 tot 45 (%)', '45 tot 65 (%)', '65 tot 80 (%)', '80 tot 120 (%)', 'Density']
 
-# Array van namen van regio's
-regios = data.index.values
+# Create an array of region names from the document
+regions = data.index.values
 
-# Aparte DataFrame maken voor bevolkingsaantallen (handig voor het aantal besmettingen)
-Bevolkingsaantallen = data.filter(items=['Bevolking'])
+# Make a seperate DataFrame for the population counts per area
+Populations = data.filter(items=['Population'])
 
+# Function to determine the multiplying factors per region on basis of the population density
+def densityfactors(general_dataset):
+    df = general_dataset.filter(items=['Density'])
 
-# Functie om factoren voor de dichtheid te bepalen
-def dichtheidsfactoren(algemene_dataset):
-    df = algemene_dataset.filter(items=['Dichtheid'])
+    # IMPORTANCE FACTOR: determines the influence of the density on the amount of infections (higher =  more influence)
+    importance = 0.4
 
-    # BELANGFACTOR: ALS DE DICHTHEID EEN TE GROTE/KLEINE ROL SPEELT PAS JE DEZE AAN (hoger = meer invloed)
-    belang = 0.4
-
-    # Gemiddelde bepalen
+    # Calculate the mean density
     avg = float(df.mean(axis=0))
 
-    # Lijst van factoren aanmaken (de data is als dict{} of als list[] verkrijgbaar, verander bij return)
+    # Create a list and a dictionary to store the values - to change the output between the two, change the "return"
     factors_dict = {}
     factors_list = []
 
-    # Voor elk gebied de factor berekenen
+    # Determine the density factor per region
     for i in range(len(df)):
-        # Dichtheid vinden in DataFrame
-        regio_dichtheid = df.iloc[i, 0]
+        # Find the region's density in the DataFrame
+        region_density = df.iloc[i, 0]
 
-        # Factor berekenen en toevoegen
-        factor = (regio_dichtheid / avg) ** belang
-        factors_dict[regios[i]] = factor
+        # Calculate the factor and add it do the list and dictionary
+        factor = (region_density / avg) ** importance
+        factors_dict[regions[i]] = factor
         factors_list.append(factor)
 
     return factors_dict
 
 
-# Functie om factoren voor de jeugd te bepalen
-def leeftijdsfactoren(algemene_dataset):
-    # 'Jeugd' DataFrame aanmaken beestaande uit kolommen van tussen de 15 en 25
-    jeugd = algemene_dataset.filter(items=['15 tot 20 (%)', '20 tot 25 (%)'])
-    jeugd["totale_jeugd (%)"] = jeugd['15 tot 20 (%)'] + jeugd['20 tot 25 (%)']
+# Function to determine the multiplying factors per region on basis of the population density
+def agefactors(general_dataset):
+    # Create the 'Youth' DataFrame that inculdes data regarding citizens between ages 15 and 25
+    youth = general_dataset.filter(items=['15 tot 20 (%)', '20 tot 25 (%)'])
 
-    df = jeugd.filter(items=['totale_jeugd (%)'])
+    # Make new column that combines the 15 to 20 and 20 to 25 age ranges
+    youth["total_youth (%)"] = youth['15 tot 20 (%)'] + youth['20 tot 25 (%)']
 
-    # ALS DE JEUGDVERHOUDING EEN TE GROTE/KLEINE ROL SPEELT PAS JE DEZE AAN (hoger = meer invloed)
-    belang = 2.0
+    # Make a new DataFrame with only the combined column in it
+    df = youth.filter(items=['total_youth (%)'])
 
-    # Gemiddelde bepalen
+    # IMPORTANCE FACTOR: determines the influence of the density on the amount of infections (higher =  more influence)
+    importance = 2.0
+
+    # Calculate the average percentage of youth in all regions
     avg = float(df.mean(axis=0))
 
-    # Lijst van factoren aanmaken (de data is als dict{} of als list[] verkrijgbaar, verander bij return)
+    # Create a list and a dictionary to store the values - to change the output between the two, change the "return"
     factors_dict = {}
     factors_list = []
 
-    # Voor elk gebied de factor berekenen
+    # Determine the age factor per region
     for i in range(len(df)):
-        # Percentage jeugd vinden in DataFrame
-        procent_jeugd = df.iloc[i, 0]
+        # Find the region's youth percentage in the DataFrame
+        percent_youth = df.iloc[i, 0]
 
-        # Factor berekenen en toevoegen
-        factor = (procent_jeugd / avg) ** belang
-        factors_dict[regios[i]] = factor
+        # Calculate the factor and add it to the list and dictionary
+        factor = (percent_youth / avg) ** importance
+        factors_dict[regions[i]] = factor
         factors_list.append(factor)
     return factors_dict
