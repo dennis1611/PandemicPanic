@@ -63,11 +63,16 @@ def choose_measure():
     print('Choose one of the following measures:')
     for measure in measures:
         print(measure)
+    print('or "no measure" to take no action this turn')
 
     while True:
+        print('Your choice: ', end='')
         measure_chosen = input()
         if measure_chosen in measures:
             print(f'You chose: {measure_chosen}, but note that it is not used yet in this version')
+            break
+        elif measure_chosen == "no measure":
+            print('You decided to take no action, the game will move on')
             break
         else:
             print(f'Your input: {measure_chosen}, is not recognised, please try again')
