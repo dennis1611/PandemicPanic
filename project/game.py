@@ -2,45 +2,11 @@ import numpy as np
 from project.region import Region
 
 
-# create general setup
-# population = 17000000
-infected_total = [100]  # keeps track of how many people are infected each week
-infected_new = [infected_total[0]]  # keeps track of how many people got infected during each week
-R = [1.1]
-
-
-# create regions
-country = []
-
-regions_data = np.genfromtxt("regions_data.txt", dtype=str)
-
-try:
-    # if multiple regions are present and activated this code runs
-    for reg in range(len(regions_data)):
-        country.append(Region(regions_data[reg, 0], int(regions_data[reg, 1]), 0))
-except:
-    # if there is only 1 region present, an exception will occur, making this code run
-    # exception occurs since the array is only 1D instead of 2D
-    country.append(Region(regions_data[0], int(regions_data[1]), infected_total[0]))
-    # todo: have a random region start with a random amount of infections
-
-
-# create measures
-def initialise_measures():
-    """"Creates and returns a list of all measures"""
-    # TODO: replace by real measures, when class is made & measures are chosen
-    return ['measure 1', 'measure 2', 'measure 3']
-
-
-measures = initialise_measures()
-
-
 # START weekly methods
 def update_infected(current_week: int):
     """"Calculates how many people got infected and recovered in the past week"""
-
-    # TODO: discuss calculations
     # Assumption is made that people stay sick for two weeks
+    # TODO: discuss calculations
 
     if week >= 2:
         # R-number tells how many other people an infected person infects during two weeks, hence the '* 1/2'
@@ -55,7 +21,15 @@ def update_infected(current_week: int):
 
 def display_report():
     """"Displays a report to the user containing recent developments of the virus"""
-    pass
+    # TODO: write display report here, based on infected_total[], infected_new[] and R[], not using Region class yet
+
+    # mock report based on Region class
+    # *********************************
+    # print("*" * 50)
+    # print("Region\t\t", "Healthy", "Sick", "Dead", sep="\t")
+    # for reg in range(len(regions)):
+    #     print(regions[reg].name, regions[reg].healthy, regions[reg].infected, regions[reg].dead, sep="\t")
+    # print("*" * 50)
 
 
 def choose_measure():
@@ -86,11 +60,43 @@ def update_R():
 # END weekly methods
 
 
+# START initialising methods
+def initialise_measures():
+    """"Creates and returns a list of all measures"""
+    # TODO: replace by real measures, when class is made & measures are chosen
+    return ['measure 1', 'measure 2', 'measure 3']
+
+
+def initialise_regions():
+    regions_data = np.genfromtxt("regions_data.txt", dtype=str)
+    country = []
+    try:
+        # if multiple regions are present and activated this code runs
+        for reg in range(len(regions_data)):
+            country.append(Region(regions_data[reg, 0], int(regions_data[reg, 1]), 0))
+    except:
+        # if there is only 1 region present, an exception will occur, making this code run
+        # exception occurs since the array is only 1D instead of 2D
+        country.append(Region(regions_data[0], int(regions_data[1]), infected_total[0]))
+        # todo: have a random region start with a random amount of infections
+    return country
+# END initialising methods
+
+
+# create general setup
+infected_total = [100]  # keeps track of how many people are infected each week
+infected_new = [infected_total[0]]  # keeps track of how many people got infected during each week
+R = [1.1]
+
+measures = initialise_measures()
+regions = initialise_regions()
+
+# main game loop
 week = 1
 running = True
 while running:
-
     print(f'\n This is week {week}')
+
     update_infected(week)
 
     display_report()
@@ -98,11 +104,3 @@ while running:
     choose_measure()
 
     week += 1
-
-    # TODO: move this to the proper display_report method when finished
-    # basically the display report.
-    print("*"*50)
-    print("Region\t\t", "Healthy", "Sick", "Dead", sep="\t")
-    for reg in range(len(country)):
-        print(country[reg].name, country[reg].healthy, country[reg].infected, country[reg].dead, sep="\t")
-    print("*" * 50)

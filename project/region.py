@@ -13,17 +13,3 @@ class Region:
         self.healthy = inhabitants - infected
         self.infected = infected
         self.dead = 0
-
-
-
-
-
-
-
-
-
-
-
-
-
-
