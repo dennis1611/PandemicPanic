@@ -11,12 +11,13 @@ cor_data = read_csv('Data_corops.csv', skiprows=0, delimiter=";",
 # Decide which areas you want to use; COROP or Provinces (both work)
 data = cor_data
 
+#Data preperation
 # Remove the first column which includes unneeded information
 data = data.iloc[:, 1:]
 
 # Rename columns
-data.columns = ['Population', '0 tot 5 (%)', '5 tot 10 (%)', '10 tot 15 (%)', '15 tot 20 (%)', '20 tot 25 (%)',
-                '25 tot 45 (%)', '45 tot 65 (%)', '65 tot 80 (%)', '80 tot 120 (%)', 'Density']
+data.columns = ['Population', '0 to 5 (%)', '5 to 10 (%)', '10 to 15 (%)', '15 to 20 (%)', '20 to 25 (%)',
+                '25 to 45 (%)', '45 to 65 (%)', '65 to 80 (%)', '80 to 120 (%)', 'Density']
 
 # Create an array of region names from the document
 regions = data.index.values
@@ -24,8 +25,9 @@ regions = data.index.values
 # Make a seperate DataFrame for the population counts per area
 Populations = data.filter(items=['Population'])
 
-# Function to determine the multiplying factors per region on basis of the population density
+
 def densityfactors(general_dataset):
+    # Function to determine the multiplying factors per region on basis of the population density
     df = general_dataset.filter(items=['Density'])
 
     # IMPORTANCE FACTOR: determines the influence of the density on the amount of infections (higher =  more influence)
@@ -51,13 +53,14 @@ def densityfactors(general_dataset):
     return factors_dict
 
 
-# Function to determine the multiplying factors per region on basis of the population density
-def agefactors(general_dataset):
+def youth_infection_factors(general_dataset):
+    # Function to determine the multiplying factors per region on basis of the population density
+
     # Create the 'Youth' DataFrame that inculdes data regarding citizens between ages 15 and 25
-    youth = general_dataset.filter(items=['15 tot 20 (%)', '20 tot 25 (%)'])
+    youth = general_dataset.filter(items=['15 to 20 (%)', '20 to 25 (%)'])
 
     # Make new column that combines the 15 to 20 and 20 to 25 age ranges
-    youth["total_youth (%)"] = youth['15 tot 20 (%)'] + youth['20 tot 25 (%)']
+    youth["total_youth (%)"] = youth['15 to 20 (%)'] + youth['20 to 25 (%)']
 
     # Make a new DataFrame with only the combined column in it
     df = youth.filter(items=['total_youth (%)'])
@@ -82,3 +85,58 @@ def agefactors(general_dataset):
         factors_dict[regions[i]] = factor
         factors_list.append(factor)
     return factors_dict
+
+
+def senior_death_factors(general_dataset):
+    # Create the 'Seniors' DataFrame that inculdes data regarding citizens between ages 65 and 120
+    seniors = general_dataset.filter(items=['65 to 80 (%)', '80 to 120 (%)'])
+
+    # Make new column that combines the 65 to 80 and 80 to 120 age ranges
+    seniors["total_seniors (%)"] = seniors['65 to 80 (%)'] + seniors['80 to 120 (%)']
+
+    # Make a new DataFrame with only the combined column in it
+    df = seniors.filter(items=['total_seniors (%)'])
+
+    # IMPORTANCE FACTOR: determines the influence of the density on the amount of deaths (higher =  more influence)
+    importance = 1.3
+
+    # Calculate the average percentage of seniors in all regions
+    avg = float(df.mean(axis=0))
+
+    # Create a list and a dictionary to store the values - to change the output between the two, change the "return"
+    factors_dict = {}
+    factors_list = []
+
+    # Determine the senior factor per region
+    for i in range(len(df)):
+        # Find the region's senior percentage in the DataFrame
+        percent_senior = df.iloc[i, 0]
+
+        # Calculate the factor and add it to the list and dictionary
+        factor = (percent_senior / avg) ** importance
+        factors_dict[regions[i]] = factor
+        factors_list.append(factor)
+    return factors_dict
+
+
+def total_infectionfactor(general_dataset):
+    total_inf_factor = {}
+
+    youth = youth_infection_factors(general_dataset)
+    density = densityfactors(general_dataset)
+
+    for region in regions:
+        total_inf_factor[region] = youth[region] * density[region]
+
+    return total_inf_factor
+
+
+def total_deathfactor(general_dataset):
+    total_death_factor = {}
+
+    seniors = senior_death_factors(general_dataset)
+
+    for region in regions:
+        total_death_factor[region] = seniors[region]
+
+    return total_death_factor
