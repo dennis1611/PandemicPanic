@@ -9,7 +9,7 @@ cor_data = read_csv('Data_corops.csv', skiprows=0, delimiter=";",
                     index_col=1, skipinitialspace=True, decimal=',', skipfooter=1, engine='python')
 
 # Decide which areas you want to use; COROP or Provinces (both work)
-data = cor_data
+data = prov_data
 
 #Data preperation
 # Remove the first column which includes unneeded information
@@ -24,7 +24,6 @@ regions = data.index.values
 
 # Make a seperate DataFrame for the population counts per area
 Populations = data.filter(items=['Population'])
-
 
 def densityfactors(general_dataset):
     # Function to determine the multiplying factors per region on basis of the population density
@@ -140,3 +139,4 @@ def total_deathfactor(general_dataset):
         total_death_factor[region] = seniors[region]
 
     return total_death_factor
+
