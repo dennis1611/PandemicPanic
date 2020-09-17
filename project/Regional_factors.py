@@ -9,9 +9,9 @@ cor_data = read_csv('Data_corops.csv', skiprows=0, delimiter=";",
                     index_col=1, skipinitialspace=True, decimal=',', skipfooter=1, engine='python')
 
 # Decide which areas you want to use; COROP or Provinces (both work)
-data = prov_data
+data = cor_data
 
-#Data preperation
+# Data preperation
 # Remove the first column which includes unneeded information
 data = data.iloc[:, 1:]
 
@@ -22,8 +22,11 @@ data.columns = ['Population', '0 to 5 (%)', '5 to 10 (%)', '10 to 15 (%)', '15 t
 # Create an array of region names from the document
 regions = data.index.values
 
-# Make a seperate DataFrame for the population counts per area
-Populations = data.filter(items=['Population'])
+# Make a seperate list for the population counts per area
+Populations = data['Population'].tolist()
+
+regional_data = data.filter(items=['Population'])
+
 
 def densityfactors(general_dataset):
     # Function to determine the multiplying factors per region on basis of the population density
@@ -40,16 +43,16 @@ def densityfactors(general_dataset):
     factors_list = []
 
     # Determine the density factor per region
-    for i in range(len(df)):
+    for j in range(len(df)):
         # Find the region's density in the DataFrame
-        region_density = df.iloc[i, 0]
+        region_density = df.iloc[j, 0]
 
         # Calculate the factor and add it do the list and dictionary
         factor = (region_density / avg) ** importance
-        factors_dict[regions[i]] = factor
+        factors_dict[regions[j]] = factor
         factors_list.append(factor)
 
-    return factors_dict
+    return factors_list
 
 
 def youth_infection_factors(general_dataset):
@@ -75,15 +78,15 @@ def youth_infection_factors(general_dataset):
     factors_list = []
 
     # Determine the age factor per region
-    for i in range(len(df)):
+    for j in range(len(df)):
         # Find the region's youth percentage in the DataFrame
-        percent_youth = df.iloc[i, 0]
+        percent_youth = df.iloc[j, 0]
 
         # Calculate the factor and add it to the list and dictionary
         factor = (percent_youth / avg) ** importance
-        factors_dict[regions[i]] = factor
+        factors_dict[regions[j]] = factor
         factors_list.append(factor)
-    return factors_dict
+    return factors_list
 
 
 def senior_death_factors(general_dataset):
@@ -107,36 +110,42 @@ def senior_death_factors(general_dataset):
     factors_list = []
 
     # Determine the senior factor per region
-    for i in range(len(df)):
+    for j in range(len(df)):
         # Find the region's senior percentage in the DataFrame
-        percent_senior = df.iloc[i, 0]
+        percent_senior = df.iloc[j, 0]
 
         # Calculate the factor and add it to the list and dictionary
         factor = (percent_senior / avg) ** importance
-        factors_dict[regions[i]] = factor
+        factors_dict[regions[j]] = factor
         factors_list.append(factor)
-    return factors_dict
+    return factors_list
 
 
 def total_infectionfactor(general_dataset):
-    total_inf_factor = {}
+    total_inf_factor = []
 
     youth = youth_infection_factors(general_dataset)
     density = densityfactors(general_dataset)
 
-    for region in regions:
-        total_inf_factor[region] = youth[region] * density[region]
+    for j in range(len(regions)):
+        total_inf_factor.append(youth[j] * density[j])
 
     return total_inf_factor
 
 
 def total_deathfactor(general_dataset):
-    total_death_factor = {}
+    total_death_factor = []
 
     seniors = senior_death_factors(general_dataset)
 
-    for region in regions:
-        total_death_factor[region] = seniors[region]
+    for j in range(len(regions)):
+        total_death_factor.append(seniors[j])
 
     return total_death_factor
 
+
+columns_names = ['death_factor', 'inf_factor']
+datasets = [total_deathfactor(data), total_infectionfactor(data)]
+
+for i in range(len(datasets)):
+    regional_data.insert(1, columns_names[i], datasets[i])
