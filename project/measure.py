@@ -5,13 +5,14 @@ class Measure:
     Current types are:
     > R_reduce: Reduce the R factor by R_influence
     """
-    def __init__(self, name, number, desc, types, R_influence):
+    def __init__(self, name, number, desc, active, types, R_influence):
         # there may be different types of measures with different effects
         # maybe enter these as (a list of) strings?
         self.name = name
         self.number = number
         self.desc = desc
         self.types = types
+        self.active = active
         if "R_reduce" in self.types:
             self.R_influence = R_influence
 
@@ -23,9 +24,10 @@ class Measure:
 
     def effect(self, R_old):
         """Apply the measure on the right stat, according to its type"""
-        if "R_reduce" in self.types:
-            R_new = R_old * self.R_influence
-            return R_new
+        if self.active:
+            if "R_reduce" in self.types:
+                R_new = R_old * self.R_influence
+                return R_new
 
     def menu(self):
         """"Print the description of the measure for the player"""

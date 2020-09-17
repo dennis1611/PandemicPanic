@@ -36,7 +36,7 @@ def choose_measure():
     """"Displays all available measures to the user, and lets them choose one to take"""
     print('Choose one of the following measures:')
     for measure in measures:
-        print(measure)
+        print(measure)  # Should probably be measure.menu() eventually
     print('or "no measure" to take no action this turn')
 
     while True:
@@ -97,10 +97,16 @@ running = True
 while running:
     print(f'\n This is week {week}')
 
+    # If I understand correctly, this means the measures are taken at the end of the week,
+    # to be applied on the calculations of the next week.
+
     update_infected(week)
 
     display_report()
 
     choose_measure()
+
+    # for measure in measure:
+    #   measure.effect()
 
     week += 1
