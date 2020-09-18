@@ -1,0 +1,40 @@
+#options for measures, all R values are estimates
+measure 1 (distance)
+no distance mandatory 1.10 * R
+1 meter distance      1.00 * R
+1.5 meter distance    0.95 * R
+2 meter distance      0.90 * R
+
+measure 2 (lockdown)
+no lockdown 1.00 * R
+lockdown    0.75 * R
+
+measure 3 (facemask)
+no facemask 1.00 * R
+facemask mandatory 0.95 * R
+
+measure 4 (close restaurants, bars etc.)
+restaurants open 1.00 * R
+restaurant open but mandatory distance 0.95 * R
+restaurants closed 0.90 * R
+
+measure 5 ( maximum event size )
+no maximum  1.05 * R
+max 100     1.00 * R
+max 30      0.95 * R
+no events allowed 0.90 * R
+
+measure 6 (maximum visitors at home)
+no maximum 1.05 * R
+max 10     1.00 * R
+max 3      0.95 * R
+no visitors allowed 0.90 * R
+
+measure 7 ( length of quarantine )
+no quarantine necessary 1.10 * R
+1 week      1.00 * R
+10 days     0.95 * R
+2 weeks     0.90 * R
+
+
+
