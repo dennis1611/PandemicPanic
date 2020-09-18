@@ -25,6 +25,22 @@ def display_report():
     """"Displays a report to the user containing recent developments of the virus"""
     # TODO: write display report here, based on infected_total[], infected_new[] and R[], not using Region class yet
 
+    a = infected_total
+    b = infected_new
+    c = R
+    print('total number of infected people:')
+    for x in range(len(a)):
+        print(a[x], end='')
+    print()
+
+    print('number of new infected people:')
+    for y in range(len(b)):
+        print(b[y], end='')
+    print()
+
+    print('R number:')
+    for z in range(len(c)):
+        print(c[z], end='')
     # mock report based on Region class
     # *********************************
     # print("*" * 50)
