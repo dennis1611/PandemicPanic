@@ -1,4 +1,6 @@
 import numpy as np
+
+from project.Regional_factors import regional_data
 from project.region import Region
 
 
@@ -68,18 +70,30 @@ def initialise_measures():
 
 
 def initialise_regions():
-    regions_data = np.genfromtxt("regions_data.txt", dtype=str)
-    country = []
-    try:
-        # if multiple regions are present and activated this code runs
-        for reg in range(len(regions_data)):
-            country.append(Region(regions_data[reg, 0], int(regions_data[reg, 1]), 0))
-    except:
-        # if there is only 1 region present, an exception will occur, making this code run
-        # exception occurs since the array is only 1D instead of 2D
-        country.append(Region(regions_data[0], int(regions_data[1]), infected_total[0]))
-        # todo: have a random region start with a random amount of infections
-    return country
+    # regions_data = np.genfromtxt("regions_data.txt", dtype=str)
+    # country = []
+    # try:
+    #     # if multiple regions are present and activated this code runs
+    #     for reg in range(len(regions_data)):
+    #         country.append(Region(regions_data[reg, 0], int(regions_data[reg, 1]), 0))
+    # except:
+    #     # if there is only 1 region present, an exception will occur, making this code run
+    #     # exception occurs since the array is only 1D instead of 2D
+    #     country.append(Region(regions_data[0], int(regions_data[1]), infected_total[0]))
+    #     # todo: have a random region start with a random amount of infections
+    # return country
+    regions_classes = []
+
+    region_names = regional_data.index.values
+
+    for region in region_names:
+        region = Region(region, regional_data.loc[region, "Population"],
+                        regional_data.loc[region, "inf_factor"], regional_data.loc[region, "death_factor"])
+        regions_classes.append(region)
+
+
+
+    return regions_classes
 # END initialising methods
 
 

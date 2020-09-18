@@ -143,9 +143,11 @@ def total_deathfactor(general_dataset):
 
     return total_death_factor
 
-
+# Create final DF with all regional data
 columns_names = ['death_factor', 'inf_factor']
 datasets = [total_deathfactor(data), total_infectionfactor(data)]
 
 for i in range(len(datasets)):
     regional_data.insert(1, columns_names[i], datasets[i])
+
+

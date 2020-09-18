@@ -1,5 +1,7 @@
 
 
+
+
 """
 File that contains the region class.
 """
@@ -22,3 +24,6 @@ class Region:
         string = f"This class is for {self.name} with a population of {self.inhabitants}"
 
         return string
+
+
+
