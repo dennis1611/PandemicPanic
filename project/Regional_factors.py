@@ -11,7 +11,7 @@ cor_data = read_csv('Data_corops.csv', skiprows=0, delimiter=";",
 # Decide which areas you want to use; COROP or Provinces (both work)
 data = cor_data
 
-# Data preperation
+# Data preparation
 # Remove the first column which includes unneeded information
 data = data.iloc[:, 1:]
 
@@ -22,7 +22,7 @@ data.columns = ['Population', '0 to 5 (%)', '5 to 10 (%)', '10 to 15 (%)', '15 t
 # Create an array of region names from the document
 regions = data.index.values
 
-# Make a seperate list for the population counts per area
+# Make a separate list for the population counts per area
 Populations = data['Population'].tolist()
 
 regional_data = data.filter(items=['Population'])
@@ -58,7 +58,7 @@ def densityfactors(general_dataset):
 def youth_infection_factors(general_dataset):
     # Function to determine the multiplying factors per region on basis of the population density
 
-    # Create the 'Youth' DataFrame that inculdes data regarding citizens between ages 15 and 25
+    # Create the 'Youth' DataFrame that includes data regarding citizens between ages 15 and 25
     youth = general_dataset.filter(items=['15 to 20 (%)', '20 to 25 (%)'])
 
     # Make new column that combines the 15 to 20 and 20 to 25 age ranges

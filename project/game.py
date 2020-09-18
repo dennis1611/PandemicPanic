@@ -56,7 +56,7 @@ def choose_measure():
 
 def update_R():
     """"Updates R based on the chosen measure"""
-    R.append(R[0]) # TODO: actually update R
+    R.append(R[0])  # TODO: actually update R
 # END weekly methods
 
 

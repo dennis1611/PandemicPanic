@@ -1,7 +1,4 @@
-from project.Regional_factors import *
 
-# maak gebruik van de DF genaamd "regional_data"
-# print(regional_data)
 
 """
 File that contains the region class.
@@ -16,7 +13,6 @@ class Region:
     def __init__(self, name, inhabitants, infected=0):
         self.name = name
         self.inhabitants = inhabitants
-        # self.healthy = inhabitants - infected
         self.infected = infected
         self.dead = 0
 
