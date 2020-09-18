@@ -9,7 +9,7 @@ cor_data = read_csv('Data_corops.csv', skiprows=0, delimiter=";",
                     index_col=1, skipinitialspace=True, decimal=',', skipfooter=1, engine='python')
 
 # Decide which areas you want to use; COROP or Provinces (both work)
-data = cor_data
+data = prov_data
 
 # Data preparation
 # Remove the first column which includes unneeded information
@@ -150,4 +150,4 @@ datasets = [total_deathfactor(data), total_infectionfactor(data)]
 for i in range(len(datasets)):
     regional_data.insert(1, columns_names[i], datasets[i])
 
-
+regional_data.to_csv('regional_data.csv')

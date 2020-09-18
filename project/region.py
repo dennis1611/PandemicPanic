@@ -21,9 +21,10 @@ class Region:
         self.deaths = deaths
 
     def __repr__(self):
-        string = f"This class is for {self.name} with a population of {self.inhabitants}"
+        string = f"This class is for {self.name} with a population of {self.inhabitants}, {self.infectionfactor}, {self.deathfactor}"
 
         return string
+
 
 
 
