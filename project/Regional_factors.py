@@ -28,12 +28,11 @@ Populations = data['Population'].tolist()
 regional_data = data.filter(items=['Population'])
 
 
-def densityfactors(general_dataset):
+def densityfactors(general_dataset, importance=0.4):
     # Function to determine the multiplying factors per region on basis of the population density
-    df = general_dataset.filter(items=['Density'])
-
     # IMPORTANCE FACTOR: determines the influence of the density on the amount of infections (higher =  more influence)
-    importance = 0.4
+
+    df = general_dataset.filter(items=['Density'])
 
     # Calculate the mean density
     avg = float(df.mean(axis=0))
@@ -55,8 +54,9 @@ def densityfactors(general_dataset):
     return factors_list
 
 
-def youth_infection_factors(general_dataset):
+def youth_infection_factors(general_dataset, importance=2.0):
     # Function to determine the multiplying factors per region on basis of the population density
+    # IMPORTANCE FACTOR: determines the influence of the density on the amount of infections (higher =  more influence)
 
     # Create the 'Youth' DataFrame that includes data regarding citizens between ages 15 and 25
     youth = general_dataset.filter(items=['15 to 20 (%)', '20 to 25 (%)'])
@@ -66,9 +66,6 @@ def youth_infection_factors(general_dataset):
 
     # Make a new DataFrame with only the combined column in it
     df = youth.filter(items=['total_youth (%)'])
-
-    # IMPORTANCE FACTOR: determines the influence of the density on the amount of infections (higher =  more influence)
-    importance = 2.0
 
     # Calculate the average percentage of youth in all regions
     avg = float(df.mean(axis=0))
@@ -89,8 +86,10 @@ def youth_infection_factors(general_dataset):
     return factors_list
 
 
-def senior_death_factors(general_dataset):
-    # Create the 'Seniors' DataFrame that inculdes data regarding citizens between ages 65 and 120
+def senior_death_factors(general_dataset, importance=1.3):
+    # IMPORTANCE FACTOR: determines the influence of the density on the amount of deaths (higher =  more influence)
+
+    # Create the 'Seniors' DataFrame that includes data regarding citizens between ages 65 and 120
     seniors = general_dataset.filter(items=['65 to 80 (%)', '80 to 120 (%)'])
 
     # Make new column that combines the 65 to 80 and 80 to 120 age ranges
@@ -98,9 +97,6 @@ def senior_death_factors(general_dataset):
 
     # Make a new DataFrame with only the combined column in it
     df = seniors.filter(items=['total_seniors (%)'])
-
-    # IMPORTANCE FACTOR: determines the influence of the density on the amount of deaths (higher =  more influence)
-    importance = 1.3
 
     # Calculate the average percentage of seniors in all regions
     avg = float(df.mean(axis=0))
@@ -143,6 +139,7 @@ def total_deathfactor(general_dataset):
 
     return total_death_factor
 
+
 # Create final DF with all regional data
 columns_names = ['death_factor', 'inf_factor']
 datasets = [total_deathfactor(data), total_infectionfactor(data)]
@@ -150,4 +147,5 @@ datasets = [total_deathfactor(data), total_infectionfactor(data)]
 for i in range(len(datasets)):
     regional_data.insert(1, columns_names[i], datasets[i])
 
+# generate a csv file in the same directory based on regional_data
 regional_data.to_csv('regional_data.csv')
