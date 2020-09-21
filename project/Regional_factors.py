@@ -9,7 +9,7 @@ cor_data = read_csv('Data_corops.csv', skiprows=0, delimiter=";",
                     index_col=1, skipinitialspace=True, decimal=',', skipfooter=1, engine='python')
 
 # Decide which areas you want to use; COROP or Provinces (both work)
-data = prov_data
+data = cor_data
 
 # Data preparation
 # Remove the first column which includes unneeded information
@@ -28,7 +28,7 @@ Populations = data['Population'].tolist()
 regional_data = data.filter(items=['Population'])
 
 
-def densityfactors(general_dataset, importance=0.4):
+def densityfactors(general_dataset, importance=0.3):
     # Function to determine the multiplying factors per region on basis of the population density
     # IMPORTANCE FACTOR: determines the influence of the density on the amount of infections (higher =  more influence)
 
@@ -54,7 +54,7 @@ def densityfactors(general_dataset, importance=0.4):
     return factors_list
 
 
-def youth_infection_factors(general_dataset, importance=2.0):
+def youth_infection_factors(general_dataset, importance=1.5):
     # Function to determine the multiplying factors per region on basis of the population density
     # IMPORTANCE FACTOR: determines the influence of the density on the amount of infections (higher =  more influence)
 

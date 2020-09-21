@@ -6,7 +6,7 @@ class Measure:
     > R_reduce: Reduce the R factor by R_influence
     """
 
-    def __init__(self, name, number, desc, active, R_influence):
+    def __init__(self, name, number, desc, R_influence):
         # there may be different types of measures with different effects
         # maybe enter these as (a list of) strings?
         self.name = name
@@ -17,8 +17,8 @@ class Measure:
         self.factor = R_influence
         self.active = False
 
-        if "R_reduce" in self.types:
-            self.R_influence = R_influence
+        # if "R_reduce" in self.types:
+        #     self.R_influence = R_influence
 
     def __repr__(self):
         string = f"This is measure number {self.number}, called: {self.name}, and it has the following effects:"
@@ -42,7 +42,6 @@ class Measure:
         if measure.is_active:
             R = R * measure.factor
             
-    
     The following lines of code will make the class easier to implement during the PyGame implementation fase,
     especially during the use of buttons in the PyGame window.
     """
@@ -56,11 +55,11 @@ class Measure:
     #             R_new = R_old * self.R_influence
     #             return R_new
     #
-    # def activate(self):
-    #     self.active = True
-    #
-    # def deactivate(self):
-    #     self.active = False
-    #
-    # def is_active(self):
-    #     return self.active
+    def activate(self):
+        self.active = True
+
+    def deactivate(self):
+        self.active = False
+
+    def is_active(self):
+        return self.active

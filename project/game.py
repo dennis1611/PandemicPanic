@@ -9,7 +9,7 @@ def update_infected(current_week: int):
     # Assumption is made that people stay sick for two weeks
     # TODO: replace separate calculations by dataframe
 
-    if week >= 2:
+    if current_week >= 2:
         # R-number tells how many other people an infected person infects during two weeks, hence the '* 1/2'
         infected_new.append(int(1/2 * (R[current_week-1] * infected_new[current_week-1] + R[current_week-2] * infected_new[current_week-2])))
         recoveries = int(infected_new[current_week - 2])
@@ -75,10 +75,11 @@ def initialise_measures():
     # TODO: replace by real measures, when class is made & measures are chosen
     return ['measure 1', 'measure 2', 'measure 3']
 
+regions_df = read_csv('regional_data.csv', index_col=0)
 
 def initialise_regions():
     """"Creates and returns a list of all regions"""
-    regions_df = read_csv('regional_data.csv', index_col=0)
+
     region_instances = []
     region_names = regions_df.index.values
     for region in region_names:
@@ -86,6 +87,7 @@ def initialise_regions():
                         regions_df.loc[region, "inf_factor"], regions_df.loc[region, "death_factor"])
         region_instances.append(region)
     return region_instances
+
 # END initialising methods
 
 
@@ -96,25 +98,24 @@ R = [1.1]
 
 measures = initialise_measures()
 regions = initialise_regions()
-print(regions)
 
 # main game loop
-week = 1
-running = True
-while running:
-    print('\n********************************')
-    print(f'This is week {week}')
-
-    # If I understand correctly, this means the measures are taken at the end of the week,
-    # to be applied on the calculations of the next week.
-
-    update_infected(week)
-
-    display_report()
-
-    choose_measure()
-
-    # for measure in measure:
-    #   measure.effect()
-
-    week += 1
+# week = 1
+# running = True
+# while running:
+#     print('\n********************************')
+#     print(f'This is week {week}')
+#
+#     # If I understand correctly, this means the measures are taken at the end of the week,
+#     # to be applied on the calculations of the next week.
+#
+#     update_infected(week)
+#
+#     display_report()
+#
+#     choose_measure()
+#
+#     # for measure in measure:
+#     #   measure.effect()
+#
+#     week += 1
