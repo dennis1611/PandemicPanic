@@ -1,32 +1,5 @@
 from pandas import read_csv
 
-# Collect Dutch Provinces data including age ranges and population density
-prov_data = read_csv('Data_provinces.csv', skiprows=[0, 1, 2, 4], delimiter=";",
-                     index_col=0, skipinitialspace=True, decimal=',', skipfooter=1, engine='python')
-
-# Collect Dutch COROP-areas data including age ranges and population density
-cor_data = read_csv('Data_corops.csv', skiprows=0, delimiter=";",
-                    index_col=1, skipinitialspace=True, decimal=',', skipfooter=1, engine='python')
-
-# Decide which areas you want to use; COROP or Provinces (both work)
-data = cor_data
-
-# Data preparation
-# Remove the first column which includes unneeded information
-data = data.iloc[:, 1:]
-
-# Rename columns
-data.columns = ['Population', '0 to 5 (%)', '5 to 10 (%)', '10 to 15 (%)', '15 to 20 (%)', '20 to 25 (%)',
-                '25 to 45 (%)', '45 to 65 (%)', '65 to 80 (%)', '80 to 120 (%)', 'Density']
-
-# Create an array of region names from the document
-regions = data.index.values
-
-# Make a separate list for the population counts per area
-Populations = data['Population'].tolist()
-
-regional_data = data.filter(items=['Population'])
-
 
 def densityfactors(general_dataset, importance=0.3):
     # Function to determine the multiplying factors per region on basis of the population density
@@ -139,6 +112,33 @@ def total_deathfactor(general_dataset):
 
     return total_death_factor
 
+
+# Collect Dutch Provinces data including age ranges and population density
+prov_data = read_csv('Data_provinces.csv', skiprows=[0, 1, 2, 4], delimiter=";",
+                     index_col=0, skipinitialspace=True, decimal=',', skipfooter=1, engine='python')
+
+# Collect Dutch COROP-areas data including age ranges and population density
+cor_data = read_csv('Data_corops.csv', skiprows=0, delimiter=";",
+                    index_col=1, skipinitialspace=True, decimal=',', skipfooter=1, engine='python')
+
+# Decide which areas you want to use; COROP or Provinces (both work)
+data = cor_data
+
+# Data preparation
+# Remove the first column which includes unneeded information
+data = data.iloc[:, 1:]
+
+# Rename columns
+data.columns = ['Population', '0 to 5 (%)', '5 to 10 (%)', '10 to 15 (%)', '15 to 20 (%)', '20 to 25 (%)',
+                '25 to 45 (%)', '45 to 65 (%)', '65 to 80 (%)', '80 to 120 (%)', 'Density']
+
+# Create an array of region names from the document
+regions = data.index.values
+
+# Make a separate list for the population counts per area
+Populations = data['Population'].tolist()
+
+regional_data = data.filter(items=['Population'])
 
 # Create final DF with all regional data
 columns_names = ['death_factor', 'inf_factor']

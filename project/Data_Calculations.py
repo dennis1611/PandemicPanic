@@ -16,12 +16,12 @@ np.set_printoptions(linewidth=desired_width)
 
 pd.set_option('display.max_columns',15)
 
-region_data = regions_df
+region_data = regions_df  # FIXME: do not simply use variables out of another file like this
 region_names = region_data.index.values
 
 arr_of_regional_inffactors = region_data.loc[:, "inf_factor"].values
 
-row_count = regions_df.shape[0]
+row_count = regions_df.shape[0]  # FIXME: do not simply use variables out of another file like this
 
 basis_R_arr = ([3] * row_count) * arr_of_regional_inffactors
 
