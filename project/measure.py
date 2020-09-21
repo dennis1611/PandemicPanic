@@ -5,6 +5,7 @@ class Measure:
     Current types are:
     > R_reduce: Reduce the R factor by R_influence
     """
+
     def __init__(self, name, number, desc, active, types, R_influence):
         # there may be different types of measures with different effects
         # maybe enter these as (a list of) strings?
@@ -12,7 +13,10 @@ class Measure:
         self.number = number
         self.desc = desc
         self.types = types
-        self.active = active
+
+        self.factor = R_influence
+        self.active = False
+
         if "R_reduce" in self.types:
             self.R_influence = R_influence
 
@@ -32,6 +36,32 @@ class Measure:
     def menu(self):
         """"Print the description of the measure for the player"""
         print(f"#{self.number}| {self.name}: {self.desc}")
+
+    """""
+    Willem's idea: do not perform the multiplication in the Measure class, 
+    Instead perform this in the game.py file or a new file. 
+    Makes the whole process easier, as it can be performed through matrix multiplication (DataFrames)
+    
+    The loop will look like this:
+    
+    R = 1
+    for measure in measures:
+        if measure.is_active:
+            R = R * measure.factor
+            
+    
+    The following lines of code will make the class easier to implement during the PyGame implementation fase,
+    especially during the use of buttons in the PyGame window.
+    """
+
+    def activate(self):
+        self.active = True
+
+    def deactivate(self):
+        self.active = False
+
+    def is_active(self):
+        return self.active
 
 
 # # testing:
