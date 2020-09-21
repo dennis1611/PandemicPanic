@@ -6,13 +6,13 @@ class Measure:
     > R_reduce: Reduce the R factor by R_influence
     """
 
-    def __init__(self, name, number, desc, R_influence):
+    def __init__(self, name, number, desc, active, R_influence):
         # there may be different types of measures with different effects
         # maybe enter these as (a list of) strings?
         self.name = name
         self.number = number
         self.desc = desc
-        self.types = types
+        # self.types = types
 
         self.factor = R_influence
         self.active = False
