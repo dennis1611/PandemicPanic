@@ -1,9 +1,11 @@
-#options for measures, all R values are estimates
+# options for measures, all R values are estimates
+# TODO: shouldn't the 'no ...' measures have an 1.00 * R?
+
 measure 1 (distance)
 no distance mandatory 1.10 * R
 1 meter distance      1.00 * R
-1.5 meter distance    0.95 * R
-2 meter distance      0.90 * R
+1.5 meter distance    0.90 * R
+2 meter distance      0.85 * R
 
 measure 2 (lockdown)
 no lockdown 1.00 * R
@@ -27,9 +29,10 @@ no events allowed 0.90 * R
 measure 6 (maximum visitors at home)
 no maximum 1.05 * R
 max 10     1.00 * R
-max 3      0.95 * R
+max 6      0.95 * R
 no visitors allowed 0.90 * R
 
+# length of quarantine is too fundamental in the calculations of this simulation, idea is good but not practically feasible
 measure 7 ( length of quarantine )
 no quarantine necessary 1.10 * R
 1 week      1.00 * R
