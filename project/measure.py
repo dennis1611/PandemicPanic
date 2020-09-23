@@ -3,27 +3,24 @@ class Measure:
     Class that contains all aspects of a measure to be taken.
     Give it a name, a number, a description for the player and determine the types and attributes.
     Current types are:
-    > R_reduce: Reduce the R factor by R_influence
+    > R_reduce: Reduce the R factor by factor
     """
 
-    def __init__(self, name, number, desc, R_influence, active=False):
-        self.name = name
+    def __init__(self, number, name, desc, factor, active=False):
         self.number = number
+        self.name = name
         self.desc = desc
-        self.factor = R_influence
+        self.factor = factor
         self.active = active
 
         # self.types = types
 
-        # if "R_reduce" in self.types:
-        #     self.R_influence = R_influence
-
-    def __repr__(self):
-        string = f"This is measure number {self.number}, called: {self.name}, and it has the following effects:"
-        # TODO: self.types has (currently) been removed, make sure the following line works
-        if "R_reduce" in self.types:
-            string += f"\nReduce the R factor by {self.R_influence}"
-        return string
+    # def __repr__(self):
+    #     string = f"This is measure number {self.number}, called: {self.name}, and it has the following effects:"
+    #     # TODO: self.types has (currently) been removed, make sure the following line works
+    #     if "R_reduce" in self.types:
+    #         string += f"\nReduce the R factor by {self.factor}"
+    #     return string
 
     def menu(self):
         """"Print the description of the measure for the player"""
@@ -48,7 +45,7 @@ class Measure:
     #     """Apply the measure on the right stat, according to its type"""
     #     if self.active:
     #         if "R_reduce" in self.types:
-    #             R_new = R_old * self.R_influence
+    #             R_new = R_old * self.factor
     #             return R_new
     #
     def activate(self):
