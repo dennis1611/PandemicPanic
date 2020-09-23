@@ -6,3 +6,4 @@ number,name,description,factor
 5,events,limit the allowed event size,0.90
 6,visitors,allow at most 6 visitors at home,0.95
 7,quarantine,people with symptoms must stay home,0.90
+8,education,education must be taught online,0.90
