@@ -34,17 +34,17 @@ def initialise_regions():
 # END initialising methods
 
 
+# TODO: unused, check if this can be deleted
+# def update_infected(current_week: int):
+#     """"Calculates how many people got infected and recovered in the past week"""
+#     # Assumption is made that people stay sick for two weeks
+
 # START weekly methods
-def update_infected(current_week: int):
-    """"Calculates how many people got infected and recovered in the past week"""
-    # Assumption is made that people stay sick for two weeks
-    # TODO: replace separate calculations by dataframe
-
-
-
-
 def display_report():
     """"Displays a report to the user containing recent developments of the virus"""
+    print(regions[0].df)
+
+    # TODO: unused, check if this can be deleted
     # print('********************************')
     # a = infected_total
     # b = infected_new
@@ -64,20 +64,18 @@ def display_report():
     #     print(c[z])
     # print('\n********************************')
 
-    print(regions_classes[0].df)
-
 
 def choose_measure():
     """"Displays all available measures to the user, and lets them choose one to take"""
     print('Choose one of the following measures:')
-    for measure in measures_classes:
+    for measure in measures:
         measure.menu()
     print('or #0| to take no action this turn')
 
     while True:
         measure_chosen = input('Your choice (type a number): ')  # This could probably use a better name
         if int(measure_chosen) in measure_numbers:
-            measure_taken = measures_classes[int(measure_chosen)-1]
+            measure_taken = measures[int(measure_chosen)-1]
             measure_taken.activate()
             print(f'You chose: {measure_taken.name}, but note that it is not used yet in this version')
             return measure_taken
@@ -86,27 +84,28 @@ def choose_measure():
             return None
         else:
             print(f'Your input: {measure_chosen}, is not recognised, please try again')
-
-
-def update_R():
-    """"Updates R based on the chosen measure"""
-    R_measures = 1
-
-    for measure in measures_classes:
-        if measure.is_active():
-            R_measures *= measure.factor
-
-    return R_measures
 # END weekly methods
+
+# TODO: unused, check if this can be deleted
+# def update_R():
+#     """"Updates R based on the chosen measure"""
+#     R_measures = 1
+#
+#     for measure in measures:
+#         if measure.is_active():
+#             R_measures *= measure.factor
+#
+#     return R_measures
 
 
 # create general setup
-infected_total = [100]  # keeps track of how many people are infected each week
-infected_new = [infected_total[0]]  # keeps track of how many people got infected during each week
-R = [1.1]
+measures, measure_numbers = initialise_measures()
+regions = initialise_regions()
 
-measures_classes, measure_numbers = initialise_measures()
-regions_classes = initialise_regions()
+# TODO: unused, check if this can be deleted
+# infected_total = [100]  # keeps track of how many people are infected each week
+# infected_new = [infected_total[0]]  # keeps track of how many people got infected during each week
+# R = [1.1]
 
 # TODO: write an actual welcome message/introduction
 print('Welcome message/introduction')
@@ -118,20 +117,25 @@ while running:
     print('\n********************************')
     print(f'This is week {week}')
 
-    # If I understand correctly, this means the measures are taken at the end of the week,
-    # to be applied on the calculations of the next week.
+    # calculates the new infections for this week (leaving only the 'R value' column open)
+    for region in regions:
+        region.update_infections(week)
 
+    # shows a summary of recent developments of the virus
     display_report()
 
+    # choose a measure and get the corresponding factor
+    new_measure = choose_measure()
+    if isinstance(new_measure, Measure):
+        effect = new_measure.factor
+    else:
+        effect = 1
 
+    # set the R value for this week
+    for region in regions:
+        region.update_R(week, effect)
 
-    for region_class in regions_classes:
-        region_class.add_data(update_R(), week)
-
-    measure_this_week = choose_measure()
+    # TODO: unused, check if this can be deleted
     # R.append(update_R(R[-1], measure_this_week))
-
-    # for measure in measure:
-    #   measure.effect()
 
     week += 1

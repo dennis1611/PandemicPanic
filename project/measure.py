@@ -30,20 +30,6 @@ class Measure:
         """"Print the description of the measure for the player"""
         print(f"{str(self)}")
 
-    """""
-    Willem's idea: do not perform the multiplication in the Measure class, 
-    Instead perform this in the game.py file or a new file. 
-    Makes the whole process easier, as it can be performed through matrix multiplication (DataFrames)
-    
-    The loop will look like this:
-    
-    R = 1
-    for measure in measures:
-        if measure.is_active:
-            R = R * measure.factor
-    """
-
-    #
     # not needed for now
     # def effect(self, R_old):
     #     """Apply the measure on the right stat, according to its type"""
