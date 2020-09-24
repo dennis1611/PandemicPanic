@@ -22,9 +22,13 @@ class Measure:
     #         string += f"\nReduce the R factor by {self.factor}"
     #     return string
 
+    def __str__(self):
+        """"Return a human readable string"""
+        return f"#{self.number}| {self.name}: {self.desc}"
+
     def menu(self):
         """"Print the description of the measure for the player"""
-        print(f"#{self.number}| {self.name}: {self.desc}")
+        print(f"{str(self)}")
 
     """""
     Willem's idea: do not perform the multiplication in the Measure class, 
