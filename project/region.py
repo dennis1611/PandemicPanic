@@ -43,12 +43,10 @@ class Region:
             prev_r = self.df.loc[current_week - 1, 'R value']
 
             new_infections = 1/2 * (prev_r * prev_infs + prev_r * prev_prev_infs) //1
-            print(self.df)
             # recoveries = 0
         else:
             new_infections = self.df.loc[current_week - 1, 'R value'] * \
                              self.df.loc[current_week - 1, 'New infections'] //1
-            print(new_infections)
             # recoveries = 0
 
         return new_infections
