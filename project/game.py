@@ -6,6 +6,7 @@ Main game loop.
 from project.initialization import initialise_measures,initialise_regions
 from project.measure import Measure
 from project.region import Region
+from screen import Screen
 
 
 # TODO: unused, check if this can be deleted
@@ -88,6 +89,7 @@ print('Welcome message/introduction')
 # main game loop
 week = 1
 running = True
+window = Screen()
 while running:
     print('\n********************************')
     print(f'This is week {week}')
@@ -99,18 +101,30 @@ while running:
     # shows a summary of recent developments of the virus
     display_report()
 
+    #update window
+    window.start_turn(regions)
+
+    '''
     # choose a measure and get the corresponding factor
     new_measure = choose_measure()
     if isinstance(new_measure, Measure):
         effect = new_measure.factor
     else:
         effect = 1
+    '''
+    effect = 1 #todo get rid of this
 
     # set the R value for this week
     for region in regions:
         region.update_R(week, effect)
 
+
     # TODO: unused, check if this can be deleted
     # R.append(update_R(R[-1], measure_this_week))
 
     week += 1
+
+    running = window.check_quit()
+
+
+
