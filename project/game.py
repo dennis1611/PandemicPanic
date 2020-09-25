@@ -1,37 +1,11 @@
-from pandas import read_csv
+"""
+Main game loop.
+.exe should activate this file.
+"""
+
+from project.initialization import initialise_measures,initialise_regions
 from project.measure import Measure
 from project.region import Region
-
-
-# START initialising methods
-def initialise_measures():
-    """"Creates and returns a list of all measures"""
-    measures = []
-    numbers = []
-    with open("measures_data_simple.csv") as data:
-        next(data)  # skip first line
-        for line in data:
-            line = line.strip().split(",")
-            number = int(line[0])
-            name = line[1]
-            desc = line[2]
-            factor = float(line[3])
-            measures.append(Measure(number, name, desc, factor))
-            numbers.append(number)
-    return measures, numbers
-
-
-def initialise_regions():
-    """"Creates and returns a list of all regions"""
-    regions_df = read_csv('regional_data.csv', index_col=0)
-    region_instances = []
-    region_names = regions_df.index.values
-    for region in region_names:
-        region = Region(region, regions_df.loc[region, "Population"],
-                        regions_df.loc[region, "inf_factor"], regions_df.loc[region, "death_factor"])
-        region_instances.append(region)
-    return region_instances
-# END initialising methods
 
 
 # TODO: unused, check if this can be deleted
@@ -42,7 +16,7 @@ def initialise_regions():
 # START weekly methods
 def display_report():
     """"Displays a report to the user containing recent developments of the virus"""
-    print(regions[0].df)
+    print(regions[0].df) #TODO: only displays information of Groningen, need to show others too
 
     # TODO: unused, check if this can be deleted
     # print('********************************')
@@ -101,6 +75,7 @@ def choose_measure():
 # create general setup
 measures, measure_numbers = initialise_measures()
 regions = initialise_regions()
+
 
 # TODO: unused, check if this can be deleted
 # infected_total = [100]  # keeps track of how many people are infected each week

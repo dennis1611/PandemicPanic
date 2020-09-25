@@ -1,9 +1,8 @@
-import pandas as pd
-
-
 """
 File that contains the region class.
 """
+
+import pandas as pd
 
 
 class Region:
