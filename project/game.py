@@ -51,10 +51,9 @@ def choose_measure():
         measure_chosen = measures[int(number_chosen)-1]
         # if measure has not been taken yet
         if int(number_chosen) in measure_numbers and measure_chosen.is_active() is False:
-            measure_taken = measures[int(number_chosen)-1]
-            measure_taken.activate()
-            print(f'You chose: {measure_taken.name}')
-            return measure_taken
+            measure_chosen.activate()
+            print(f'You chose: {measure_chosen.name}')
+            return measure_chosen
         # if measure has been taken already
         elif int(number_chosen) in measure_numbers and measure_chosen.is_active() is True:
             return None  # TODO: handle undoing measures correctly
