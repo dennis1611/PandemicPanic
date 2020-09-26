@@ -47,13 +47,18 @@ def choose_measure():
     print('or #0| to take no action this turn')
 
     while True:
-        measure_chosen = input('Your choice (type a number): ')  # This could probably use a better name
-        if int(measure_chosen) in measure_numbers:
-            measure_taken = measures[int(measure_chosen)-1]
+        number_chosen = input('Your choice (type a number): ')  # This could probably use a better name
+        measure_chosen = measures[int(number_chosen)-1]
+        # if measure has not been taken yet
+        if int(number_chosen) in measure_numbers and measure_chosen.is_active() is False:
+            measure_taken = measures[int(number_chosen)-1]
             measure_taken.activate()
-            print(f'You chose: {measure_taken.name}, but note that it is not used yet in this version')
+            print(f'You chose: {measure_taken.name}')
             return measure_taken
-        elif int(measure_chosen) == 0:
+        # if measure has been taken already
+        elif int(number_chosen) in measure_numbers and measure_chosen.is_active() is True:
+            return None  # TODO: handle undoing measures correctly
+        elif int(number_chosen) == 0:
             print('You decided to take no action, the game will move on')
             return None
         else:
@@ -75,7 +80,7 @@ def choose_measure():
 # create general setup
 measures, measure_numbers = initialise_measures()
 regions = initialise_regions()
-
+starline = '*' * 70
 
 # TODO: unused, check if this can be deleted
 # infected_total = [100]  # keeps track of how many people are infected each week
@@ -89,8 +94,9 @@ print('Welcome message/introduction')
 week = 1
 running = True
 while running:
-    print('\n********************************')
+    print('\n' + starline)
     print(f'This is week {week}')
+    print(starline)
 
     # calculates the new infections for this week (leaving only the 'R value' column open)
     for region in regions:
@@ -98,6 +104,7 @@ while running:
 
     # shows a summary of recent developments of the virus
     display_report()
+    print(starline)
 
     # choose a measure and get the corresponding factor
     new_measure = choose_measure()

@@ -21,7 +21,7 @@ class MyTestCase(unittest.TestCase):
         factor = 1
         m1 = Measure(number, name, desc, factor)
         string = str(m1)
-        self.assertEqual("#1| test_measure: this measure does nothing", string)
+        self.assertEqual("#1| False| test_measure: this measure does nothing", string)
 
     def test_effect(self):
         number = 1

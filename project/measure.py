@@ -24,7 +24,7 @@ class Measure:
 
     def __str__(self):
         """"Return a human readable string"""
-        return f"#{self.number}| {self.name}: {self.desc}"
+        return f"#{self.number}| {self.active}| {self.name}: {self.desc}"
 
     def menu(self):
         """"Print the description of the measure for the player"""
