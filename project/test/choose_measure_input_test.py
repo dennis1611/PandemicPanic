@@ -36,6 +36,11 @@ measures, measure_numbers = initialise_measures()
 
 class MyTestCase(unittest.TestCase):
 
+    def test_int(self):
+        self.assertTrue(validate_measure_input('0'))
+        self.assertTrue(validate_measure_input('1'))
+        self.assertTrue(validate_measure_input(str(len(measures))))
+
     def test_float(self):
         self.assertFalse(validate_measure_input('0.0'))
         self.assertFalse(validate_measure_input('1.0'))
