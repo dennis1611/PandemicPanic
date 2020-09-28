@@ -1,0 +1,9 @@
+number,name,description,factor
+1,distance,keep 1.5 meter distance,0.90
+2,lockdown,people must work from home,0.75
+3,mask,wear a mask in public areas,0.95
+4,restaurants,close all restaurants,0.90
+5,events,limit the allowed event size,0.90
+6,visitors,allow at most 6 visitors at home,0.95
+7,quarantine,people with symptoms must stay home,0.90
+8,education,education must be taught online,0.90

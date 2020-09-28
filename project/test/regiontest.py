@@ -4,7 +4,7 @@ Test file for the Region class.
 
 import unittest
 from project.region import Region
-from project.initialization import initialise_measures,initialise_regions
+from project.initialization import initialise_measures, initialise_regions
 
 
 class MyTestCase(unittest.TestCase):

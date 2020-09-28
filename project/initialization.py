@@ -35,4 +35,3 @@ def initialise_regions():
                         regions_df.loc[region, "inf_factor"], regions_df.loc[region, "death_factor"])
         region_instances.append(region)
     return region_instances
-# END initialising methods
