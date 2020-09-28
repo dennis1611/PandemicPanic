@@ -40,15 +40,18 @@ def display_report():
     # print('\n********************************')
 
 
-def choose_measure():
+def choose_measure(window):
     """"Displays all available measures to the user, and lets them choose one to take"""
+
+    '''
     print('Choose one of the following measures:')
     for measure in measures:
         measure.menu()
     print('or #0| to take no action this turn')
+    '''
 
     while True:
-        measure_chosen = input('Your choice (type a number): ')  # This could probably use a better name
+        measure_chosen = window.click_measure()#input('Your choice (type a number): ')  # This could probably use a better name
         if int(measure_chosen) in measure_numbers:
             measure_taken = measures[int(measure_chosen)-1]
             measure_taken.activate()
@@ -84,14 +87,14 @@ regions = initialise_regions()
 # R = [1.1]
 
 # TODO: write an actual welcome message/introduction
-print('Welcome message/introduction')
+#print('Welcome message/introduction')
 
 # main game loop
 week = 1
 running = True
 window = Screen()
 while running:
-    print('\n********************************')
+    #print('\n********************************')
     print(f'This is week {week}')
 
     # calculates the new infections for this week (leaving only the 'R value' column open)
@@ -104,15 +107,15 @@ while running:
     #update window
     window.start_turn(regions)
 
-    '''
+
     # choose a measure and get the corresponding factor
-    new_measure = choose_measure()
+    new_measure = choose_measure(window)
     if isinstance(new_measure, Measure):
         effect = new_measure.factor
     else:
         effect = 1
-    '''
-    effect = 1 #todo get rid of this
+
+    #effect = 1 #todo get rid of this
 
     # set the R value for this week
     for region in regions:
@@ -124,7 +127,7 @@ while running:
 
     week += 1
 
-    running = window.check_quit()
+    window.check_quit()
 
 
 
