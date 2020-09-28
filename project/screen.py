@@ -11,6 +11,11 @@ class Screen:
     black = (0, 0, 0)
     white = (255, 255, 255)
     bgcolour = black
+    txtcolor = black
+
+    #font
+    pg.font.init()
+    myfont = pg.font.SysFont("Arial Black", 20)
 
     # Set up pygame window
     xmax = 1344
@@ -34,7 +39,7 @@ class Screen:
         self.tlast = self.t
 
         # get key input
-        self.keys = pg.key.get_pressed()
+        #self.keys = pg.key.get_pressed()
 
 
         self.scr.fill((0, 0, 255))
@@ -68,24 +73,37 @@ class Screen:
         pg.event.pump()
 
 
+    def draw_text(self,text,font,color,x,y):
+        textobj = font.render(text,1,color)
+        textrect = textobj.get_rect()
+        textrect.topleft = (x,y)
+        self.scr.blit(textobj,textrect)
 
 
-    def click_measure(self):
+
+
+    def click_measure(self,measures):
 
         button_color = (255, 255, 255)
-        button_0 = pg.Rect(700, 25, 200, 20)
-        button_1 = pg.Rect(700, 50, 200, 20)
-        button_2 = pg.Rect(700, 75, 200, 20)
-        button_3 = pg.Rect(700, 100, 200, 20)
-        button_4 = pg.Rect(700, 125, 200, 20)
-        button_5 = pg.Rect(700, 150, 200, 20)
-        button_6 = pg.Rect(700, 175, 200, 20)
-        button_7 = pg.Rect(700, 200, 200, 20)
-        button_8 = pg.Rect(700, 225, 200, 20)
+        button_size = (600, 25)
+        offset = 10
+        button_x = 725
+        button_y_diff = offset+button_size[1]
 
-        running = True
+
+        button_0 = pg.Rect(button_x, offset + button_y_diff*0, button_size[0], button_size[1])
+        button_1 = pg.Rect(button_x, offset + button_y_diff*1, button_size[0], button_size[1])
+        button_2 = pg.Rect(button_x, offset + button_y_diff*2, button_size[0], button_size[1])
+        button_3 = pg.Rect(button_x, offset + button_y_diff*3, button_size[0], button_size[1])
+        button_4 = pg.Rect(button_x, offset + button_y_diff*4, button_size[0], button_size[1])
+        button_5 = pg.Rect(button_x, offset + button_y_diff*5, button_size[0], button_size[1])
+        button_6 = pg.Rect(button_x, offset + button_y_diff*6, button_size[0], button_size[1])
+        button_7 = pg.Rect(button_x, offset + button_y_diff*7, button_size[0], button_size[1])
+        button_8 = pg.Rect(button_x, offset + button_y_diff*8, button_size[0], button_size[1])
+
+
         click = False
-        while running:
+        while True:
             #self.keys = pg.key.get_pressed()
             mx,my = pg.mouse.get_pos()
 
@@ -126,6 +144,20 @@ class Screen:
             pg.draw.rect(self.scr, button_color, button_6)
             pg.draw.rect(self.scr, button_color, button_7)
             pg.draw.rect(self.scr, button_color, button_8)
+
+
+            self.draw_text("#0| Take no action", self.myfont,self.txtcolor,button_x, offset + button_y_diff*0)
+            self.draw_text(measures[0].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 1)
+            self.draw_text(measures[1].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 2)
+            self.draw_text(measures[2].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 3)
+            self.draw_text(measures[3].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 4)
+            self.draw_text(measures[4].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 5)
+            self.draw_text(measures[5].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 6)
+            self.draw_text(measures[6].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 7)
+            self.draw_text(measures[7].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 8)
+
+
+
             pg.display.flip()
 
 
