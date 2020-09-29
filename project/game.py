@@ -6,10 +6,14 @@ Main game loop.
 from project.initialization import initialise_measures, initialise_regions
 from project.measure import Measure
 from project.region import Region
+import pandas as pd
 
 
 def display_report():
     """"Displays a report to the user containing recent developments of the virus"""
+    # these two make the DataFrame display entirely, and on one line:
+    pd.set_option('display.max_columns', 10)
+    pd.set_option('display.width', 1000)
     print(regions[0].df)  # TODO: only displays information of Groningen, need to show others too
 
 

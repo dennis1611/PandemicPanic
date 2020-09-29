@@ -17,8 +17,9 @@ class Region:
         self.deathfactor = deathfactor
         region_r = base_r * infectionfactor
 
-        df = pd.DataFrame(data=[[base_inf, base_inf, 0, 0, region_r]],
-                          columns=['New infections', 'Total infections', 'New deaths', 'Total deaths', 'R value'],
+        df = pd.DataFrame(data=[[base_inf, base_inf, 0, 0, 0, 0, region_r]],
+                          columns=['New infections', 'Total infections', 'New deaths', 'Total deaths', 'New recoveries',
+                                   'Total recoveries', 'R value'],
                           index=[0])
         self.df = df
 
@@ -41,12 +42,17 @@ class Region:
         if current_week >= 2:
             prev_prev_inf = self.df.loc[current_week - 2, 'New infections']
             new_infections = 1 / 2 * (prev_r * prev_inf + prev_r * prev_prev_inf) // 1
+            new_deaths = (prev_prev_inf * self.deathfactor) // 1
+            new_recovs = prev_prev_inf - new_deaths
         else:
             new_infections = prev_r * prev_inf // 1
+            new_deaths = 0
+            new_recovs = 0
 
         new_data = {'New infections': new_infections,
-                    'Total infections': new_infections + prev_data.loc['Total infections'],
-                    'New deaths': 0, 'Total deaths': 0, 'R value': None}
+                    'Total infections': new_infections - new_recovs + prev_data.loc['Total infections'],
+                    'New deaths': new_deaths, 'Total deaths': new_deaths + prev_data.loc['Total deaths'], 'R value': None,
+                    'New recoveries': new_recovs, 'Total recoveries': new_recovs + prev_data.loc['Total recoveries']}
         self.df = self.df.append(new_data, ignore_index=True)
 
     def update_R(self, current_week, factor):
