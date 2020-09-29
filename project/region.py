@@ -34,16 +34,16 @@ class Region:
         # Assumption is made that people stay sick for two weeks
 
         prev_data = self.df.loc[current_week - 1]
-        prev_inf = prev_data.loc['New infections']
+        prev_inf_total = prev_data.loc['Total infections']
         prev_r = prev_data.loc['R value']
 
+        new_infections = (1 / 2) * prev_r * prev_inf_total // 1
+
         if current_week >= 2:
-            prev_prev_inf = self.df.loc[current_week - 2, 'New infections']
-            new_infections = (1 / 2) * (prev_r * prev_inf + prev_r * prev_prev_inf) // 1
-            new_deaths = (prev_prev_inf * self.deathfactor) // 1
-            new_recovs = prev_prev_inf - new_deaths
+            prev_prev_inf_new = self.df.loc[current_week - 2, 'New infections']
+            new_deaths = (prev_prev_inf_new * self.deathfactor) // 1
+            new_recovs = prev_prev_inf_new - new_deaths
         else:
-            new_infections = prev_r * prev_inf // 1
             new_deaths = 0
             new_recovs = 0
 

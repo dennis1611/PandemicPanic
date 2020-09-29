@@ -40,7 +40,7 @@ class MyTestCase(unittest.TestCase):
         pd.set_option('display.width', 1000)
         print()
         print(testregion.df)
-        self.assertAlmostEqual(5000, testregion.df["New infections"][3])
+        self.assertAlmostEqual(3000, testregion.df["New infections"][3])
         self.assertAlmostEqual(0.25 * testregion.df["New infections"][1], testregion.df["New recoveries"][3])
         self.assertAlmostEqual(0.75 * testregion.df["New infections"][1], testregion.df["New deaths"][3])
 
