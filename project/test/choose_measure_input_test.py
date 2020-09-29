@@ -40,13 +40,14 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue(validate_measure_input('0'))
         self.assertTrue(validate_measure_input('1'))
         self.assertTrue(validate_measure_input(str(len(measures))))
+        self.assertFalse(validate_measure_input(str(len(measures) + 1)))
 
     def test_float(self):
         self.assertFalse(validate_measure_input('0.0'))
         self.assertFalse(validate_measure_input('1.0'))
         self.assertFalse(validate_measure_input('1.1'))
 
-    def test_negative_int(self):
+    def test_negative(self):
         self.assertFalse(validate_measure_input('-1'))
 
     def test_letters(self):

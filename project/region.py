@@ -32,8 +32,6 @@ class Region:
     def update_infections(self, current_week):
         """"Calculates how many people got infected and recovered in the past week"""
         # Assumption is made that people stay sick for two weeks
-        # TODO: calculate with recoveries
-        # TODO: calculate with deaths
 
         prev_data = self.df.loc[current_week - 1]
         prev_inf = prev_data.loc['New infections']
@@ -41,7 +39,7 @@ class Region:
 
         if current_week >= 2:
             prev_prev_inf = self.df.loc[current_week - 2, 'New infections']
-            new_infections = 1 / 2 * (prev_r * prev_inf + prev_r * prev_prev_inf) // 1
+            new_infections = (1 / 2) * (prev_r * prev_inf + prev_r * prev_prev_inf) // 1
             new_deaths = (prev_prev_inf * self.deathfactor) // 1
             new_recovs = prev_prev_inf - new_deaths
         else:
@@ -50,7 +48,7 @@ class Region:
             new_recovs = 0
 
         new_data = {'New infections': new_infections,
-                    'Total infections': new_infections - new_recovs + prev_data.loc['Total infections'],
+                    'Total infections': prev_data.loc['Total infections'] + new_infections - new_recovs - new_deaths,
                     'New deaths': new_deaths, 'Total deaths': new_deaths + prev_data.loc['Total deaths'], 'R value': None,
                     'New recoveries': new_recovs, 'Total recoveries': new_recovs + prev_data.loc['Total recoveries']}
         self.df = self.df.append(new_data, ignore_index=True)
