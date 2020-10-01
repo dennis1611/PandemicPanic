@@ -97,7 +97,7 @@ def total_infectionfactor(general_dataset):
     density = densityfactors(general_dataset)
 
     for j in range(len(regions)):
-        total_inf_factor.append(youth[j] * density[j])
+        total_inf_factor.append(round(youth[j] * density[j], 3))
 
     return total_inf_factor
 
@@ -108,21 +108,26 @@ def total_deathfactor(general_dataset):
     seniors = senior_death_factors(general_dataset)
 
     for j in range(len(regions)):
-        total_death_factor.append(seniors[j])
+        total_death_factor.append(round(seniors[j], 3))
 
     return total_death_factor
 
 
-# Collect Dutch Provinces data including age ranges and population density
-prov_data = read_csv('Data_provinces.csv', skiprows=[0, 1, 2, 4], delimiter=";",
-                     index_col=0, skipinitialspace=True, decimal=',', skipfooter=1, engine='python')
+def get_data(type):
+    if type == 'province':
+        # Collect Dutch Provinces data including age ranges and population density
+        prov_data = read_csv('Data_provinces.csv', skiprows=[0, 1, 2, 4], delimiter=";",
+                             index_col=0, skipinitialspace=True, decimal=',', skipfooter=1, engine='python')
+        return prov_data
+    elif type == 'corop':
+        # Collect Dutch COROP-areas data including age ranges and population density
+        cor_data = read_csv('Data_corops.csv', skiprows=0, delimiter=";",
+                            index_col=1, skipinitialspace=True, decimal=',', skipfooter=1, engine='python')
+        return cor_data
 
-# Collect Dutch COROP-areas data including age ranges and population density
-cor_data = read_csv('Data_corops.csv', skiprows=0, delimiter=";",
-                    index_col=1, skipinitialspace=True, decimal=',', skipfooter=1, engine='python')
 
 # Decide which areas you want to use; COROP or Provinces (both work)
-data = cor_data
+data = get_data('province')
 
 # Data preparation
 # Remove the first column which includes unneeded information

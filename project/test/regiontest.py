@@ -21,18 +21,16 @@ class MyTestCase(unittest.TestCase):
         """Check whether the data is read in correctly by testing the first case."""
         name = "Groningen (PV)"
         inhabitants = 585866
-        self.assertEqual((self.regions[0].name,self.regions[0].inhabitants),(name,inhabitants))
-        self.assertAlmostEqual(self.regions[0].infectionfactor,1.125812437855936)
-        self.assertAlmostEqual(self.regions[0].deathfactor,0.9918927528470189)
+        self.assertEqual((self.regions[0].name, self.regions[0].inhabitants), (name, inhabitants))
+        self.assertAlmostEqual(self.regions[0].death_factor, 0.019837855)
 
     def test_calculations_no_measures(self):
         name = "TestRegion"
         inh = 1000000
         inf_f = 1.25
         ded_f = 0.75
-        base_r = 1.6
         base_inf = 1000
-        testregion = Region(name, inh, inf_f, ded_f, base_r, base_inf)
+        testregion = Region(name, inh, inf_f, ded_f, base_inf)
         for week in range(1, 4):
             testregion.update_infections(week)
             testregion.update_R(week, 1)
@@ -40,9 +38,9 @@ class MyTestCase(unittest.TestCase):
         pd.set_option('display.width', 1000)
         print()
         print(testregion.df)
-        self.assertAlmostEqual(3000, testregion.df["New infections"][3])
-        self.assertAlmostEqual(0.25 * testregion.df["New infections"][1], testregion.df["New recoveries"][3])
-        self.assertAlmostEqual(0.75 * testregion.df["New infections"][1], testregion.df["New deaths"][3])
+        self.assertAlmostEqual(13621, testregion.df["New infections"][3])
+        self.assertAlmostEqual(1847, testregion.df["New recoveries"][3])
+        self.assertAlmostEqual(28, testregion.df["New deaths"][3])
 
 
 if __name__ == '__main__':
