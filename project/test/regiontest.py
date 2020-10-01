@@ -5,7 +5,7 @@ Test file for the Region class.
 import unittest
 import pandas as pd
 from project.region import Region
-from project.initialization import initialise_measures, initialise_regions
+from project.models.initialization import initialise_measures, initialise_regions
 
 
 class MyTestCase(unittest.TestCase):

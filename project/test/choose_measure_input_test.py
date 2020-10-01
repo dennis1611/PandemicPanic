@@ -3,7 +3,7 @@ Test file for measure choosing input
 """
 
 import unittest
-from project.initialization import initialise_measures
+from project.models.initialization import initialise_measures
 
 
 def validate_measure_input(user_input):

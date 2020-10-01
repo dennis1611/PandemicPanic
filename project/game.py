@@ -3,69 +3,11 @@ Main game loop.
 .exe should activate this file.
 """
 
-from project.initialization import initialise_measures, initialise_regions
+from project.models.initialization import initialise_measures, initialise_regions
+from project.views.measures_terminal import choose_measure
+from project.views.report_terminal import display_report
+
 from project.measure import Measure
-from project.region import Region
-import pandas as pd
-
-
-def display_report():
-    """"Displays a report to the user containing recent developments of the virus"""
-    # these two make the DataFrame display entirely, and on one line:
-    pd.set_option('display.max_columns', 10)
-    pd.set_option('display.width', 1000)
-    print(regions[0].df)  # TODO: only displays information of Groningen, need to show others too
-
-
-def choose_measure():
-    """"Displays all available measures to the user, and lets them choose one to take"""
-
-    def validate_measure_input(user_input):
-        """Returns a boolean whether the user's input to choose a measure is valid"""
-        is_int = True
-        number_chosen = -1
-        try:
-            number_chosen = int(user_input)
-        except ValueError:
-            is_int = False
-
-        # if: the input was an int
-        if is_int:
-            # case 1 (valid): the input was an int corresponding to a measure
-            if number_chosen in measure_numbers:
-                return True
-            # case 2 (valid): the input was 0
-            elif number_chosen == 0:
-                return True
-            # case 3 (invalid): the input was an int out of bounds
-            else:
-                print(f'Your input: {number_chosen}, does not correspond to a measure, please try again')
-                return False
-        # else (invalid): the input was not an int
-        else:
-            print(f'Your input: {user_input}, is not valid, please enter an integer')
-            return False
-
-    print('Choose one of the following measures:')
-    for measure in measures:
-        measure.menu()
-    print('or #0| to take no action this turn')
-
-    while True:
-        user_input = input('\nYour choice (type a number): ')
-        if validate_measure_input(user_input):
-            number_chosen = int(user_input)
-            if number_chosen != 0:
-                measure_chosen = measures[int(number_chosen) - 1]
-                if measure_chosen.is_active() is False:
-                    print(f'You chose: {measure_chosen.name}, it will be activated')
-                    return measure_chosen
-                elif measure_chosen.is_active() is True:
-                    print(f'You chose: {measure_chosen.name}, it will be deactivated')
-                    return measure_chosen
-            elif number_chosen == 0:
-                print('You decided to take no action, the game will move on')
-                return None
 
 
 # create general setup
@@ -89,11 +31,11 @@ while running:
         region.update_infections(week)
 
     # shows a summary of recent developments of the virus
-    display_report()
+    display_report(regions)
     print(starline)
 
     # choose a measure, (de)activate it, and get the corresponding factor
-    new_measure = choose_measure()
+    new_measure = choose_measure(measures, measure_numbers)
     if isinstance(new_measure, Measure) and new_measure.is_active() is False:
         new_measure.activate()
         effect = new_measure.factor
