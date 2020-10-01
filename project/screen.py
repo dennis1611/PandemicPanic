@@ -114,9 +114,9 @@ class Screen:
 
         button_color = (255, 255, 255)
         button_size = (600, 25)
-        offset = 10
+        offset = 20
         button_x = self.x
-        button_y_diff = offset+button_size[1]
+        button_y_diff = 10+button_size[1]
 
 
         button_0 = pg.Rect(button_x, offset + button_y_diff*0, button_size[0], button_size[1])
@@ -174,15 +174,15 @@ class Screen:
             pg.draw.rect(self.scr, button_color, button_8)
 
 
-            self.draw_text("#0| Take no action", self.myfont,self.txtcolor,button_x, offset + button_y_diff*0)
-            self.draw_text(measures[0].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 1)
-            self.draw_text(measures[1].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 2)
-            self.draw_text(measures[2].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 3)
-            self.draw_text(measures[3].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 4)
-            self.draw_text(measures[4].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 5)
-            self.draw_text(measures[5].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 6)
-            self.draw_text(measures[6].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 7)
-            self.draw_text(measures[7].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 8)
+            self.draw_text(" #0| Take no action", self.myfont,self.txtcolor,button_x, offset + button_y_diff*0-3)
+            self.draw_text(" "+measures[0].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 1-3)
+            self.draw_text(" "+measures[1].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 2-3)
+            self.draw_text(" "+measures[2].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 3-3)
+            self.draw_text(" "+measures[3].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 4-3)
+            self.draw_text(" "+measures[4].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 5-3)
+            self.draw_text(" "+measures[5].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 6-3)
+            self.draw_text(" "+measures[6].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 7-3)
+            self.draw_text(" "+measures[7].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 8-3)
 
 
 

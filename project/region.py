@@ -35,29 +35,31 @@ class Region:
 
     def load_pngs(self):
 
+        topleft = (-30,30)
+
         self.img1 = pg.image.load("provinces/"+self.img_name+"1.png")
         self.img1_rect = self.img1.get_rect()
-        self.img1_rect.topleft = (0,0)
+        self.img1_rect.topleft = topleft
 
         self.img2 = pg.image.load("provinces/"+self.img_name+"2.png")
         self.img2_rect = self.img2.get_rect()
-        self.img2_rect.topleft = (0,0)
+        self.img2_rect.topleft = topleft
 
         self.img3 = pg.image.load("provinces/"+self.img_name+"3.png")
         self.img3_rect = self.img3.get_rect()
-        self.img3_rect.topleft = (0,0)
+        self.img3_rect.topleft = topleft
 
         self.img4 = pg.image.load("provinces/"+self.img_name+"4.png")
         self.img4_rect = self.img4.get_rect()
-        self.img4_rect.topleft = (0,0)
+        self.img4_rect.topleft = topleft
 
         self.img5 = pg.image.load("provinces/"+self.img_name+"5.png")
         self.img5_rect = self.img5.get_rect()
-        self.img5_rect.topleft = (0,0)
+        self.img5_rect.topleft = topleft
 
         self.img6 = pg.image.load("provinces/"+self.img_name+"6.png")
         self.img6_rect = self.img6.get_rect()
-        self.img6_rect.topleft = (0,0)
+        self.img6_rect.topleft = topleft
 
 
 
