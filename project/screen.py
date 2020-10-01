@@ -20,6 +20,8 @@ class Screen:
     # Set up pygame window
     xmax = 1344
     ymax = 756
+    x = 725
+    y_table = 350
 
 
     def __init__(self):
@@ -29,6 +31,8 @@ class Screen:
         self.scr = pg.display.set_mode(self.res)
 
         self.tlast = pg.time.get_ticks()*0.001
+
+
 
 
     def start_turn(self,regions):
@@ -41,18 +45,38 @@ class Screen:
         # get key input
         #self.keys = pg.key.get_pressed()
 
+        xloc = self.x
+        yloc = self.y_table
 
-        self.scr.fill((0, 0, 255))
+
+        self.scr.fill((0, 0, 0))
+
+        self.draw_text_right("Infected", self.myfont, self.white, xloc + 300, yloc)
 
         for i in range(len(regions)):
 
-            red = int(regions[i].df.iat[-1,1]/regions[i].inhabitants*255)
-            if red>255: red=255
+            yloc += 30
+            inf = regions[i].df.iat[-1,1]
+            pop = regions[i].pops
 
-            self.scr.fill((red,0,0))
+            self.draw_text(regions[i].name[0:-4],self.myfont,self.white,xloc,yloc)
+            self.draw_text_right(str(int(inf)), self.myfont, self.white, xloc+300, yloc)
 
-            break
 
+            num = inf/pop*6
+            print(num)
+            if num<=1:
+                self.scr.blit(regions[i].img1,regions[i].img1_rect)
+            elif num<=2:
+                self.scr.blit(regions[i].img2,regions[i].img2_rect)
+            elif num<=3:
+                self.scr.blit(regions[i].img3,regions[i].img3_rect)
+            elif num<=4:
+                self.scr.blit(regions[i].img4,regions[i].img4_rect)
+            elif num<=5:
+                self.scr.blit(regions[i].img5,regions[i].img5_rect)
+            else:
+                self.scr.blit(regions[i].img6,regions[i].img6_rect)
 
         pg.display.flip()
 
@@ -79,7 +103,11 @@ class Screen:
         textrect.topleft = (x,y)
         self.scr.blit(textobj,textrect)
 
-
+    def draw_text_right(self,text,font,color,x,y):
+        textobj = font.render(text,1,color)
+        textrect = textobj.get_rect()
+        textrect.topright = (x,y)
+        self.scr.blit(textobj,textrect)
 
 
     def click_measure(self,measures):
@@ -87,7 +115,7 @@ class Screen:
         button_color = (255, 255, 255)
         button_size = (600, 25)
         offset = 10
-        button_x = 725
+        button_x = self.x
         button_y_diff = offset+button_size[1]
 
 

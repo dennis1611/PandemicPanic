@@ -3,6 +3,7 @@ File that contains the region class.
 """
 
 import pandas as pd
+import pygame as pg
 
 
 class Region:
@@ -10,8 +11,10 @@ class Region:
     Class that contains all information of a certain region.
     """
 
-    def __init__(self, name, inhabitants, infectionfactor, deathfactor, base_r=3, base_inf=1000):
+    def __init__(self, name, inhabitants, infectionfactor, deathfactor, img_name, base_r=3, base_inf=1000):
         self.name = name
+        self.img_name = img_name
+        self.pops = inhabitants
         self.inhabitants = inhabitants
         self.infectionfactor = infectionfactor
         self.deathfactor = deathfactor
@@ -22,11 +25,41 @@ class Region:
                           index=[0])
         self.df = df
 
+
     def __repr__(self):
         string = f"This class is for {self.name} with a population of {self.inhabitants}, " \
                  f"{self.infectionfactor}, {self.deathfactor}"
 
         return string
+
+
+    def load_pngs(self):
+
+        self.img1 = pg.image.load("provinces/"+self.img_name+"1.png")
+        self.img1_rect = self.img1.get_rect()
+        self.img1_rect.topleft = (0,0)
+
+        self.img2 = pg.image.load("provinces/"+self.img_name+"2.png")
+        self.img2_rect = self.img2.get_rect()
+        self.img2_rect.topleft = (0,0)
+
+        self.img3 = pg.image.load("provinces/"+self.img_name+"3.png")
+        self.img3_rect = self.img3.get_rect()
+        self.img3_rect.topleft = (0,0)
+
+        self.img4 = pg.image.load("provinces/"+self.img_name+"4.png")
+        self.img4_rect = self.img4.get_rect()
+        self.img4_rect.topleft = (0,0)
+
+        self.img5 = pg.image.load("provinces/"+self.img_name+"5.png")
+        self.img5_rect = self.img5.get_rect()
+        self.img5_rect.topleft = (0,0)
+
+        self.img6 = pg.image.load("provinces/"+self.img_name+"6.png")
+        self.img6_rect = self.img6.get_rect()
+        self.img6_rect.topleft = (0,0)
+
+
 
     def update_infections(self, current_week):
         """"Calculates how many people got infected and recovered in the past week"""
