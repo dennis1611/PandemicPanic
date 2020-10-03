@@ -40,8 +40,8 @@ class Region:
         new_infections = (1 / 2) * prev_r * prev_inf_total // 1
 
         # check if calculated new infections do not exceed physical limitations
-        if new_infections > (self.inhabitants - prev_data.loc['Total recoveries']):
-            new_infections = self.inhabitants - prev_data.loc['Total recoveries']
+        if new_infections > (self.inhabitants - prev_data.loc['Total recoveries'] - prev_data.loc['Currently infected']):
+            new_infections = self.inhabitants - prev_data.loc['Total recoveries'] - prev_data.loc['Currently infected']
 
         # assumption is made that people stay sick for two weeks
         # at the end, they either recover or die

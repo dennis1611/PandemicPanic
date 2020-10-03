@@ -36,11 +36,25 @@ class MyTestCase(unittest.TestCase):
             testregion.update_R(week, 1)
         pd.set_option('display.max_columns', 10)
         pd.set_option('display.width', 1000)
-        print()
-        print(testregion.df)
         self.assertAlmostEqual(13621, testregion.df["New infections"][3])
         self.assertAlmostEqual(1847, testregion.df["New recoveries"][3])
         self.assertAlmostEqual(28, testregion.df["New deaths"][3])
+
+    def test_maximum_inhabitants(self):
+        name = "TestRegion"
+        inh = 1000000
+        inf_f = 1.25
+        ded_f = 0
+        base_inf = 900000
+        testregion = Region(name, inh, inf_f, ded_f, base_inf)
+        for week in range(1, 5):
+            testregion.update_infections(week)
+            testregion.update_R(week, 1)
+        pd.set_option('display.max_columns', 10)
+        pd.set_option('display.width', 1000)
+        self.assertAlmostEqual(1000000, testregion.df["Currently infected"][1])
+        self.assertAlmostEqual(900000, testregion.df["New recoveries"][2])
+        self.assertAlmostEqual(0, testregion.df["Currently infected"][4])
 
 
 if __name__ == '__main__':
