@@ -1,4 +1,7 @@
-def choose_measure(measures, measure_numbers):
+import numpy as np
+
+
+def choose_measure(measures):
     """"Displays all available measures to the user, and lets them choose one to take"""
     print('Choose one of the following measures:')
     for measure in measures:
@@ -7,7 +10,7 @@ def choose_measure(measures, measure_numbers):
 
     while True:
         user_input = input('\nYour choice (type a number): ')
-        if validate_measure_input(user_input, measure_numbers):
+        if validate_measure_input(user_input, measures):
             number_chosen = int(user_input)
             if number_chosen != 0:
                 measure_chosen = measures[int(number_chosen) - 1]
@@ -22,7 +25,7 @@ def choose_measure(measures, measure_numbers):
                 return None
 
 
-def validate_measure_input(user_input, measure_numbers):
+def validate_measure_input(user_input, measures):
     """Returns a boolean whether the user's input to choose a measure is valid"""
     is_int = True
     number_chosen = -1
@@ -34,7 +37,7 @@ def validate_measure_input(user_input, measure_numbers):
     # if: the input was an int
     if is_int:
         # case 1 (valid): the input was an int corresponding to a measure
-        if number_chosen in measure_numbers:
+        if number_chosen in np.arange(1, len(measures) + 1):
             return True
         # case 2 (valid): the input was 0
         elif number_chosen == 0:

@@ -11,7 +11,6 @@ import os
 def initialise_measures():
     """"Creates and returns a list of all measures"""
     measures = []
-    numbers = []
     with open(os.path.abspath("measures_data_simple.csv")) as data:
         next(data)  # skip first line
         for line in data:
@@ -21,8 +20,7 @@ def initialise_measures():
             desc = line[2]
             factor = float(line[3])
             measures.append(Measure(number, name, desc, factor))
-            numbers.append(number)
-    return measures, numbers
+    return measures
 
 
 def initialise_regions():

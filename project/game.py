@@ -11,7 +11,7 @@ from project.measure import Measure
 
 
 # create general setup
-measures, measure_numbers = initialise_measures()
+measures = initialise_measures()
 regions = initialise_regions()
 starline = '*' * 70
 
@@ -35,7 +35,7 @@ while running:
     print(starline)
 
     # choose a measure, (de)activate it, and get the corresponding factor
-    new_measure = choose_measure(measures, measure_numbers)
+    new_measure = choose_measure(measures)
     if isinstance(new_measure, Measure) and new_measure.is_active() is False:
         new_measure.activate()
         effect = new_measure.factor
