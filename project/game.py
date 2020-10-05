@@ -51,7 +51,7 @@ def choose_measure(window):
     '''
 
     while True:
-        measure_chosen = window.click_measure(measures)#input('Your choice (type a number): ')  # This could probably use a better name
+        measure_chosen = window.click_measure(measures,regions)#input('Your choice (type a number): ')  # This could probably use a better name
         if int(measure_chosen) in measure_numbers:
             measure_taken = measures[int(measure_chosen)-1]
             measure_taken.activate()
@@ -127,7 +127,7 @@ while running:
 
     week += 1
 
-    window.check_quit()
+
 
 
 

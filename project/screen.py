@@ -4,14 +4,42 @@ import pygame as pg
 import sys
 
 
-class Screen:
+class Button:
 
+    red = (255,0,0)
+    green = (0,255,0)
+
+
+    def __init__(self,x,y,width,height,measure_value):
+
+        self.rect = pg.Rect(0,0,width,height)
+        self.rect.midtop = (x,y)
+        self.active = False
+        self.measure_value = measure_value
+
+
+    def return_color(self):
+        if self.active:
+            return self.green
+        else:
+            return self.red
+
+
+    def clicked(self):
+        if self.active:
+            self.active = False
+        else:
+            self.active = True
+
+
+
+class Screen:
 
     # Colours
     black = (0, 0, 0)
     white = (255, 255, 255)
     bgcolour = black
-    txtcolor = black
+    txtcolor = white
 
     #font
     pg.font.init()
@@ -21,7 +49,7 @@ class Screen:
     xmax = 1344
     ymax = 756
     x = 725
-    y_table = 350
+    y_table = 360
 
 
     def __init__(self):
@@ -33,6 +61,19 @@ class Screen:
         self.tlast = pg.time.get_ticks()*0.001
 
 
+        measure_button_size = (25, 25)
+        offset = 40
+        button_y_diff = 10+measure_button_size[1]
+        x_loc = 750
+
+
+        self.measure_buttons = []
+        for j in range(12):
+
+            for i in range(8):
+                self.measure_buttons.append(Button(x_loc+50*j,offset + button_y_diff*i, 25, 25,i+1))
+
+        self.next_turn_button = Button(25,0, 50, 50,0)
 
 
     def start_turn(self,regions):
@@ -42,59 +83,34 @@ class Screen:
         self.dt = min(0.01, self.t - self.tlast)
         self.tlast = self.t
 
-        # get key input
-        #self.keys = pg.key.get_pressed()
+        xloc_table = self.x
+        yloc_table = self.y_table
 
-        xloc = self.x
-        yloc = self.y_table
-
+        xloc_abbr = 750
+        yloc_abbr = 0
 
         self.scr.fill((0, 0, 0))
 
-        self.draw_text_right("Infected", self.myfont, self.white, xloc + 300, yloc)
+        self.draw_text_right("Infected", self.myfont, self.white, xloc_table + 300, yloc_table)
 
         for i in range(len(regions)):
 
-            yloc += 30
+            yloc_table += 30
+
             inf = regions[i].df.iat[-1,1]
             pop = regions[i].pops
 
-            self.draw_text(regions[i].name[0:-4],self.myfont,self.white,xloc,yloc)
-            self.draw_text_right(str(int(inf)), self.myfont, self.white, xloc+300, yloc)
+            self.draw_text(regions[i].name[0:-4],self.myfont,self.white,xloc_table,yloc_table)
+            self.draw_text_mid(regions[i].abbreviation, self.myfont, self.white, xloc_abbr, yloc_abbr)
+            self.draw_text_right(str(int(inf)), self.myfont, self.white, xloc_table+300, yloc_table)
 
+            num = int(inf/pop*6)
+            if num>5: num = 5
+            self.scr.blit(regions[i].images[num].img, regions[i].images[num].img_rect)
 
-            num = inf/pop*6
-            print(num)
-            if num<=1:
-                self.scr.blit(regions[i].img1,regions[i].img1_rect)
-            elif num<=2:
-                self.scr.blit(regions[i].img2,regions[i].img2_rect)
-            elif num<=3:
-                self.scr.blit(regions[i].img3,regions[i].img3_rect)
-            elif num<=4:
-                self.scr.blit(regions[i].img4,regions[i].img4_rect)
-            elif num<=5:
-                self.scr.blit(regions[i].img5,regions[i].img5_rect)
-            else:
-                self.scr.blit(regions[i].img6,regions[i].img6_rect)
+            xloc_abbr += 50
 
         pg.display.flip()
-
-
-
-    def check_quit(self):
-        # check for quit event (closing window)
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                pg.quit()
-                sys.exit()
-
-        # escape key check: also quit
-        #if self.keys[pg.K_ESCAPE]:
-            #return False
-
-        # event pump, prevent freeze
-        pg.event.pump()
 
 
     def draw_text(self,text,font,color,x,y):
@@ -103,6 +119,7 @@ class Screen:
         textrect.topleft = (x,y)
         self.scr.blit(textobj,textrect)
 
+
     def draw_text_right(self,text,font,color,x,y):
         textobj = font.render(text,1,color)
         textrect = textobj.get_rect()
@@ -110,85 +127,74 @@ class Screen:
         self.scr.blit(textobj,textrect)
 
 
-    def click_measure(self,measures):
-
-        button_color = (255, 255, 255)
-        button_size = (600, 25)
-        offset = 20
-        button_x = self.x
-        button_y_diff = 10+button_size[1]
+    def draw_text_mid(self,text,font,color,x,y):
+        textobj = font.render(text,1,color)
+        textrect = textobj.get_rect()
+        textrect.midtop = (x,y)
+        self.scr.blit(textobj,textrect)
 
 
-        button_0 = pg.Rect(button_x, offset + button_y_diff*0, button_size[0], button_size[1])
-        button_1 = pg.Rect(button_x, offset + button_y_diff*1, button_size[0], button_size[1])
-        button_2 = pg.Rect(button_x, offset + button_y_diff*2, button_size[0], button_size[1])
-        button_3 = pg.Rect(button_x, offset + button_y_diff*3, button_size[0], button_size[1])
-        button_4 = pg.Rect(button_x, offset + button_y_diff*4, button_size[0], button_size[1])
-        button_5 = pg.Rect(button_x, offset + button_y_diff*5, button_size[0], button_size[1])
-        button_6 = pg.Rect(button_x, offset + button_y_diff*6, button_size[0], button_size[1])
-        button_7 = pg.Rect(button_x, offset + button_y_diff*7, button_size[0], button_size[1])
-        button_8 = pg.Rect(button_x, offset + button_y_diff*8, button_size[0], button_size[1])
+    def click_measure(self,measures,regions):
 
+
+        clean_rect = pg.Rect(700,40,1000,280)
 
         click = False
         while True:
-            #self.keys = pg.key.get_pressed()
+
             mx,my = pg.mouse.get_pos()
 
-            if button_0.collidepoint((mx,my)):
-                if click:
-                    return 0
-            if button_1.collidepoint((mx,my)):
-                if click:
-                    return 1
-            if button_2.collidepoint((mx,my)):
-                if click:
-                    return 2
-            if button_3.collidepoint((mx,my)):
-                if click:
-                    return 3
-            if button_4.collidepoint((mx,my)):
-                if click:
-                    return 4
-            if button_5.collidepoint((mx,my)):
-                if click:
-                    return 5
-            if button_6.collidepoint((mx,my)):
-                if click:
-                    return 6
-            if button_7.collidepoint((mx,my)):
-                if click:
-                    return 7
-            if button_8.collidepoint((mx,my)):
-                if click:
-                    return 8
 
-            pg.draw.rect(self.scr, button_color, button_0)
-            pg.draw.rect(self.scr, button_color, button_1)
-            pg.draw.rect(self.scr, button_color, button_2)
-            pg.draw.rect(self.scr, button_color, button_3)
-            pg.draw.rect(self.scr, button_color, button_4)
-            pg.draw.rect(self.scr, button_color, button_5)
-            pg.draw.rect(self.scr, button_color, button_6)
-            pg.draw.rect(self.scr, button_color, button_7)
-            pg.draw.rect(self.scr, button_color, button_8)
+            pg.draw.rect(self.scr,self.bgcolour,clean_rect)
 
 
-            self.draw_text(" #0| Take no action", self.myfont,self.txtcolor,button_x, offset + button_y_diff*0-3)
-            self.draw_text(" "+measures[0].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 1-3)
-            self.draw_text(" "+measures[1].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 2-3)
-            self.draw_text(" "+measures[2].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 3-3)
-            self.draw_text(" "+measures[3].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 4-3)
-            self.draw_text(" "+measures[4].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 5-3)
-            self.draw_text(" "+measures[5].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 6-3)
-            self.draw_text(" "+measures[6].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 7-3)
-            self.draw_text(" "+measures[7].__str__(), self.myfont, self.txtcolor, button_x, offset + button_y_diff * 8-3)
+            for i in range(len(self.measure_buttons)):
+                if self.measure_buttons[i].rect.collidepoint((mx,my)):
+                    if click:
+                        self.measure_buttons[i].clicked()
 
+                pg.draw.rect(self.scr, self.measure_buttons[i].return_color(), self.measure_buttons[i].rect)
+
+
+            if self.next_turn_button.rect.collidepoint((mx,my)):
+                if click:
+
+                    return_dict = {}
+
+                    for j in range(12):
+
+                        active_array = []
+
+                        for i in range(8):
+                            active_array.append(self.measure_buttons[8*j+i].active)
+
+                        return_dict[regions[j].name] = active_array
+
+
+                    print(return_dict)
+                    return self.next_turn_button.measure_value
+
+
+            pg.draw.rect(self.scr, self.next_turn_button.return_color(), self.next_turn_button.rect)
+
+
+
+            offset = 40
+            button_y_diff = 35
+            x_loc = 710
+
+            self.draw_text(measures[0].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 0-3)
+            self.draw_text(measures[1].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 1-3)
+            self.draw_text(measures[2].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 2-3)
+            self.draw_text(measures[3].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 3-3)
+            self.draw_text(measures[4].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 4-3)
+            self.draw_text(measures[5].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 5-3)
+            self.draw_text(measures[6].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 6-3)
+            self.draw_text(measures[7].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 7-3)
+            #self.draw_text(" End turn", self.myfont, self.txtcolor, self.x, offset + button_y_diff * 8 - 3)
 
 
             pg.display.flip()
-
-
 
             click = False
             for event in pg.event.get():
@@ -198,25 +204,6 @@ class Screen:
                 if event.type == pg.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         click = True
-                if event.type == pg.KEYDOWN:
-                    if event.key == pg.K_0:
-                        return 0
-                    if event.key == pg.K_1:
-                        return 1
-                    if event.key == pg.K_2:
-                        return 2
-                    if event.key == pg.K_3:
-                        return 3
-                    if event.key == pg.K_4:
-                        return 4
-                    if event.key == pg.K_5:
-                        return 5
-                    if event.key == pg.K_6:
-                        return 6
-                    if event.key == pg.K_7:
-                        return 7
-                    if event.key == pg.K_8:
-                        return 8
 
             # event pump, prevent freeze
             pg.event.pump()
