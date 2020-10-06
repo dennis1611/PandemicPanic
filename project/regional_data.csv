@@ -1,13 +1,13 @@
 ,Population,inf_factor,death_factor
-Groningen (PV),585866,1.093,0.992
-FryslÃ¢n (PV),649957,0.728,1.103
-Drenthe (PV),493682,0.625,1.218
-Overijssel (PV),1162406,0.943,0.966
-Flevoland (PV),423021,0.89,0.634
-Gelderland (PV),2085952,0.961,1.024
-Utrecht (PV),1354834,1.213,0.814
-Noord-Holland (PV),2879527,1.157,0.877
-Zuid-Holland (PV),3708696,1.339,0.883
-Zeeland (PV),383488,0.642,1.259
-Noord-Brabant (PV),2562955,0.978,1.018
-Limburg (PV),1117201,0.894,1.259
+Groningen,585866,1.093,0.992
+Friesland,649957,0.728,1.103
+Drenthe,493682,0.625,1.218
+Overijssel,1162406,0.943,0.966
+Flevoland,423021,0.89,0.634
+Gelderland,2085952,0.961,1.024
+Utrecht,1354834,1.213,0.814
+Noord-Holland,2879527,1.157,0.877
+Zuid-Holland,3708696,1.339,0.883
+Zeeland,383488,0.642,1.259
+Noord-Brabant,2562955,0.978,1.018
+Limburg,1117201,0.894,1.259

@@ -10,14 +10,15 @@ class Region:
     Class that contains all information of a certain region.
     """
 
-    def __init__(self, name, inhabitants, regional_infection_factor, regional_death_factor, base_inf=1000):
+    def __init__(self, name, inhabitants, regional_infection_factor, regional_death_factor,
+                 base_r=3, base_death_factor=0.02, base_inf=1000):
         self.name = name
         self.inhabitants = inhabitants
 
-        base_death_factor = 0.02
+        # base_death_factor = 0.02
         self.death_factor = base_death_factor * regional_death_factor
 
-        base_r = 3
+        # base_r = 3
         region_r = base_r * regional_infection_factor
 
         df = pd.DataFrame(data=[[base_inf, base_inf, 0, 0, 0, 0, region_r]],

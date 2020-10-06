@@ -36,7 +36,7 @@ class MyTestCase(unittest.TestCase):
         self.assertAlmostEqual(0.5, R1)
         self.assertAlmostEqual(0.25, R2)
 
-    def test_active(self):  # currently not used, but no reason not to test it
+    def test_active(self):
         number = 1
         name = "test_measure"
         desc = "this measure does nothing"
