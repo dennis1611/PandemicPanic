@@ -169,7 +169,7 @@ evaluation=10.0 - ((float(5 * error + warning + refactor + convention) / stateme
 output-format=text
 
 # Tells whether to display a full report or only the messages.
-reports=yes
+reports=no
 
 # Activate the evaluation score.
 score=yes
@@ -191,7 +191,7 @@ never-returning-functions=sys.exit
 
 # Format style used to check logging format string. `old` means using %
 # formatting, while `new` is for `{}` formatting.
-logging-format-style=new
+logging-format-style=old
 
 # Logging modules to check that the string format arguments are in logging
 # function parameter format.
@@ -201,7 +201,7 @@ logging-modules=logging
 [SPELLING]
 
 # Limits count of emitted suggestions for spelling mistakes.
-max-spelling-suggestions=50
+max-spelling-suggestions=4
 
 # Spelling dictionary name. Available dictionaries: none. To make it working
 # install python-enchant package..
@@ -324,7 +324,7 @@ indent-after-paren=4
 indent-string='    '
 
 # Maximum number of characters on a single line.
-max-line-length=200
+max-line-length=100
 
 # Maximum number of lines in a module.
 max-module-lines=1000
