@@ -5,35 +5,48 @@ import sys
 
 
 class Button:
+    """
+    Class to handle buttons in order to not clutter the Screen class.
+    """
 
+    #possible colors
     red = (255,0,0)
     green = (0,255,0)
 
-
     def __init__(self,x,y,width,height,measure_value):
+        """
+        Determine location and whether it is active.
+        """
 
         self.rect = pg.Rect(0,0,width,height)
         self.rect.midtop = (x,y)
         self.active = False
         self.measure_value = measure_value
 
-
     def return_color(self):
+        """
+        Active buttons should be green, inactive red.
+        This function returns the correct color.
+        """
         if self.active:
             return self.green
         else:
             return self.red
 
-
     def clicked(self):
+        """
+        If button is clicked, active boolean should be changed.
+        """
         if self.active:
             self.active = False
         else:
             self.active = True
 
 
-
 class Screen:
+    """
+    Class to handle the visualization of the game.
+    """
 
     # Colours
     black = (0, 0, 0)
@@ -54,25 +67,26 @@ class Screen:
 
     def __init__(self):
 
-        #pg.init()
-        self.res = (self.xmax, self.ymax)
-        self.scr = pg.display.set_mode(self.res)
+        #Set screen dimensions and create the surface.
+        self.scr = pg.display.set_mode((self.xmax, self.ymax))
 
+        #Note first time step
         self.tlast = pg.time.get_ticks()*0.001
 
-
+        #Measure buttons setup
         measure_button_size = (25, 25)
         offset = 40
         button_y_diff = 10+measure_button_size[1]
         x_loc = 750
 
-
+        #Measure buttons creation
         self.measure_buttons = []
         for j in range(12):
 
             for i in range(8):
                 self.measure_buttons.append(Button(x_loc+50*j,offset + button_y_diff*i, 25, 25,i+1))
 
+        #Next Turn button setup and creation
         self.next_turn_button = Button(25,0, 50, 50,0)
 
 
