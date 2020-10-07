@@ -6,7 +6,7 @@ Main game loop.
 from project.models.initialization import initialise_measures, initialise_regions
 from project.views.measures_terminal import choose_measure
 from project.views.report_terminal import display_report
-
+from project.screen import Screen
 from project.measure import Measure
 
 
@@ -14,6 +14,7 @@ from project.measure import Measure
 measures = initialise_measures()
 regions = initialise_regions()
 starline = '*' * 70
+window = Screen()
 
 # TODO: write an actual welcome message/introduction
 print('Welcome message/introduction')
@@ -34,8 +35,11 @@ while running:
     display_report(regions)
     print(starline)
 
+    #update window
+    window.start_turn(regions)
+
     # choose a measure, (de)activate it, and get the corresponding factor
-    new_measure = choose_measure(measures)
+    new_measure = choose_measure(measures,regions,window)
     if isinstance(new_measure, Measure) and new_measure.is_active() is False:
         new_measure.activate()
         effect = new_measure.factor
