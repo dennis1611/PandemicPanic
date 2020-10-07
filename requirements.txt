@@ -4,5 +4,5 @@ coverage
 pytest-cov
 decorators
 mock
-pandas==1.1.2
+pandas
 numpy
