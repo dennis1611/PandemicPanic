@@ -4,6 +4,5 @@ coverage
 pytest-cov
 decorators
 mock
-pandas==1.1.3
+pandas
 numpy
-matplotlib
