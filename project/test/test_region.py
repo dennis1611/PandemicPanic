@@ -33,7 +33,8 @@ class MyTestCase(unittest.TestCase):
         base_r = 3
         base_death_f = 0.02
         base_inf = 1000
-        testregion = Region(name, inh, inf_f, ded_f, base_r=base_r, base_death_factor=base_death_f, base_inf=base_inf)
+        abbreviation = 'TEST'
+        testregion = Region(name, inh, inf_f, ded_f, abbreviation, base_r=base_r, base_death_factor=base_death_f, base_inf=base_inf)
         for week in range(1, 4):
             testregion.update_infections(week)
             testregion.update_R(week, 1)
@@ -52,7 +53,8 @@ class MyTestCase(unittest.TestCase):
         base_r = 3
         base_death_f = 0.02
         base_inf = 900000
-        testregion = Region(name, inh, inf_f, ded_f, base_r=base_r, base_death_factor=base_death_f, base_inf=base_inf)
+        abbreviation = 'TEST'
+        testregion = Region(name, inh, inf_f, ded_f, abbreviation, base_r=base_r, base_death_factor=base_death_f, base_inf=base_inf)
         for week in range(1, 5):
             testregion.update_infections(week)
             testregion.update_R(week, 1)
