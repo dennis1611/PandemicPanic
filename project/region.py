@@ -21,12 +21,11 @@ class Region:
     Class that contains all information of a certain region.
     """
 
-    def __init__(self, name, inhabitants, regional_infection_factor, regional_death_factor, img_name, abbreviation,
+    def __init__(self, name, inhabitants, regional_infection_factor, regional_death_factor, abbreviation,
                  base_r=3, base_death_factor=0.02, base_inf=1000):
         self.name = name
         self.inhabitants = inhabitants
         self.abbreviation = abbreviation
-        self.img_name = img_name
         self.inhabitants = inhabitants
 
         self.images = []
@@ -54,7 +53,7 @@ class Region:
         topleft = (-30, 30)
 
         for i in range(6):
-            self.images.append(Region_img(self.img_name, topleft, i+1))
+            self.images.append(Region_img(self.name, topleft, i+1))
 
     def measure_booleans(self):
         bools = []

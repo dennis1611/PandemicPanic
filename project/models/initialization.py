@@ -32,7 +32,7 @@ def initialise_regions():
     for region_name in region_names:
         region = Region(region_name, regions_df.loc[region_name, "Population"],
                         regions_df.loc[region_name, "inf_factor"], regions_df.loc[region_name, "death_factor"],
-                        regions_df.loc[region_name, "img_name"], regions_df.loc[region_name, "abbreviation"])
+                        regions_df.loc[region_name, "abbreviation"])
         region.load_pngs()
         region_instances.append(region)
     return region_instances
