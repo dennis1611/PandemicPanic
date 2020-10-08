@@ -29,10 +29,10 @@ def initialise_regions():
     regions_df = read_csv(os.path.abspath("regional_data.csv"), index_col=0)
     region_instances = []
     region_names = regions_df.index.values
-    for region in region_names:
-        region = Region(region, regions_df.loc[region, "Population"],
-                        regions_df.loc[region, "inf_factor"], regions_df.loc[region, "death_factor"],
-                        regions_df.loc[region, "img_name"], regions_df.loc[region, "abbreviation"])
+    for region_name in region_names:
+        region = Region(region_name, regions_df.loc[region_name, "Population"],
+                        regions_df.loc[region_name, "inf_factor"], regions_df.loc[region_name, "death_factor"],
+                        regions_df.loc[region_name, "img_name"], regions_df.loc[region_name, "abbreviation"])
         region.load_pngs()
         region_instances.append(region)
     return region_instances
