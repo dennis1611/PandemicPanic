@@ -11,7 +11,7 @@ class Region_img:
 
     def __init__(self, img_name, topleft, num):
 
-        self.img = pg.image.load("provinces/"+img_name+str(num)+".png")
+        self.img = pg.image.load("provinces/"+img_name.lower()+str(num)+".png")
         self.img_rect = self.img.get_rect()
         self.img_rect.topleft = topleft
 
