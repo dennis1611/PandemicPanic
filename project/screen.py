@@ -11,9 +11,9 @@ class Button:
     # possible colors
     red = (255, 0, 0)
     green = (0, 255, 0)
+    white = (255,255,255)
 
-    def __init__(self, x, y, width, height, measure=None):
-
+    def __init__(self, x, y, width, height, next_turn, measure=None):
         """
         Determine location and whether it is active.
         """
@@ -23,20 +23,22 @@ class Button:
         self.active = False
         self.measure = measure
         self.measure_value = 0
+        self.next_turn = next_turn
 
     def return_color(self):
         """
+        Next turn button should be white, for now
         Active buttons should be green, inactive red.
         This function returns the correct color.
         """
-
-        if self.measure.is_active() and self.measure is not None:
+        if self.next_turn:
+            return self.white
+        elif self.measure.is_active() and self.measure is not None:
             return self.green
         elif not self.measure.is_active() and self.measure is not None:
             return self.red
 
     def clicked(self):
-
         """
         If button is clicked, active boolean should be changed.
         """
@@ -93,11 +95,11 @@ class Screen:
 
         for region_n in range(len(self.regions)):
             for meas_n in range(len(self.regions[0].region_measures)):
-                self.measure_buttons.append(Button(x_loc + 50 * region_n, offset + button_y_diff * meas_n, 25, 25,
+                self.measure_buttons.append(Button(x_loc + 50 * region_n, offset + button_y_diff * meas_n, 25, 25, False,
                                                    self.regions[region_n].region_measures[meas_n]))
 
         # Next Turn button setup and creation
-        self.next_turn_button = Button(25, 0, 50, 50, 0)
+        self.next_turn_button = Button(25, 0, 50, 50, True, 0)
 
     def start_turn(self, regions):
 
@@ -114,7 +116,7 @@ class Screen:
 
         self.scr.fill((0, 0, 0))
 
-        self.draw_text_right("Infected", self.myfont, self.white, xloc_table + 300, yloc_table)
+        self.draw_text("Infected", self.myfont, self.white, xloc_table + 300, yloc_table, "topright")
 
         for i in range(self.num_regions):
 
@@ -123,9 +125,9 @@ class Screen:
             inf = regions[i].df.iat[-1, 1]
             pop = regions[i].inhabitants
 
-            self.draw_text(regions[i].name, self.myfont, self.white, xloc_table, yloc_table)
-            self.draw_text_mid(regions[i].abbreviation, self.myfont, self.white, xloc_abbr, yloc_abbr)
-            self.draw_text_right(str(int(inf)), self.myfont, self.white, xloc_table+300, yloc_table)
+            self.draw_text(regions[i].name, self.myfont, self.white, xloc_table, yloc_table, "topleft")
+            self.draw_text(regions[i].abbreviation, self.myfont, self.white, xloc_abbr, yloc_abbr, "mid")
+            self.draw_text(str(int(inf)), self.myfont, self.white, xloc_table+300, yloc_table, "topright")
 
             num = int(inf/pop*6)
             if num > 5: num = 5
@@ -135,22 +137,17 @@ class Screen:
 
         pg.display.flip()
 
-    def draw_text(self, text, font, color, x, y):
+    def draw_text(self, text, font, color, x, y, loc):
         textobj = font.render(text, 1, color)
         textrect = textobj.get_rect()
-        textrect.topleft = (x, y)
-        self.scr.blit(textobj, textrect)
 
-    def draw_text_right(self, text, font, color, x, y):
-        textobj = font.render(text, 1, color)
-        textrect = textobj.get_rect()
-        textrect.topright = (x, y)
-        self.scr.blit(textobj, textrect)
+        if loc=="topleft":
+            textrect.topleft = (x, y)
+        elif loc=="topright":
+            textrect.topright = (x, y)
+        elif loc=="mid":
+            textrect.midtop = (x, y)
 
-    def draw_text_mid(self, text, font, color, x, y):
-        textobj = font.render(text, 1, color)
-        textrect = textobj.get_rect()
-        textrect.midtop = (x, y)
         self.scr.blit(textobj, textrect)
 
     def click_measure(self, measures, regions):
@@ -160,10 +157,13 @@ class Screen:
         click = False
         while True:
 
+            #get mouse position
             mx, my = pg.mouse.get_pos()
 
+            #clean buttons with background color rectangle
             pg.draw.rect(self.scr, self.bgcolour, clean_rect)
 
+            #if clicked swap activation status, then draw new button
             for i in range(len(self.measure_buttons)):
                 if self.measure_buttons[i].rect.collidepoint((mx, my)):
                     if click:
@@ -171,6 +171,7 @@ class Screen:
 
                 pg.draw.rect(self.scr, self.measure_buttons[i].return_color(), self.measure_buttons[i].rect)
 
+            #if next turn button is clicked return to main loop
             if self.next_turn_button.rect.collidepoint((mx, my)):
                 if click:
 
@@ -193,22 +194,25 @@ class Screen:
                     # enable this to return the measure dictionary per region
                     # return return_dict
 
-            pg.draw.rect(self.scr, self.next_turn_button.red, self.next_turn_button.rect)
+            #draw the next turn button
+            pg.draw.rect(self.scr, self.next_turn_button.return_color(), self.next_turn_button.rect)
 
+            #to be fixed, this draws the measure text, however, obviously it looks ugly now.
             offset = 40
             button_y_diff = 35
             x_loc = 710
 
-            self.draw_text(measures[0].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 0-3)
-            self.draw_text(measures[1].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 1-3)
-            self.draw_text(measures[2].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 2-3)
-            self.draw_text(measures[3].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 3-3)
-            self.draw_text(measures[4].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 4-3)
-            self.draw_text(measures[5].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 5-3)
-            self.draw_text(measures[6].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 6-3)
-            self.draw_text(measures[7].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 7-3)
+            self.draw_text(measures[0].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 0-3, "topleft")
+            self.draw_text(measures[1].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 1-3, "topleft")
+            self.draw_text(measures[2].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 2-3, "topleft")
+            self.draw_text(measures[3].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 3-3, "topleft")
+            self.draw_text(measures[4].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 4-3, "topleft")
+            self.draw_text(measures[5].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 5-3, "topleft")
+            self.draw_text(measures[6].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 6-3, "topleft")
+            self.draw_text(measures[7].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 7-3, "topleft")
             # self.draw_text(" End turn", self.myfont, self.txtcolor, self.x, offset + button_y_diff * 8 - 3)
 
+            #flip the display and check events
             pg.display.flip()
 
             click = False
