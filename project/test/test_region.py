@@ -19,7 +19,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_csv_order(self):
         """Check whether the data is read in correctly by testing the first case."""
-        name = "Groningen (PV)"
+        name = "Groningen"
         inhabitants = 585866
         self.assertEqual((self.regions[0].name, self.regions[0].inhabitants), (name, inhabitants))
         self.assertAlmostEqual(self.regions[0].death_factor, 0.019837855)

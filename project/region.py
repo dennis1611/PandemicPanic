@@ -99,9 +99,9 @@ class Region:
                     'R value': None}
         self.df = self.df.append(new_data, ignore_index=True)
 
-    # def update_R(self, current_week, factor):
-    #     """Fills in R in the current week, based on the previous R * factor"""
-    #     self.df.loc[current_week, 'R value'] = factor * self.df.loc[current_week - 1, 'R value']
+    def update_R(self, current_week, factor):
+        """Fills in R in the current week, based on the previous R * factor"""
+        self.df.loc[current_week, 'R value'] = factor * self.df.loc[current_week - 1, 'R value']
 
     # Doe de factor berekening nu even op de Nigel manier, zal aangepast worden
     def set_measures_factor(self, current_week):
