@@ -14,7 +14,13 @@ from project.measure import Measure
 measures = initialise_measures()
 regions = initialise_regions()
 starline = '*' * 70
-window = Screen()
+
+# Dictionary to locally store abbreviations
+regions_dict = {}
+for region in regions:
+    regions_dict[region.name] = region.abbreviation
+
+window = Screen(len(regions), len(measures), regions_dict, regions)
 
 # TODO: write an actual welcome message/introduction
 print('Welcome message/introduction')
@@ -35,11 +41,11 @@ while running:
     display_report(regions)
     print(starline)
 
-    #update window
+    # update window
     window.start_turn(regions)
 
     # choose a measure, (de)activate it, and get the corresponding factor
-    new_measure = choose_measure(measures,regions,window)
+    new_measure = choose_measure(measures, regions, window)
     if isinstance(new_measure, Measure) and new_measure.is_active() is False:
         new_measure.activate()
         effect = new_measure.factor
@@ -51,6 +57,6 @@ while running:
 
     # set the R value for this week
     for region in regions:
-        region.update_R(week, effect)
+        region.set_measures_factor(week)
 
     week += 1

@@ -6,3 +6,4 @@ decorators
 mock
 pandas
 numpy
+pygame

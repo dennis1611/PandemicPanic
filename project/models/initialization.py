@@ -4,7 +4,7 @@ The initialization functions for the measures and for the regions can be found h
 
 from pandas import read_csv
 from project.measure import Measure
-from project.region import Region
+
 import os
 
 
@@ -25,6 +25,7 @@ def initialise_measures():
 
 def initialise_regions():
     """"Creates and returns a list of all regions"""
+    from project.region import Region
     regions_df = read_csv(os.path.abspath("regional_data.csv"), index_col=0)
     region_instances = []
     region_names = regions_df.index.values

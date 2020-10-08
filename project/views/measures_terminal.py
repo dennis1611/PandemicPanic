@@ -2,7 +2,7 @@ import numpy as np
 from project.screen import Screen
 
 
-def choose_measure(measures,regions,window):
+def choose_measure(measures, regions, window):
     """"Displays all available measures to the user, and lets them choose one to take"""
     print('Choose one of the following measures:')
     for measure in measures:
@@ -10,7 +10,7 @@ def choose_measure(measures,regions,window):
     print('or #0| to take no action this turn')
 
     while True:
-        user_input = window.click_measure(measures,regions)#input('\nYour choice (type a number): ')
+        user_input = window.click_measure(measures, regions)  # input('\nYour choice (type a number): ')
         if validate_measure_input(user_input, measures):
             number_chosen = int(user_input)
             if number_chosen != 0:
