@@ -1,0 +1,11 @@
+# Ideas for score system
+- 2 parts: infected and measures
+- Separate scores or together?
+- infection score based on df, per region or total?
+- regions could be cheesed maybe
+- measures: calculate score during turns, or maybe separate dataframe?
+- Idea: give each measure a severity
+- Severity * duration = (negative) score?
+- maybe measures are viewed as 'too severe' if the amount of infections is low
+- difficult to program, maybe, requires calculation during turn
+- or serious dataframe-magic
