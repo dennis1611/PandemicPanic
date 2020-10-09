@@ -55,6 +55,15 @@ class MeasureButton(Button):
         elif not self.active:
             self.active = True
 
+class EndButton(Button):
+    def __init__(self, x, y, width, height):
+        super().__init__(x, y, width, height)
+
+    def return_color(self):
+        """
+        Next turn button should be white.
+        """
+        return self.white
 
 class Screen:
     """
@@ -96,8 +105,9 @@ class Screen:
 
         # Next Turn button setup and creation
         self.next_turn_button = TurnButton(25, 0, 50, 50)
+        self.end_button = EndButton(800, 600, 100, 100)
 
-    def start_turn(self, regions):
+    def start_turn(self, regions, week):
 
         # set location for info table
         xloc_table = self.x
@@ -112,6 +122,9 @@ class Screen:
 
         # write "infected" at info table
         self.draw_text("Infected", self.myfont, self.white, xloc_table + 300, yloc_table, "topright")
+
+        # write number of week on turn-button
+        self.draw_text(f"Week: {week}", self.myfont, self.white, 200, 0, "topright")
 
         for i in range(self.num_regions):
 
@@ -219,6 +232,27 @@ class Screen:
 
         # enable this to return the measure dictionary per region
         return return_dict
+
+    def end_game(self, score):
+        while True:
+            # clear screen to black
+            self.scr.fill((0, 0, 0))
+            # print ending message and score
+            self.draw_text(f"The game has ended", self.myfont, self.white, 800, 400, "topright")
+            self.draw_text(f"Tour score is {score}", self.myfont, self.white, 800, 500, "topright")
+            # draw the end button
+            pg.draw.rect(self.scr, self.end_button.return_color(), self.end_button.rect)
+            # look for mouse position and click
+            mx , my = pg.mouse.get_pos()
+            if self.end_button.rect.collidepoint(mx, my):
+                if click:
+                    pg.quit()
+                    break
+            pg.display.flip()
+
+
+
+
 
 
 class Map:

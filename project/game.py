@@ -79,7 +79,7 @@ while running:
     elif visuals:
         # update window
         # noinspection PyUnboundLocalVariable
-        window.start_turn(regions)
+        window.start_turn(regions, week)
         active_measures = window.end_turn(regions)
         print(active_measures)
 
@@ -90,3 +90,12 @@ while running:
             region.update_R_visual(week, factor)
 
     week += 1
+    if week > 3:
+        running = False
+
+score = 100
+if not visuals:
+    print("The game has ended!")
+elif visuals:
+    # display the ending window
+    window.end_game(score)
