@@ -151,6 +151,6 @@ datasets = [total_deathfactor(data), total_infectionfactor(data)]
 
 for i in range(len(datasets)):
     regional_data.insert(1, columns_names[i], datasets[i])
-
+regional_data['abbreviation'] = ['GR', 'FR', 'DR', 'OV', 'FL', 'GD', 'UT', 'NH', 'ZH', 'ZL', 'NB', 'LB']
 # generate a csv file in the same directory based on regional_data
 regional_data.to_csv('regional_data.csv')
