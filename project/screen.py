@@ -1,6 +1,5 @@
 import pygame as pg
 import sys
-from project.models.initialization import initialise_regions
 
 
 class Button:
@@ -11,42 +10,50 @@ class Button:
     # possible colors
     red = (255, 0, 0)
     green = (0, 255, 0)
-    white = (255,255,255)
+    white = (255, 255, 255)
 
-    def __init__(self, x, y, width, height, next_turn, measure=None):
+    def __init__(self, x, y, width, height):
         """
-        Determine location and whether it is active.
+        Determine location and create rectangle.
         """
-
         self.rect = pg.Rect(0, 0, width, height)
         self.rect.midtop = (x, y)
-        self.active = False
-        self.measure = measure
-        self.measure_value = 0
-        self.next_turn = next_turn
+
+
+class TurnButton(Button):
+    def __init__(self, x, y, width, height):
+        super().__init__(x, y, width, height)
 
     def return_color(self):
         """
-        Next turn button should be white, for now
+        Next turn button should be white.
+        """
+        return self.white
+
+
+class MeasureButton(Button):
+    def __init__(self, x, y, width, height):
+        super().__init__(x, y, width, height)
+        self.active = False
+
+    def return_color(self):
+        """
         Active buttons should be green, inactive red.
         This function returns the correct color.
         """
-        if self.next_turn:
-            return self.white
-        elif self.measure.is_active() and self.measure is not None:
+        if self.active:
             return self.green
-        elif not self.measure.is_active() and self.measure is not None:
+        elif not self.active:
             return self.red
 
     def clicked(self):
         """
         If button is clicked, active boolean should be changed.
         """
-
-        if self.measure.is_active() and self.measure is not None:
-            self.measure.deactivate()
-        elif not self.measure.is_active() and self.measure is not None:
-            self.measure.activate()
+        if self.active:
+            self.active = False
+        elif not self.active:
+            self.active = True
 
 
 class Screen:
@@ -75,51 +82,40 @@ class Screen:
         # Set screen dimensions and create the surface.
         self.scr = pg.display.set_mode((self.xmax, self.ymax))
 
-        # Note first time step
-        self.tlast = pg.time.get_ticks()*0.001
-
         self.num_regions = num_regions
         self.num_measures = num_measures
         self.regions_dict = regions_dict
 
-        # Measure buttons setup
-        measure_button_size = (25, 25)
-        offset = 40
-        button_y_diff = 10+measure_button_size[1]
-        x_loc = 750
+        # create instances
+        self.map = Map()
+        self.measure_table = MeasureTable()
+        self.info_table = InfoTable()
 
         # Measure buttons creation
-        self.regions = regions
-
-        self.measure_buttons = []
-
-        for region_n in range(len(self.regions)):
-            for meas_n in range(len(self.regions[0].region_measures)):
-                self.measure_buttons.append(Button(x_loc + 50 * region_n, offset + button_y_diff * meas_n, 25, 25, False,
-                                                   self.regions[region_n].region_measures[meas_n]))
+        self.measure_buttons = self.measure_table.return_measure_buttons(regions, num_measures)
 
         # Next Turn button setup and creation
-        self.next_turn_button = Button(25, 0, 50, 50, True, 0)
+        self.next_turn_button = TurnButton(25, 0, 50, 50)
 
     def start_turn(self, regions):
 
-        # Get time step
-        self.t = pg.time.get_ticks() * 0.001
-        self.dt = min(0.01, self.t - self.tlast)
-        self.tlast = self.t
-
+        # set location for info table
         xloc_table = self.x
         yloc_table = self.y_table
 
+        # set location for abbreviations in measures table
         xloc_abbr = 750
         yloc_abbr = 0
 
+        # clear screen to black
         self.scr.fill((0, 0, 0))
 
+        # write "infected" at info table
         self.draw_text("Infected", self.myfont, self.white, xloc_table + 300, yloc_table, "topright")
 
         for i in range(self.num_regions):
 
+            # go to next row
             yloc_table += 30
 
             inf = regions[i].df.iat[-1, 1]
@@ -130,7 +126,8 @@ class Screen:
             self.draw_text(str(int(inf)), self.myfont, self.white, xloc_table+300, yloc_table, "topright")
 
             num = int(inf/pop*6)
-            if num > 5: num = 5
+            if num > 5:
+                num = 5
             self.scr.blit(regions[i].images[num].img, regions[i].images[num].img_rect)
 
             xloc_abbr += 50
@@ -150,69 +147,51 @@ class Screen:
 
         self.scr.blit(textobj, textrect)
 
-    def click_measure(self, measures, regions):
+    def click_button(self, regions):
 
         clean_rect = pg.Rect(700, 40, 1000, 280)
 
         click = False
         while True:
 
-            #get mouse position
+            # get mouse position
             mx, my = pg.mouse.get_pos()
 
-            #clean buttons with background color rectangle
+            # clean buttons with background color rectangle
             pg.draw.rect(self.scr, self.bgcolour, clean_rect)
 
-            #if clicked swap activation status, then draw new button
+            # if clicked swap activation status, then draw new button
             for i in range(len(self.measure_buttons)):
-                if self.measure_buttons[i].rect.collidepoint((mx, my)):
+                if self.measure_buttons[i].rect.collidepoint(mx, my):
                     if click:
                         self.measure_buttons[i].clicked()
 
                 pg.draw.rect(self.scr, self.measure_buttons[i].return_color(), self.measure_buttons[i].rect)
 
-            #if next turn button is clicked return to main loop
-            if self.next_turn_button.rect.collidepoint((mx, my)):
+            # if next turn button is clicked return to main loop
+            if self.next_turn_button.rect.collidepoint(mx, my):
                 if click:
+                    return
 
-                    return_dict = {}
-
-                    for j in range(self.num_regions):
-
-                        active_array = []
-
-                        for i in range(self.num_measures):
-                            active_array.append(self.measure_buttons[self.num_measures*j+i].measure.is_active())
-
-                        return_dict[regions[j].name] = active_array
-
-                    print(return_dict)
-
-                    # return this to get no errors
-                    return self.next_turn_button.measure_value
-
-                    # enable this to return the measure dictionary per region
-                    # return return_dict
-
-            #draw the next turn button
+            # draw the next turn button
             pg.draw.rect(self.scr, self.next_turn_button.return_color(), self.next_turn_button.rect)
 
-            #to be fixed, this draws the measure text, however, obviously it looks ugly now.
+            # to be fixed, this draws the measure text, however, obviously it looks ugly now.
             offset = 40
             button_y_diff = 35
             x_loc = 710
 
-            self.draw_text(measures[0].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 0-3, "topleft")
-            self.draw_text(measures[1].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 1-3, "topleft")
-            self.draw_text(measures[2].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 2-3, "topleft")
-            self.draw_text(measures[3].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 3-3, "topleft")
-            self.draw_text(measures[4].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 4-3, "topleft")
-            self.draw_text(measures[5].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 5-3, "topleft")
-            self.draw_text(measures[6].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 6-3, "topleft")
-            self.draw_text(measures[7].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 7-3, "topleft")
-            # self.draw_text(" End turn", self.myfont, self.txtcolor, self.x, offset + button_y_diff * 8 - 3)
 
-            #flip the display and check events
+            # self.draw_text(measures[0].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 0-3, "topleft")
+            # self.draw_text(measures[1].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 1-3, "topleft")
+            # self.draw_text(measures[2].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 2-3, "topleft")
+            # self.draw_text(measures[3].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 3-3, "topleft")
+            # self.draw_text(measures[4].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 4-3, "topleft")
+            # self.draw_text(measures[5].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 5-3, "topleft")
+            # self.draw_text(measures[6].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 6-3, "topleft")
+            # self.draw_text(measures[7].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 7-3, "topleft")
+
+            # flip the display and check events
             pg.display.flip()
 
             click = False
@@ -226,3 +205,46 @@ class Screen:
 
             # event pump, prevent freeze
             pg.event.pump()
+
+    def end_turn(self, regions):
+        self.click_button(regions)
+
+        return_dict = {}
+        for j in range(self.num_regions):
+            active_array = []
+            for i in range(self.num_measures):
+                active_array.append(self.measure_buttons[self.num_measures * j + i].active)
+            return_dict[regions[j].name] = active_array
+        # print(return_dict)
+
+        # enable this to return the measure dictionary per region
+        return return_dict
+
+
+class Map:
+    def ___init__(self):
+        pass
+
+
+class MeasureTable:
+    measure_button_size = (25, 25)
+    offset = 40
+    button_y_diff = 10 + measure_button_size[1]
+    x_loc = 750
+
+    def __init__(self):
+        pass
+
+    def return_measure_buttons(self, regions, num_measures):
+        # create button for each measure for each region
+        measure_buttons = []
+        for region_n in range(len(regions)):
+            for meas_n in range(num_measures):
+                measure_buttons.append(
+                    MeasureButton(self.x_loc + 50 * region_n, self.offset + self.button_y_diff * meas_n, 25, 25))
+        return measure_buttons
+
+
+class InfoTable:
+    def __init__(self):
+        pass

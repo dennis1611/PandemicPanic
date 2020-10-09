@@ -20,7 +20,7 @@ def initialise_measures():
             desc = line[2]
             factor = float(line[3])
             measures.append(Measure(number, name, desc, factor))
-    return measures
+    return tuple(measures)
 
 
 def initialise_regions():
@@ -33,6 +33,5 @@ def initialise_regions():
         region = Region(region_name, regions_df.loc[region_name, "Population"],
                         regions_df.loc[region_name, "inf_factor"], regions_df.loc[region_name, "death_factor"],
                         regions_df.loc[region_name, "abbreviation"])
-        region.load_pngs()
         region_instances.append(region)
-    return region_instances
+    return tuple(region_instances)
