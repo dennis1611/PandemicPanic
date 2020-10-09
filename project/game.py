@@ -90,7 +90,7 @@ while running:
             region.update_R_visual(week, factor)
 
     week += 1
-    if week > 3:
+    if week > 52:
         running = False
 
 score = 100
