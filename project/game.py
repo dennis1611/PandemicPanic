@@ -4,6 +4,7 @@ Main game loop.
 """
 
 from project.models.initialization import initialise_measures, initialise_regions
+from project.views.choose_mode import choose_mode
 from project.views.measures_terminal import choose_measure
 from project.views.report_terminal import display_report
 from project.screen import Screen
@@ -13,20 +14,8 @@ from project.measure import Measure
 # TODO: write an actual welcome message/introduction
 print('Welcome message/introduction')
 
-visuals = False
-print('do you want to play in "terminal mode" or in "visual mode"?')
-running = True
-while running:
-    user_input = input()
-    if user_input.lower()[0] == "t":
-        visuals = False
-        running = False
-    elif user_input.lower()[0] == "v":
-        visuals = True
-        running = False
-    else:
-        print("please try again")
-
+# let the player choose to play in terminal mode or in visual mode
+visual = choose_mode()
 
 # create general setup
 measures = initialise_measures()
@@ -38,9 +27,11 @@ regions_dict = {}
 for region in regions:
     regions_dict[region.name] = region.abbreviation
 
-
-if visuals:
+# extended setup only for visual mode
+if visual:
+    # create a Screen
     window = Screen(len(regions), len(measures), regions_dict, regions)
+    # set measures as attribute of each region instance (initialised as None)
     for region in regions:
         region.region_measures = measures
 
@@ -61,7 +52,7 @@ while running:
     display_report(regions)
     print(starline)
 
-    if not visuals:
+    if not visual:
         # choose a measure, (de)activate it, and get the corresponding factor
         new_measure = choose_measure(measures)
         if isinstance(new_measure, Measure) and new_measure.is_active() is False:
@@ -75,8 +66,8 @@ while running:
 
         # set the R value for this week
         for region in regions:
-            region.update_R(week, effect)
-    elif visuals:
+            region.update_R(week, effect, False)
+    elif visual:
         # update window
         # noinspection PyUnboundLocalVariable
         window.start_turn(regions, week)
@@ -85,17 +76,18 @@ while running:
 
         for region in regions:
             print(active_measures[region.name])
-            factor = region.set_measures_factor(active_measures[region.name])
+            factor = region.calculate_measures_factor(active_measures[region.name])
             print(factor)
-            region.update_R_visual(week, factor)
+            region.update_R(week, factor, True)
 
+    # end of week
     week += 1
     if week > 52:
         running = False
 
 score = 100
-if not visuals:
+if not visual:
     print("The game has ended!")
-elif visuals:
+elif visual:
     # display the ending window
     window.end_game(score)

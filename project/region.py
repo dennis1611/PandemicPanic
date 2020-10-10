@@ -10,7 +10,7 @@ class RegionImg:
 
     def __init__(self, img_name, topleft, num):
 
-        self.img = pg.image.load("provinces/"+img_name.lower()+str(num)+".png")
+        self.img = pg.image.load("source_data/provinces/"+img_name.lower()+str(num)+".png")
         self.img_rect = self.img.get_rect()
         self.img_rect.topleft = topleft
 
@@ -49,11 +49,9 @@ class Region:
         return string
 
     def load_pngs(self):
-
         topleft = (-30, 30)
         for i in range(6):
             self.images.append(RegionImg(self.name, topleft, i + 1))
-
 
     def update_infections(self, current_week):
         """"Calculates how many people got infected and recovered in the past week"""
@@ -65,11 +63,11 @@ class Region:
         new_infections = (1 / 2) * prev_r * prev_inf_total // 1
 
         # check if calculated new infections do not exceed physical limitations
-        if new_infections > (self.inhabitants - prev_data.loc['Total recoveries'] - prev_data.loc['Currently infected'] - prev_data.loc['Total deaths']):
-            new_infections = self.inhabitants - prev_data.loc['Total recoveries'] - prev_data.loc['Currently infected'] - prev_data.loc['Total deaths']
+        limit_new_infections = self.inhabitants - prev_data.loc['Total recoveries'] - prev_data.loc['Currently infected'] - prev_data.loc['Total deaths']
+        if new_infections > limit_new_infections:
+            new_infections = limit_new_infections
 
-        # assumption is made that people stay sick for two weeks
-        # at the end, they either recover or die
+        # people stay sick for two weeks; at the end, they either recover or die
         if current_week >= 2:
             prev_prev_inf_new = self.df.loc[current_week - 2, 'New infections']
             new_deaths = (prev_prev_inf_new * self.death_factor) // 1
@@ -93,9 +91,12 @@ class Region:
     def calculate_measure_effects(self, new_measure):
         pass
 
-    def update_R(self, current_week, factor):
+    def update_R(self, current_week: int, factor: float, visuals_mode=False):
         """Fills in R in the current week, based on the previous R * factor"""
-        self.df.loc[current_week, 'R value'] = factor * self.df.loc[current_week - 1, 'R value']
+        if not visuals_mode:
+            self.df.loc[current_week, 'R value'] = factor * self.df.loc[current_week - 1, 'R value']
+        elif visuals_mode:
+            self.df.loc[current_week, 'R value'] = factor * self.df.loc[0, 'R value']
 
     # Doe de factor berekening nu even op de Nigel manier, zal aangepast worden
     def measure_booleans(self):
@@ -104,7 +105,7 @@ class Region:
             bools.extend([measure.is_active()])
         return bools
 
-    def set_measures_factor(self, active_measures):
+    def calculate_measures_factor(self, active_measures):
         """"Only used in visuals mode"""
         active_factors = 1
 
@@ -114,6 +115,5 @@ class Region:
 
         return active_factors
 
-    def update_R_visual(self, current_week, active_factors):
-
-        self.df.loc[current_week, 'R value'] = active_factors * self.df.loc[0, 'R value']
+    # def update_R_visual(self, current_week, active_factors):
+    #     self.df.loc[current_week, 'R value'] = active_factors * self.df.loc[0, 'R value']

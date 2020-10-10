@@ -1,7 +1,9 @@
 from pandas import read_csv
 
+import os
 
-def densityfactors(general_dataset, importance=0.3):
+
+def density_factors(general_dataset, importance=0.3):
     # Function to determine the multiplying factors per region on basis of the population density
     # IMPORTANCE FACTOR: determines the influence of the density on the amount of infections (higher =  more influence)
 
@@ -94,7 +96,7 @@ def total_infectionfactor(general_dataset):
     total_inf_factor = []
 
     youth = youth_infection_factors(general_dataset)
-    density = densityfactors(general_dataset)
+    density = density_factors(general_dataset)
 
     for j in range(len(regions)):
         total_inf_factor.append(round(youth[j] * density[j], 3))
@@ -116,12 +118,12 @@ def total_deathfactor(general_dataset):
 def get_data(type):
     if type == 'province':
         # Collect Dutch Provinces data including age ranges and population density
-        prov_data = read_csv('Data_provinces.csv', skiprows=[0, 1, 2, 4], delimiter=";",
+        prov_data = read_csv('data_provinces.csv', skiprows=[0, 1, 2, 4], delimiter=";",
                              index_col=0, skipinitialspace=True, decimal=',', skipfooter=1, engine='python')
         return prov_data
     elif type == 'corop':
         # Collect Dutch COROP-areas data including age ranges and population density
-        cor_data = read_csv('Data_corops.csv', skiprows=0, delimiter=";",
+        cor_data = read_csv('data_corops.csv', skiprows=0, delimiter=";",
                             index_col=1, skipinitialspace=True, decimal=',', skipfooter=1, engine='python')
         return cor_data
 
@@ -153,4 +155,4 @@ for i in range(len(datasets)):
     regional_data.insert(1, columns_names[i], datasets[i])
 regional_data['abbreviation'] = ['GR', 'FR', 'DR', 'OV', 'FL', 'GD', 'UT', 'NH', 'ZH', 'ZL', 'NB', 'LB']
 # generate a csv file in the same directory based on regional_data
-regional_data.to_csv('regional_data.csv')
+regional_data.to_csv("../regional_data.csv")
