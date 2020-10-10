@@ -103,7 +103,7 @@ class Screen:
         # Measure buttons creation
         self.measure_buttons = self.measure_table.return_measure_buttons(regions, num_measures)
 
-        # Next Turn button setup and creation
+        # Next Turn button and end button setup and creation
         self.next_turn_button = TurnButton(25, 0, 50, 50)
         self.end_button = EndButton(800, 600, 100, 100)
 
@@ -160,7 +160,7 @@ class Screen:
 
         self.scr.blit(textobj, textrect)
 
-    def click_button(self, regions):
+    def click_button(self, ending):
 
         clean_rect = pg.Rect(700, 40, 1000, 280)
 
@@ -174,17 +174,25 @@ class Screen:
             pg.draw.rect(self.scr, self.bgcolour, clean_rect)
 
             # if clicked swap activation status, then draw new button
-            for i in range(len(self.measure_buttons)):
-                if self.measure_buttons[i].rect.collidepoint(mx, my):
+            if not ending:
+                for i in range(len(self.measure_buttons)):
+                    if self.measure_buttons[i].rect.collidepoint(mx, my):
+                        if click:
+                            self.measure_buttons[i].clicked()
+
+                    pg.draw.rect(self.scr, self.measure_buttons[i].return_color(), self.measure_buttons[i].rect)
+
+                # if next turn button is clicked return to main loop
+                if self.next_turn_button.rect.collidepoint(mx, my):
                     if click:
-                        self.measure_buttons[i].clicked()
+                        return
 
-                pg.draw.rect(self.scr, self.measure_buttons[i].return_color(), self.measure_buttons[i].rect)
-
-            # if next turn button is clicked return to main loop
-            if self.next_turn_button.rect.collidepoint(mx, my):
-                if click:
-                    return
+            # if end game button is clicked, quit game
+            if ending:
+                if self.end_button.rect.collidepoint(mx, my):
+                    if click:
+                        pg.quit()
+                        sys.exit()
 
             # draw the next turn button
             pg.draw.rect(self.scr, self.next_turn_button.return_color(), self.next_turn_button.rect)
@@ -220,7 +228,7 @@ class Screen:
             pg.event.pump()
 
     def end_turn(self, regions):
-        self.click_button(regions)
+        self.click_button(False)
 
         return_dict = {}
         for j in range(self.num_regions):
@@ -242,13 +250,9 @@ class Screen:
             self.draw_text(f"Tour score is {score}", self.myfont, self.white, 800, 500, "topright")
             # draw the end button
             pg.draw.rect(self.scr, self.end_button.return_color(), self.end_button.rect)
-            # look for mouse position and click
-            mx , my = pg.mouse.get_pos()
-            if self.end_button.rect.collidepoint(mx, my):
-                if click:
-                    pg.quit()
-                    break
+            self.click_button(True)
             pg.display.flip()
+            pg.event.pump()
 
 
 
