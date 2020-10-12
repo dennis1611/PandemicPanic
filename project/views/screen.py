@@ -39,7 +39,7 @@ class MeasureButton(Button):
     def return_color(self):
         """
         Active buttons should be green, inactive red.
-        This function returns the correct color.
+        This function return the correct color.
         """
         if self.active:
             return self.green
@@ -200,9 +200,9 @@ class Screen:
             pg.draw.rect(self.scr, self.next_turn_button.return_color(), self.next_turn_button.rect)
 
             # to be fixed, this draws the measure text, however, obviously it looks ugly now.
-            offset = 40
-            button_y_diff = 35
-            x_loc = 710
+            # offset = 40
+            # button_y_diff = 35
+            # x_loc = 710
 
 
             # self.draw_text(measures[0].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 0-3, "topleft")
