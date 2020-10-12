@@ -15,12 +15,12 @@ from project.models.measure import Measure
 print('Welcome message/introduction')
 
 # let the player choose to play in terminal mode or in visual mode
-visual = choose_mode()
+VISUAL = choose_mode()
 
 # create general setup
 measures = initialise_measures()
 regions = initialise_regions()
-starline = '*' * 70
+STAR_LINE = '*' * 70
 
 # Dictionary to locally store abbreviations
 regions_dict = {}
@@ -28,7 +28,7 @@ for region in regions:
     regions_dict[region.name] = region.abbreviation
 
 # extended setup only for visual mode
-if visual:
+if VISUAL:
     # create a Screen
     window = Screen(len(regions), len(measures), regions_dict, regions)
     # set measures as attribute of each region instance (initialised as None)
@@ -40,9 +40,9 @@ if visual:
 week = 1
 running = True
 while running:
-    print('\n' + starline)
+    print('\n' + STAR_LINE)
     print(f'This is week {week}')
-    print(starline)
+    print(STAR_LINE)
 
     # calculates the new infections for this week (leaving only the 'R value' column open)
     for region in regions:
@@ -50,9 +50,9 @@ while running:
 
     # shows a summary of recent developments of the virus
     display_report(regions)
-    print(starline)
+    print(STAR_LINE)
 
-    if not visual:
+    if not VISUAL:
         # choose a measure, (de)activate it, and get the corresponding factor
         new_measure = choose_measure(measures)
         if isinstance(new_measure, Measure) and new_measure.is_active() is False:
@@ -67,17 +67,14 @@ while running:
         # set the R value for this week
         for region in regions:
             region.update_R(week, effect, False)
-    elif visual:
+    elif VISUAL:
         # update window
         # noinspection PyUnboundLocalVariable
         window.start_turn(regions, week)
         active_measures = window.end_turn(regions)
-        print(active_measures)
 
         for region in regions:
-            print(active_measures[region.name])
             factor = region.calculate_measures_factor(active_measures[region.name])
-            print(factor)
             region.update_R(week, factor, True)
 
     # end of week
@@ -86,8 +83,8 @@ while running:
         running = False
 
 score = 100
-if not visual:
+if not VISUAL:
     print("The game has ended!")
-elif visual:
+elif VISUAL:
     # display the ending window
     window.end_game(score)

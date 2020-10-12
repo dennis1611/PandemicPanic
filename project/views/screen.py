@@ -1,5 +1,5 @@
-import pygame as pg
 import sys
+import pygame as pg
 
 
 class Button:
@@ -55,6 +55,7 @@ class MeasureButton(Button):
         elif not self.active:
             self.active = True
 
+
 class EndButton(Button):
     def __init__(self, x, y, width, height):
         super().__init__(x, y, width, height)
@@ -64,6 +65,7 @@ class EndButton(Button):
         Next turn button should be white.
         """
         return self.white
+
 
 class Screen:
     """
@@ -246,7 +248,7 @@ class Screen:
             # clear screen to black
             self.scr.fill((0, 0, 0))
             # print ending message and score
-            self.draw_text(f"The game has ended", self.myfont, self.white, 800, 400, "topright")
+            self.draw_text("The game has ended", self.myfont, self.white, 800, 400, "topright")
             self.draw_text(f"Tour score is {score}", self.myfont, self.white, 800, 500, "topright")
             # draw the end button
             pg.draw.rect(self.scr, self.end_button.return_color(), self.end_button.rect)
