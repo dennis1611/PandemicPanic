@@ -19,7 +19,7 @@ VISUAL = choose_mode()
 
 # create general setup
 measures = initialise_measures()
-regions = initialise_regions()
+regions = initialise_regions(visual=VISUAL, measures=measures)
 STAR_LINE = '*' * 70
 
 # Dictionary to locally store abbreviations
@@ -66,7 +66,7 @@ while running:
 
         # set the R value for this week
         for region in regions:
-            region.update_R(week, effect, False)
+            region.update_R(week, effect)
     elif VISUAL:
         # update window
         # noinspection PyUnboundLocalVariable
@@ -75,7 +75,7 @@ while running:
 
         for region in regions:
             factor = region.calculate_measures_factor(active_measures[region.name])
-            region.update_R(week, factor, True)
+            region.update_R(week, factor)
 
     # end of week
     week += 1

@@ -1,6 +1,7 @@
 """
 File that contains the region class.
 """
+import os
 
 import pandas as pd
 import pygame as pg
@@ -9,8 +10,9 @@ import pygame as pg
 class RegionImg:
 
     def __init__(self, img_name, topleft, num):
-
-        self.img = pg.image.load("source_data/provinces/"+img_name.lower()+str(num)+".png")
+        project_path = os.path.dirname(os.path.dirname(__file__))
+        dir_path = project_path + '/source_data/provinces/'
+        self.img = pg.image.load(dir_path + img_name.lower() + str(num) + ".png")
         self.img_rect = self.img.get_rect()
         self.img_rect.topleft = topleft
 
@@ -21,13 +23,11 @@ class Region:
     """
 
     def __init__(self, name, inhabitants, regional_infection_factor, regional_death_factor, abbreviation,
-                 base_r=3, base_death_factor=0.02, base_inf=1000, region_measures=None):
+                 base_r=3, base_death_factor=0.02, base_inf=1000):
         self.name = name
         self.inhabitants = inhabitants
         self.abbreviation = abbreviation
         self.inhabitants = inhabitants
-
-        self.region_measures = region_measures
 
         # base_death_factor = 0.02
         self.death_factor = base_death_factor * regional_death_factor
@@ -41,17 +41,9 @@ class Region:
                           index=[0])
         self.df = df
 
-        self.images = []
-        self.load_pngs()
-
     def __repr__(self):
         string = f"This class is for {self.name} with a population of {self.inhabitants}, "
         return string
-
-    def load_pngs(self):
-        topleft = (-30, 30)
-        for i in range(6):
-            self.images.append(RegionImg(self.name, topleft, i + 1))
 
     def update_infections(self, current_week):
         """"Calculates how many people got infected and recovered in the past week"""
@@ -63,7 +55,8 @@ class Region:
         new_infections = (1 / 2) * prev_r * prev_inf_total // 1
 
         # check if calculated new infections do not exceed physical limitations
-        limit_new_infections = self.inhabitants - prev_data.loc['Total recoveries'] - prev_data.loc['Currently infected'] - prev_data.loc['Total deaths']
+        limit_new_infections = self.inhabitants - prev_data.loc['Total recoveries'] - prev_data.loc[
+            'Currently infected'] - prev_data.loc['Total deaths']
         if new_infections > limit_new_infections:
             new_infections = limit_new_infections
 
@@ -91,22 +84,33 @@ class Region:
     def calculate_measure_effects(self, new_measure):
         pass
 
-    def update_R(self, current_week: int, factor: float, visuals_mode=False):
+    def update_R(self, current_week: int, factor: float):
         """Fills in R in the current week, based on the previous R * factor"""
-        if not visuals_mode:
-            self.df.loc[current_week, 'R value'] = factor * self.df.loc[current_week - 1, 'R value']
-        elif visuals_mode:
-            self.df.loc[current_week, 'R value'] = factor * self.df.loc[0, 'R value']
+        self.df.loc[current_week, 'R value'] = factor * self.df.loc[current_week - 1, 'R value']
 
-    # Doe de factor berekening nu even op de Nigel manier, zal aangepast worden
-    def measure_booleans(self):
-        bools = []
-        for measure in self.region_measures:
-            bools.extend([measure.is_active()])
-        return bools
+
+class RegionExtended(Region):
+    def __init__(self, name, inhabitants, regional_infection_factor, regional_death_factor, abbreviation,
+                 base_r=3, base_death_factor=0.02, base_inf=1000, region_measures=None):
+        super().__init__(name, inhabitants, regional_infection_factor, regional_death_factor, abbreviation,
+                         base_r=3, base_death_factor=0.02, base_inf=1000)
+        self.region_measures = region_measures
+        self.images = []
+        self.load_pngs()
+
+    def load_pngs(self):
+        """"..."""
+        topleft = (-30, 30)
+        for i in range(6):
+            self.images.append(RegionImg(self.name, topleft, i + 1))
+
+    def update_R(self, current_week: int, factor: float):
+        """"Fills in R in the current week, based on the first R * factor
+                Overwrites method from parent class"""
+        self.df.loc[current_week, 'R value'] = factor * self.df.loc[0, 'R value']
 
     def calculate_measures_factor(self, active_measures):
-        """"Only used in visuals mode"""
+        """"..."""
         active_factors = 1
 
         for i in range(len(active_measures)):
@@ -115,5 +119,9 @@ class Region:
 
         return active_factors
 
-    # def update_R_visual(self, current_week, active_factors):
-    #     self.df.loc[current_week, 'R value'] = active_factors * self.df.loc[0, 'R value']
+    # Doe de factor berekening nu even op de Nigel manier, zal aangepast worden
+    def measure_booleans(self):
+        booleans = []
+        for measure in self.region_measures:
+            booleans.extend([measure.is_active()])
+        return booleans
