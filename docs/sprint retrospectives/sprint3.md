@@ -1,4 +1,4 @@
-# Sprint Retrospective 2
+# Sprint Retrospective 3
 ##### Group 07 - PandemicPanic
 
 ## What went well?
