@@ -1,5 +1,5 @@
 import unittest
-from project.measure import Measure
+from project.models.measure import Measure
 
 
 class MyTestCase(unittest.TestCase):

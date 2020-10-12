@@ -3,8 +3,8 @@ The initialization functions for the measures and for the regions can be found h
 """
 
 from pandas import read_csv
-from project.measure import Measure
-from project.region import Region
+from project.models.measure import Measure
+from project.models.region import Region
 
 import os
 

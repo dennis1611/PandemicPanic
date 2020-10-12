@@ -7,8 +7,8 @@ from project.models.initialization import initialise_measures, initialise_region
 from project.views.choose_mode import choose_mode
 from project.views.measures_terminal import choose_measure
 from project.views.report_terminal import display_report
-from project.screen import Screen
-from project.measure import Measure
+from project.views.screen import Screen
+from project.models.measure import Measure
 
 
 # TODO: write an actual welcome message/introduction
