@@ -121,14 +121,9 @@ def get_data(type):
         prov_data = read_csv('data_provinces.csv', skiprows=[0, 1, 2, 4], delimiter=";",
                              index_col=0, skipinitialspace=True, decimal=',', skipfooter=1, engine='python')
         return prov_data
-    elif type == 'corop':
-        # Collect Dutch COROP-areas data including age ranges and population density
-        cor_data = read_csv('data_corops.csv', skiprows=0, delimiter=";",
-                            index_col=1, skipinitialspace=True, decimal=',', skipfooter=1, engine='python')
-        return cor_data
 
 
-# Decide which areas you want to use; COROP or Provinces (both work)
+# Decide which areas you want to use; only provinces are available
 data = get_data('province')
 
 # Data preparation
