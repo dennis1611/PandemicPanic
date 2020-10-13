@@ -2,36 +2,51 @@
 The initialization functions for the measures and for the regions can be found here.
 """
 
+import os
+
 from pandas import read_csv
 from project.models.measure import Measure
-from project.models.region import Region
-
-import os
+from project.models.region import Region, RegionExtended
 
 
 def initialise_measures():
     """"Creates and returns a list of all measures"""
+    project_path = os.path.dirname(os.path.dirname(__file__))
+    file_path = project_path + '/source_data/measures_data_simple.csv'
+    measures_df = read_csv(file_path, index_col=1)
     measures = []
-    with open(os.path.abspath("source_data/measures_data_simple.csv")) as data:
-        next(data)  # skip first line
-        for line in data:
-            line = line.strip().split(",")
-            number = int(line[0])
-            name = line[1]
-            desc = line[2]
-            factor = float(line[3])
-            measures.append(Measure(number, name, desc, factor))
+    measure_names = measures_df.index.values
+    for measure_name in measure_names:
+        new_measure = Measure(measures_df.loc[measure_name, "number"],
+                              measure_name,
+                              measures_df.loc[measure_name, "description"],
+                              measures_df.loc[measure_name, "factor"])
+        measures.append(new_measure)
     return tuple(measures)
 
 
-def initialise_regions():
+def initialise_regions(visual=False, measures=None):
     """"Creates and returns a list of all regions"""
-    regions_df = read_csv(os.path.abspath("source_data/regional_data.csv"), index_col=0)
-    region_instances = []
+    project_path = os.path.dirname(os.path.dirname(__file__))
+    file_path = project_path + '/source_data/regional_data.csv'
+    regions_df = read_csv(file_path, index_col=0)
+    regions = []
     region_names = regions_df.index.values
-    for region_name in region_names:
-        region = Region(region_name, regions_df.loc[region_name, "Population"],
-                        regions_df.loc[region_name, "inf_factor"], regions_df.loc[region_name, "death_factor"],
-                        regions_df.loc[region_name, "abbreviation"])
-        region_instances.append(region)
-    return tuple(region_instances)
+    if not visual:
+        for region_name in region_names:
+            new_region = Region(region_name,
+                                regions_df.loc[region_name, "population"],
+                                regions_df.loc[region_name, "inf_factor"],
+                                regions_df.loc[region_name, "death_factor"],
+                                regions_df.loc[region_name, "abbreviation"])
+            regions.append(new_region)
+    elif visual:
+        for region_name in region_names:
+            new_region = RegionExtended(region_name,
+                                        regions_df.loc[region_name, "population"],
+                                        regions_df.loc[region_name, "inf_factor"],
+                                        regions_df.loc[region_name, "death_factor"],
+                                        regions_df.loc[region_name, "abbreviation"],
+                                        region_measures=measures)
+            regions.append(new_region)
+    return tuple(regions)

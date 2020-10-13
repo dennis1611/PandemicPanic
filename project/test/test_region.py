@@ -22,7 +22,7 @@ class MyTestCase(unittest.TestCase):
         name = "Groningen"
         inhabitants = 585866
         self.assertEqual((self.regions[0].name, self.regions[0].inhabitants), (name, inhabitants))
-        self.assertAlmostEqual(self.regions[0].death_factor, 0.019837855)
+        self.assertAlmostEqual(self.regions[0].death_factor, 0.01984)
 
     def test_calculations_no_measures(self):
         name = "TestRegion"
