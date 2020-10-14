@@ -84,6 +84,7 @@ while running:
             factor = region.calculate_measures_factor(active_measures[region.name])
             region.update_R(week, factor)
 
+
     # end of week
     week += 1
     if week > 52:

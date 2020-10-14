@@ -1,5 +1,6 @@
 import sys
 import pygame as pg
+import os
 
 
 class Button:
@@ -109,6 +110,13 @@ class Screen:
         self.next_turn_button = TurnButton(25, 0, 50, 50)
         self.end_button = EndButton(800, 600, 100, 100)
 
+        # Overlay setup
+        project_path = os.path.dirname(os.path.dirname(__file__))
+        dir_path = project_path + '/source_data/provinces/'
+        self.overlay = pg.image.load(dir_path + "overlay.png")
+        self.overlay_rect = self.overlay.get_rect()
+        self.overlay_rect.topleft = (-30, 30)
+
     def start_turn(self, regions, week):
 
         # set location for info table
@@ -120,7 +128,7 @@ class Screen:
         yloc_abbr = 0
 
         # clear screen to black
-        self.scr.fill((0, 0, 0))
+        self.scr.fill(self.bgcolour)
 
         # write "infected" at info table
         self.draw_text("Infected", self.myfont, self.white, xloc_table + 300, yloc_table, "topright")
@@ -140,12 +148,22 @@ class Screen:
             self.draw_text(regions[i].abbreviation, self.myfont, self.white, xloc_abbr, yloc_abbr, "mid")
             self.draw_text(str(int(inf)), self.myfont, self.white, xloc_table+300, yloc_table, "topright")
 
-            num = int(inf/pop*6)
-            if num > 5:
-                num = 5
+            num = int(inf/pop*6)+1
+            if num > 6:
+                num = 6
             self.scr.blit(regions[i].images[num].img, regions[i].images[num].img_rect)
 
             xloc_abbr += 50
+
+        self.scr.blit(self.overlay,self.overlay_rect)
+
+        # If code_black flag is enabled, draw emergency signs
+        for r in regions:
+
+            if True: #r.code_black
+                self.scr.blit(r.images[0].img, r.images[0].img_rect)
+
+
 
         pg.display.flip()
 

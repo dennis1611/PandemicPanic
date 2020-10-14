@@ -106,8 +106,8 @@ class RegionExtended(Region):
     def load_pngs(self):
         """"..."""
         topleft = (-30, 30)
-        for i in range(6):
-            self.images.append(RegionImg(self.name, topleft, i + 1))
+        for i in range(7):
+            self.images.append(RegionImg(self.name, topleft, i))
 
     def calculate_measures_factor(self, active_measures):
         """"...
