@@ -3,7 +3,7 @@ Main game loop.
 .exe should activate this file.
 """
 
-from project.models.initialization import initialise_measures, initialise_regions
+from project.models.initialization import initialise_measures, initialise_regions, initialise_borders
 from project.views.choose_mode import choose_mode
 from project.views.measures_terminal import choose_measure
 from project.views.report_terminal import display_report
@@ -20,6 +20,7 @@ VISUAL = choose_mode()
 # create general setup
 measures = initialise_measures()
 regions = initialise_regions(visual=VISUAL, measures=measures)
+borders = initialise_borders()
 STAR_LINE = '*' * 70
 
 # Dictionary to locally store abbreviations
@@ -48,9 +49,19 @@ while running:
     for region in regions:
         region.update_infections(week)
 
-    # shows a summary of recent developments of the virus
+    # adjust new infections based on adjacent regions
+    for border in borders:
+        pass
+
+    # shows a summary (in the terminal) of recent developments of the virus
     display_report(regions)
     print(STAR_LINE)
+
+    # get new_measure / active measures
+
+    # get factor(s) based on new_measure / active measures
+
+    # update R based on factor
 
     if not VISUAL:
         # choose a measure, (de)activate it, and get the corresponding factor
