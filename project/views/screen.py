@@ -160,7 +160,7 @@ class Screen:
         # If code_black flag is enabled, draw emergency signs
         for r in regions:
 
-            if True: #r.code_black
+            if r.code_black_active:
                 self.scr.blit(r.images[0].img, r.images[0].img_rect)
 
 
