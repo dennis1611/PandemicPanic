@@ -30,6 +30,7 @@ class Region:
         self.inhabitants = inhabitants
         self.capacity = 0.01
         self.code_black_effect = 3  # both of these to be balanced later
+        self.code_black_active = False
 
         # base_death_factor = 0.02
         self.death_factor = base_death_factor * regional_death_factor
@@ -65,10 +66,12 @@ class Region:
         # people stay sick for two weeks; at the end, they either recover or die
         if current_week >= 2:
             prev_prev_inf_new = self.df.loc[current_week - 2, 'New infections']
-            if prev_prev_inf_new > self.capacity * self.inhabitants:
+            if prev_prev_inf_new > self.capacity * self.inhabitants: # whether code black should be active or not
                 new_deaths = (prev_prev_inf_new * self.death_factor * self.code_black_effect) // 1
+                self.code_black_active = True
             else:
                 new_deaths = (prev_prev_inf_new * self.death_factor) // 1
+                self.code_black_active = False
             new_recoveries = prev_prev_inf_new - new_deaths
         else:
             new_deaths = 0
@@ -106,8 +109,8 @@ class RegionExtended(Region):
     def load_pngs(self):
         """"..."""
         topleft = (-30, 30)
-        for i in range(6):
-            self.images.append(RegionImg(self.name, topleft, i + 1))
+        for i in range(7):
+            self.images.append(RegionImg(self.name, topleft, i))
 
     def calculate_measures_factor(self, active_measures):
         """"...
