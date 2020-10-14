@@ -50,3 +50,15 @@ def initialise_regions(visual=False, measures=None):
                                         region_measures=measures)
             regions.append(new_region)
     return tuple(regions)
+
+
+def initialise_borders():
+    """"Creates and returns a list of all borders (as tuple)"""
+    project_path = os.path.dirname(os.path.dirname(__file__))
+    file_path = project_path + '/source_data/borders.csv'
+    borders = []
+    with open(file_path) as borders_file:
+        for line in borders_file:
+            new_border = tuple(line.strip().split(','))
+            borders.append(new_border)
+    return tuple(borders)

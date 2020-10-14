@@ -109,27 +109,19 @@ class RegionExtended(Region):
     def load_pngs(self):
         """"..."""
         topleft = (-30, 30)
-        for i in range(6):
-            self.images.append(RegionImg(self.name, topleft, i + 1))
-
-    def update_R(self, current_week: int, factor: float):
-        """"Fills in R in the current week, based on the first R * factor
-                Overwrites method from parent class"""
-        self.df.loc[current_week, 'R value'] = factor * self.df.loc[0, 'R value']
+        for i in range(7):
+            self.images.append(RegionImg(self.name, topleft, i))
 
     def calculate_measures_factor(self, active_measures):
-        """"..."""
+        """"...
+            Overwrites method from parent class"""
         active_factors = 1
-
         for i in range(len(active_measures)):
             if active_measures[i]:
                 active_factors *= self.region_measures[i].factor
-
         return active_factors
 
-    # Doe de factor berekening nu even op de Nigel manier, zal aangepast worden
-    def measure_booleans(self):
-        booleans = []
-        for measure in self.region_measures:
-            booleans.extend([measure.is_active()])
-        return booleans
+    def update_R(self, current_week: int, factor: float):
+        """"Fills in R in the current week, based on the first R * factor
+            Overwrites method from parent class"""
+        self.df.loc[current_week, 'R value'] = factor * self.df.loc[0, 'R value']
