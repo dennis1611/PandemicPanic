@@ -66,12 +66,8 @@ while running:
     if not VISUAL:
         # choose a measure, (de)activate it, and get the corresponding factor
         new_measure = choose_measure(measures)
-        if isinstance(new_measure, Measure) and new_measure.is_active() is False:
-            new_measure.activate()
-            effect = new_measure.factor
-        elif isinstance(new_measure, Measure) and new_measure.is_active() is True:
-            new_measure.deactivate()
-            effect = 1 / new_measure.factor
+        if isinstance(new_measure, Measure):
+            effect = new_measure.update_return_factor()
         else:
             effect = 1
 

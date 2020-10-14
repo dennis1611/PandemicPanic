@@ -89,7 +89,6 @@ class Region:
     def calculate_measure_effects(self, new_measure):
         pass
 
-    # noinspection PyPep8Naming
     def update_R(self, current_week: int, factor: float):
         """Fills in R in the current week, based on the previous R * factor"""
         self.df.loc[current_week, 'R value'] = factor * self.df.loc[current_week - 1, 'R value']
