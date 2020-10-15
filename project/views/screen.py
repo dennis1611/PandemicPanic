@@ -1,6 +1,7 @@
 import sys
-import pygame as pg
 import os
+
+import pygame as pg
 
 
 class Button:
@@ -76,23 +77,23 @@ class Screen:
     # Colours
     black = (0, 0, 0)
     white = (255, 255, 255)
-    bgcolour = black
-    txtcolor = white
+    bg_colour = black
+    txt_color = white
 
     # font
     pg.font.init()
-    myfont = pg.font.SysFont("Arial Black", 20)
+    my_font = pg.font.SysFont("Arial Black", 20)
 
     # Set up pygame window
-    xmax = 1344
-    ymax = 756
+    x_max = 1344
+    y_max = 756
     x = 725
     y_table = 360
 
     def __init__(self, num_regions, num_measures, regions_dict, regions):
 
         # Set screen dimensions and create the surface.
-        self.scr = pg.display.set_mode((self.xmax, self.ymax))
+        self.scr = pg.display.set_mode((self.x_max, self.y_max))
 
         self.num_regions = num_regions
         self.num_measures = num_measures
@@ -120,40 +121,40 @@ class Screen:
     def start_turn(self, regions, week):
 
         # set location for info table
-        xloc_table = self.x
-        yloc_table = self.y_table
+        x_loc_table = self.x
+        y_loc_table = self.y_table
 
         # set location for abbreviations in measures table
-        xloc_abbr = 750
-        yloc_abbr = 0
+        x_loc_abbr = 750
+        y_loc_abbr = 0
 
         # clear screen to black
-        self.scr.fill(self.bgcolour)
+        self.scr.fill(self.bg_colour)
 
         # write "infected" at info table
-        self.draw_text("Infected", self.myfont, self.white, xloc_table + 300, yloc_table, "topright")
+        self.draw_text("Infected", self.my_font, self.white, x_loc_table + 300, y_loc_table, "topright")
 
         # write number of week on turn-button
-        self.draw_text(f"Week: {week}", self.myfont, self.white, 200, 0, "topright")
+        self.draw_text(f"Week: {week}", self.my_font, self.white, 200, 0, "topright")
 
         for i in range(self.num_regions):
 
             # go to next row
-            yloc_table += 30
+            y_loc_table += 30
 
             inf = regions[i].df.iat[-1, 1]
             pop = regions[i].inhabitants
 
-            self.draw_text(regions[i].name, self.myfont, self.white, xloc_table, yloc_table, "topleft")
-            self.draw_text(regions[i].abbreviation, self.myfont, self.white, xloc_abbr, yloc_abbr, "mid")
-            self.draw_text(str(int(inf)), self.myfont, self.white, xloc_table+300, yloc_table, "topright")
+            self.draw_text(regions[i].name, self.my_font, self.white, x_loc_table, y_loc_table, "topleft")
+            self.draw_text(regions[i].abbreviation, self.my_font, self.white, x_loc_abbr, y_loc_abbr, "mid")
+            self.draw_text(str(int(inf)), self.my_font, self.white, x_loc_table + 300, y_loc_table, "topright")
 
             num = int(inf/pop*6)+1
             if num > 6:
                 num = 6
             self.scr.blit(regions[i].images[num].img, regions[i].images[num].img_rect)
 
-            xloc_abbr += 50
+            x_loc_abbr += 50
 
         self.scr.blit(self.overlay,self.overlay_rect)
 
@@ -191,7 +192,7 @@ class Screen:
             mx, my = pg.mouse.get_pos()
 
             # clean buttons with background color rectangle
-            pg.draw.rect(self.scr, self.bgcolour, clean_rect)
+            pg.draw.rect(self.scr, self.bg_colour, clean_rect)
 
             # if clicked swap activation status, then draw new button
             if not ending:
@@ -221,7 +222,6 @@ class Screen:
             # offset = 40
             # button_y_diff = 35
             # x_loc = 710
-
 
             # self.draw_text(measures[0].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 0-3, "topleft")
             # self.draw_text(measures[1].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 1-3, "topleft")
@@ -266,17 +266,13 @@ class Screen:
             # clear screen to black
             self.scr.fill((0, 0, 0))
             # print ending message and score
-            self.draw_text("The game has ended", self.myfont, self.white, 800, 400, "topright")
-            self.draw_text(f"Tour score is {score}", self.myfont, self.white, 800, 500, "topright")
+            self.draw_text("The game has ended", self.my_font, self.white, 800, 400, "topright")
+            self.draw_text(f"Tour score is {score}", self.my_font, self.white, 800, 500, "topright")
             # draw the end button
             pg.draw.rect(self.scr, self.end_button.return_color(), self.end_button.rect)
             self.click_button(True)
             pg.display.flip()
             pg.event.pump()
-
-
-
-
 
 
 class Map:

@@ -1,4 +1,6 @@
 import sys
+import os
+
 import pygame as pg
 
 
@@ -108,7 +110,7 @@ class Screen:
 
     def start_turn(self, regions, week):
         # clear screen to black
-        self.scr.fill((0, 0, 0))
+        self.scr.fill(self.bg_colour)
 
         # write number of week on turn-button
         Screen.draw_text(f"Week: {week}", self.white, 200, 0, "top_right")
@@ -136,7 +138,7 @@ class Screen:
     def end_game(self, score):
         while True:
             # clear screen to black
-            self.scr.fill((0, 0, 0))
+            self.scr.fill(self.bg_colour)
             # print ending message and score
             self.draw_text("The game has ended", self.white, 800, 400, "top_right")
             self.draw_text(f"Tour score is {score}", self.white, 800, 500, "top_right")
@@ -215,13 +217,28 @@ class Screen:
 class Map:
     @staticmethod
     def start_turn(regions):
+        # Overlay setup
+        project_path = os.path.dirname(os.path.dirname(__file__))
+        dir_path = project_path + '/source_data/provinces/'
+        overlay = pg.image.load(dir_path + "overlay.png")
+        overlay_rect = overlay.get_rect()
+        overlay_rect.topleft = (-30, 30)
+
+        # show each region in the correct colour
         for i in range(len(regions)):
             inf = regions[i].df.iat[-1, 1]
             pop = regions[i].inhabitants
-            num = int(inf / pop * 6)
-            if num > 5:
-                num = 5
+            num = int(inf / pop * 6) + 1
+            if num > 6:
+                num = 6
             Screen.scr.blit(regions[i].images[num].img, regions[i].images[num].img_rect)
+
+            # show warning sign for region if code black is active
+            if regions[i].code_black_active:
+                Screen.scr.blit(regions[i].images[0].img, regions[i].images[0].img_rect)
+
+        # show overlay on screen
+        Screen.scr.blit(overlay, overlay_rect)
 
 
 class MeasureTable:

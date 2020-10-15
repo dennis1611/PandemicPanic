@@ -58,8 +58,8 @@ class Region:
         new_infections = (1 / 2) * prev_r * prev_inf_total // 1
 
         # check if calculated new infections do not exceed physical limitations
-        limit_new_infections = self.inhabitants - prev_data.loc['Total recoveries'] - prev_data.loc[
-            'Currently infected'] - prev_data.loc['Total deaths']
+        # may be slightly off as a result of recoveries and adjacent regions
+        limit_new_infections = self.inhabitants - prev_data.loc['Currently infected']
         if new_infections > limit_new_infections:
             new_infections = limit_new_infections
 
