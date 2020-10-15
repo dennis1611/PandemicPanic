@@ -1,0 +1,51 @@
+# A consice timeline of the measures as they were taken in the Netherlands. This timeline functions as the basis of the balancing, to make the game somewhat realistic.
+
+March 9th - 	Do not shake hands, weash your hands more frequently, use card instead of cash
+March 11th - 	Universities close (schools stay open), maximm to gather with 100 people, work from home
+March 15th- 	Restaurants close, gyms close, 1.5 meters distance recommended
+March 16th - 	Schools close
+March 26th - 	A maximum of 2 people gathering
+April 21st - 	Children can play sports again
+June 1st - 	Masks in public transport, universities open for exams and restaurants open
+June 8th - 	Primary schools open
+June 15th - 	Possibility to travel but only to a limited number of countries
+July 1st - 		Everybody can use public transport, multiple families permitted in 1 car
+August 6th - 	When visiting a restaurant, leave behind contact details
+August 18th - 	A maximum of 6 people to visit
+September 18th - 	Restaurants close at night in busy cities
+September 28th - 	Restaurants close at 22:00, work at home, maximum of 3 people to visit
+October 13th - 	Restaurants closed, no amateur football matches, no large events, shops close at 20:00, travel as little as possible, need to wear a mask in public spaces
+
+
+# Here, the measures according to our model are placed into the timeline according to the timeline above.
+# Dates that are near eachother (such as 11 March and 15 March) are clumped together.
+
+1: distance - 	    March 15th	    until	now
+2: lockdown - 	    March 15th	    until	June 1st
+		            October 13th	until	now
+3: mask - 		    October 13th 	until	now
+4: restaurants - 	March 15th	    until	June 1st
+		            October 13th	until	now
+5: events - 	    March 11th	    until	now
+6: visitors - 	    March 15th 	    until	now
+7: quarantine - 	March 11th	    until	now
+8: education - 	    March 16th	    until	now
+
+
+# A short overview of the periods is created and the approximate R0- value is recorded according to the "Corona Dashboard" by the Dutch government.
+# These approximate values are paired with the measures available in the game to give the possibility of balancing.
+
+until beginning of March:		R0 around 1.9		Measures:	None.
+beginning of march until June:	R0 around 0.75		Measures:	1, 2, 4, 5, 6, 7, 8.
+June until halfway October:		R0 around 1.15		Measures:	1, 5, 6, 7, (8 not taken into account: schools open and universities partially open).
+Halfway October until now:		R0 around   ?		Measures:	1, 2, 3, 4, 5, 6, 7.
+
+With measures 1, 2, 4, 5, 6, 7, 8: 	    R0 value around 0.75
+With measures 1, 5, 6, 7:		        R0 value around 1.15
+With measures 1, 3, 4, 5, 6, 7, 8:	    R0 value around ?
+
+So:	m2 x m4 x m8 = 				                around 0.65 (0.75/1.15)
+	R_base = 				                    around 1.9
+	m1 x m2 x m4 x m5 x m6 x m7 x m8 * R_base	around 0.75
+
+	(m1 x m5 x m6 x m7 * R_base		            around 1.15)
