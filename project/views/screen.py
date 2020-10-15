@@ -1,5 +1,6 @@
-import pygame as pg
 import sys
+import pygame as pg
+import os
 
 
 class Button:
@@ -39,7 +40,7 @@ class MeasureButton(Button):
     def return_color(self):
         """
         Active buttons should be green, inactive red.
-        This function returns the correct color.
+        This function return the correct color.
         """
         if self.active:
             return self.green
@@ -55,6 +56,7 @@ class MeasureButton(Button):
         elif not self.active:
             self.active = True
 
+
 class EndButton(Button):
     def __init__(self, x, y, width, height):
         super().__init__(x, y, width, height)
@@ -64,6 +66,7 @@ class EndButton(Button):
         Next turn button should be white.
         """
         return self.white
+
 
 class Screen:
     """
@@ -107,6 +110,13 @@ class Screen:
         self.next_turn_button = TurnButton(25, 0, 50, 50)
         self.end_button = EndButton(800, 600, 100, 100)
 
+        # Overlay setup
+        project_path = os.path.dirname(os.path.dirname(__file__))
+        dir_path = project_path + '/source_data/provinces/'
+        self.overlay = pg.image.load(dir_path + "overlay.png")
+        self.overlay_rect = self.overlay.get_rect()
+        self.overlay_rect.topleft = (-30, 30)
+
     def start_turn(self, regions, week):
 
         # set location for info table
@@ -118,7 +128,7 @@ class Screen:
         yloc_abbr = 0
 
         # clear screen to black
-        self.scr.fill((0, 0, 0))
+        self.scr.fill(self.bgcolour)
 
         # write "infected" at info table
         self.draw_text("Infected", self.myfont, self.white, xloc_table + 300, yloc_table, "topright")
@@ -138,12 +148,22 @@ class Screen:
             self.draw_text(regions[i].abbreviation, self.myfont, self.white, xloc_abbr, yloc_abbr, "mid")
             self.draw_text(str(int(inf)), self.myfont, self.white, xloc_table+300, yloc_table, "topright")
 
-            num = int(inf/pop*6)
-            if num > 5:
-                num = 5
+            num = int(inf/pop*6)+1
+            if num > 6:
+                num = 6
             self.scr.blit(regions[i].images[num].img, regions[i].images[num].img_rect)
 
             xloc_abbr += 50
+
+        self.scr.blit(self.overlay,self.overlay_rect)
+
+        # If code_black flag is enabled, draw emergency signs
+        for r in regions:
+
+            if r.code_black_active:
+                self.scr.blit(r.images[0].img, r.images[0].img_rect)
+
+
 
         pg.display.flip()
 
@@ -198,9 +218,9 @@ class Screen:
             pg.draw.rect(self.scr, self.next_turn_button.return_color(), self.next_turn_button.rect)
 
             # to be fixed, this draws the measure text, however, obviously it looks ugly now.
-            offset = 40
-            button_y_diff = 35
-            x_loc = 710
+            # offset = 40
+            # button_y_diff = 35
+            # x_loc = 710
 
 
             # self.draw_text(measures[0].__str__(), self.myfont, self.txtcolor, x_loc, offset + button_y_diff * 0-3, "topleft")
@@ -246,7 +266,7 @@ class Screen:
             # clear screen to black
             self.scr.fill((0, 0, 0))
             # print ending message and score
-            self.draw_text(f"The game has ended", self.myfont, self.white, 800, 400, "topright")
+            self.draw_text("The game has ended", self.myfont, self.white, 800, 400, "topright")
             self.draw_text(f"Tour score is {score}", self.myfont, self.white, 800, 500, "topright")
             # draw the end button
             pg.draw.rect(self.scr, self.end_button.return_color(), self.end_button.rect)

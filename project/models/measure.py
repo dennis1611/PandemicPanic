@@ -29,3 +29,20 @@ class Measure:
 
     def is_active(self):
         return self.active
+
+    def update_return_factor(self):
+        if not self.active:
+            effect = self._activate_return_factor()
+        elif self.active:
+            effect = self._deactivate_return_factor()
+        return effect
+
+    def _activate_return_factor(self):
+        self.active = True
+        effect = self.factor
+        return effect
+
+    def _deactivate_return_factor(self):
+        self.active = False
+        effect = 1 / self.factor
+        return effect

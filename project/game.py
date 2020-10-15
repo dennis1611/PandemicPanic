@@ -3,7 +3,8 @@ Main game loop.
 .exe should activate this file.
 """
 
-from project.models.initialization import initialise_measures, initialise_regions
+from project.models.initialization import initialise_measures, initialise_regions, initialise_borders
+from project.models.adjacency import adjust_adjacent_regions
 from project.views.choose_mode import choose_mode
 from project.views.measures_terminal import choose_measure
 from project.views.report_terminal import display_report
@@ -15,12 +16,13 @@ from project.models.measure import Measure
 print('Welcome message/introduction')
 
 # let the player choose to play in terminal mode or in visual mode
-visual = choose_mode()
+VISUAL = choose_mode()
 
 # create general setup
 measures = initialise_measures()
-regions = initialise_regions()
-starline = '*' * 70
+regions = initialise_regions(visual=VISUAL, measures=measures)
+borders = initialise_borders()
+STAR_LINE = '*' * 70
 
 # Dictionary to locally store abbreviations
 regions_dict = {}
@@ -28,7 +30,7 @@ for region in regions:
     regions_dict[region.name] = region.abbreviation
 
 # extended setup only for visual mode
-if visual:
+if VISUAL:
     # create a Screen
     window = Screen(len(regions), len(measures), regions_dict, regions)
     # set measures as attribute of each region instance (initialised as None)
@@ -40,45 +42,47 @@ if visual:
 week = 1
 running = True
 while running:
-    print('\n' + starline)
+    print('\n' + STAR_LINE)
     print(f'This is week {week}')
-    print(starline)
+    print(STAR_LINE)
 
     # calculates the new infections for this week (leaving only the 'R value' column open)
     for region in regions:
         region.update_infections(week)
 
-    # shows a summary of recent developments of the virus
-    display_report(regions)
-    print(starline)
+    # adjust new infections based on adjacent regions
+    adjust_adjacent_regions(borders, regions, week)
 
-    if not visual:
+    # shows a summary (in the terminal) of recent developments of the virus
+    display_report(regions)
+    print(STAR_LINE)
+
+    # get new_measure / active measures
+
+    # get factor(s) based on new_measure / active measures
+
+    # update R based on factor
+
+    if not VISUAL:
         # choose a measure, (de)activate it, and get the corresponding factor
         new_measure = choose_measure(measures)
-        if isinstance(new_measure, Measure) and new_measure.is_active() is False:
-            new_measure.activate()
-            effect = new_measure.factor
-        elif isinstance(new_measure, Measure) and new_measure.is_active() is True:
-            new_measure.deactivate()
-            effect = 1 / new_measure.factor
+        if isinstance(new_measure, Measure):
+            effect = new_measure.update_return_factor()
         else:
             effect = 1
 
         # set the R value for this week
         for region in regions:
-            region.update_R(week, effect, False)
-    elif visual:
+            region.update_R(week, effect)
+    elif VISUAL:
         # update window
         # noinspection PyUnboundLocalVariable
         window.start_turn(regions, week)
         active_measures = window.end_turn(regions)
-        print(active_measures)
 
         for region in regions:
-            print(active_measures[region.name])
             factor = region.calculate_measures_factor(active_measures[region.name])
-            print(factor)
-            region.update_R(week, factor, True)
+            region.update_R(week, factor)
 
     # end of week
     week += 1
@@ -86,8 +90,8 @@ while running:
         running = False
 
 score = 100
-if not visual:
+if not VISUAL:
     print("The game has ended!")
-elif visual:
+elif VISUAL:
     # display the ending window
     window.end_game(score)

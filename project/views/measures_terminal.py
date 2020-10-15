@@ -44,7 +44,7 @@ def validate_measure_input(user_input, measures):
             return True
         # case 3 (invalid): the input was an int out of bounds
         else:
-            print(f'Your input: {number_chosen}, does not correspond to a measure, please try again')
+            print(f'Your input: {number_chosen} does not correspond to a measure, please try again')
             return False
     # else (invalid): the input was not an int
     else:

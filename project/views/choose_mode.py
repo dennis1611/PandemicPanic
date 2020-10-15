@@ -1,5 +1,5 @@
 def choose_mode():
-    """"Returns a boolean whether the user wants to play in visual mode (True) or terminal mode (False)"""
+    """"Return T|F if the user wants to play in visual mode, else in terminal mode"""
     print('Do you want to play in terminal mode ("t") or in visual mode ("v")?')
     while True:
         user_input = input()
