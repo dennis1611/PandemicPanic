@@ -96,6 +96,16 @@ class Region:
         """Fills in R in the current week, based on the previous R * factor"""
         self.df.loc[current_week, 'R value'] = factor * self.df.loc[current_week - 1, 'R value']
 
+    def get_new_infections(self, week):
+        """"Returns the number of new infections in given week"""
+        return self.df.loc[week, 'New infections']
+
+    def adjust_new_infections(self, week, amount):
+        """"Adds or subtracts the given amount to latest new infections and currently infected
+            (only used for adjacent regions effect)"""
+        self.df.loc[week, "New infections"] += amount
+        self.df.loc[week, "Currently infected"] += amount
+
 
 class RegionExtended(Region):
     def __init__(self, name, inhabitants, regional_infection_factor, regional_death_factor, abbreviation,

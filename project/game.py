@@ -4,6 +4,7 @@ Main game loop.
 """
 
 from project.models.initialization import initialise_measures, initialise_regions, initialise_borders
+from project.models.adjacency import adjust_adjacent_regions
 from project.views.choose_mode import choose_mode
 from project.views.measures_terminal import choose_measure
 from project.views.report_terminal import display_report
@@ -50,8 +51,7 @@ while running:
         region.update_infections(week)
 
     # adjust new infections based on adjacent regions
-    for border in borders:
-        pass
+    adjust_adjacent_regions(borders, regions, week)
 
     # shows a summary (in the terminal) of recent developments of the virus
     display_report(regions)
@@ -83,7 +83,6 @@ while running:
         for region in regions:
             factor = region.calculate_measures_factor(active_measures[region.name])
             region.update_R(week, factor)
-
 
     # end of week
     week += 1
