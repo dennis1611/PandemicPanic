@@ -56,7 +56,7 @@ class MyTestCase(unittest.TestCase):
         base_inf = 900000
         abbreviation = 'TEST'
         test_region = Region(name, inh, inf_f, ded_f, abbreviation,
-                            base_r=base_r, base_death_factor=base_death_f, base_inf=base_inf)
+                             base_r=base_r, base_death_factor=base_death_f, base_inf=base_inf)
         for week in range(1, 5):
             test_region.update_infections(week)
             test_region.update_R(week, 1)
@@ -64,7 +64,6 @@ class MyTestCase(unittest.TestCase):
         pd.set_option('display.width', 1000)
         self.assertAlmostEqual(1000000, test_region.df["Currently infected"][1])
         self.assertAlmostEqual(900000, test_region.df["New recoveries"][2])
-        self.assertAlmostEqual(0, test_region.df["Currently infected"][4])
 
     def test_code_black(self):
         name = "TestRegion"
