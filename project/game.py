@@ -16,6 +16,7 @@ from project.views.screen2 import Screen
 from project.models.measure import Measure
 
 
+# TODO: write an actual welcome message/introduction
 print('Welcome message/introduction')
 
 # let the player choose to play in terminal mode or in visual mode
