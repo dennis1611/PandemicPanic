@@ -12,8 +12,8 @@ from project.models.adjacency import adjust_adjacent_regions
 from project.views.choose_mode import choose_mode
 from project.views.measures_terminal import choose_measure
 from project.views.report_terminal import display_report
-from project.views.screen2 import Screen
 from project.models.measure import Measure
+# Screen is imported in an if VISUAL statement below
 
 
 # TODO: write an actual welcome message/introduction
@@ -35,6 +35,8 @@ for region in regions:
 
 # extended setup only for visual mode
 if VISUAL:
+    # import the Screen class
+    from project.views.screen import Screen
     # create a Screen
     window = Screen(len(regions), len(measures), regions_dict, regions)
     # set measures as attribute of each region instance (initialised as None)
