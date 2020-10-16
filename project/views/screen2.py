@@ -314,21 +314,22 @@ class Map:
         """Updates the map at the start of each turn"""
         # show each region in the correct colour
         # pylint: disable=consider-using-enumerate
-        for i in range(len(regions)):
-            inf = regions[i].df.iat[-1, 1]
-            pop = regions[i].inhabitants
+        for reg in regions:
+            inf = reg.df.iat[-1, 1]
+            pop = reg.inhabitants
             num = int(inf / pop * 6) + 1
             if num > 6:
                 num = 6
-            Screen.scr.blit(regions[i].images[num].img, regions[i].images[num].img_rect)
-
-            # show warning sign for region if code black is active
-            if regions[i].code_black_active:
-                Screen.scr.blit(regions[i].images[0].img, regions[i].images[0].img_rect)
+            Screen.scr.blit(reg.images[num].img, reg.images[num].img_rect)
 
         # show overlay on screen
         Screen.scr.blit(self.overlay, self.overlay_rect)
 
+        # Tweede loop is nodig! Niet weghalen, anders is volgorde van blitten fout
+        for reg in regions:
+            # show warning sign for region if code black is active
+            if reg.code_black_active:
+                Screen.scr.blit(reg.images[0].img, reg.images[0].img_rect)
 
 class MeasureTable:
     button_size_x, button_size_y = 25, 25
@@ -397,6 +398,8 @@ class InfoTable:
 
         # write "infected" at info table
         Screen.draw_text("Infected", Screen.white, self.x_loc + 300, y_loc_table, "top_right")
+        Screen.draw_text("%", Screen.white, self.x_loc + 400, y_loc_table, "top_right")
+        Screen.draw_text("Deaths", Screen.white, self.x_loc + 500, y_loc_table, "top_right")
 
         for region in regions:
             # go to next row
@@ -407,3 +410,7 @@ class InfoTable:
             # write infections per region at info table
             Screen.draw_text(str(int(region.df.iat[-1, 1])), Screen.white,
                              self.x_loc + 300, y_loc_table, "top_right")
+            Screen.draw_text(str(int(region.df.iat[-1, 1]/region.inhabitants*100)), Screen.white,
+                             self.x_loc + 400, y_loc_table, "top_right")
+            Screen.draw_text(str(int(region.df.iat[-1, 3])), Screen.white,
+                             self.x_loc + 500, y_loc_table, "top_right")
