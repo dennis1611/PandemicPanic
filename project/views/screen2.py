@@ -272,17 +272,13 @@ class MeasureTable:
 
     def __init__(self, num_regions, num_measures):
         # Measure buttons creation
-        self.measure_buttons = self.create_measure_buttons(num_regions, num_measures)
-
-    def create_measure_buttons(self, num_regions, num_measures):
-        """Create and return button for each measure for each region"""
         measure_buttons = []
         for region_n in range(num_regions):
             for meas_n in range(num_measures):
                 measure_buttons.append(
                     MeasureButton(self.x_loc + 50 * region_n,
                                   self.offset + self.button_y_diff * meas_n, 25, 25))
-        return measure_buttons
+        self.measure_buttons = measure_buttons
 
     def start_turn(self, regions):
         """Updates the measure table at the start of each turn"""
