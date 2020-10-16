@@ -87,7 +87,7 @@ class Screen:
     # Set screen dimensions and create the surface.
     scr = pg.display.set_mode((x_max, y_max))
 
-    def __init__(self, num_regions, num_measures, regions_dict, unused):
+    def __init__(self, num_regions, num_measures, regions_dict):
 
         self.num_regions = num_regions
         self.num_measures = num_measures
@@ -124,7 +124,9 @@ class Screen:
         for j in range(self.num_regions):
             active_array = []
             for i in range(self.num_measures):
-                active_array.append(self.measure_table.measure_buttons[self.num_measures * j + i].active)
+                active_array.append(
+                    self.measure_table.measure_buttons[self.num_measures * j + i].active
+                )
             return_dict[regions[j].name] = active_array
         # print(return_dict)
 

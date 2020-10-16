@@ -38,7 +38,7 @@ if VISUAL:
     # import the Screen class
     from project.views.screen import Screen
     # create a Screen
-    window = Screen(len(regions), len(measures), regions_dict, regions)
+    window = Screen(len(regions), len(measures), regions_dict)
     # set measures as attribute of each region instance (initialised as None)
     for region in regions:
         region.region_measures = measures
