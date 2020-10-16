@@ -11,8 +11,10 @@ class MyTestCase(unittest.TestCase):
 
     def test_adjacency(self):
         # create test region instances with infection factors of 1 and death factor of 0
-        test_region_1 = Region("TestRegion1", 100000, 1, 0, "T1", base_r=1, base_death_factor=0, base_inf=2000)
-        test_region_2 = Region("TestRegion2", 100000, 1, 0, "T2", base_r=1, base_death_factor=0, base_inf=1000)
+        test_region_1 = Region("TestRegion1", 100000, 1, 0, "T1",
+                               base_r=1, base_death_factor=0, base_inf=2000)
+        test_region_2 = Region("TestRegion2", 100000, 1, 0, "T2",
+                               base_r=1, base_death_factor=0, base_inf=1000)
         # create borders list
         borders = [("TestRegion1", "TestRegion2")]
 
@@ -43,3 +45,7 @@ class MyTestCase(unittest.TestCase):
         updated_current_infected_2 = test_region_2.df["Currently infected"][1]
         self.assertEqual(2975, updated_current_infected_1)
         self.assertEqual(1525, updated_current_infected_2)
+
+
+if __name__ == '__main__':
+    unittest.main()

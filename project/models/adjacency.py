@@ -2,6 +2,7 @@ def adjust_adjacent_regions(borders, regions, week, impact=20):
     """Adjust new infections based on adjacent regions"""
     for border in borders:
         region_name_1, region_name_2 = border
+        # pylint: disable=cell-var-from-loop
         region1 = list(filter(lambda elem: elem.name == region_name_1, regions))[0]
         region2 = list(filter(lambda elem: elem.name == region_name_2, regions))[0]
 

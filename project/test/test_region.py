@@ -6,7 +6,6 @@ import unittest
 import pandas as pd
 from project.models.region import Region
 from project.models.initialization import initialise_regions
-from project.views.report_terminal import display_report
 
 
 class MyTestCase(unittest.TestCase):
@@ -35,15 +34,16 @@ class MyTestCase(unittest.TestCase):
         base_death_f = 0.02
         base_inf = 1000
         abbreviation = 'TEST'
-        testregion = Region(name, inh, inf_f, ded_f, abbreviation, base_r=base_r, base_death_factor=base_death_f, base_inf=base_inf)
+        test_region = Region(name, inh, inf_f, ded_f, abbreviation,
+                            base_r=base_r, base_death_factor=base_death_f, base_inf=base_inf)
         for week in range(1, 4):
-            testregion.update_infections(week)
-            testregion.update_R(week, 1)
+            test_region.update_infections(week)
+            test_region.update_R(week, 1)
         pd.set_option('display.max_columns', 10)
         pd.set_option('display.width', 1000)
-        self.assertAlmostEqual(13621, testregion.df["New infections"][3])
-        self.assertAlmostEqual(1847, testregion.df["New recoveries"][3])
-        self.assertAlmostEqual(28, testregion.df["New deaths"][3])
+        self.assertAlmostEqual(13621, test_region.df["New infections"][3])
+        self.assertAlmostEqual(1847, test_region.df["New recoveries"][3])
+        self.assertAlmostEqual(28, test_region.df["New deaths"][3])
 
     def test_maximum_inhabitants(self):
         name = "TestRegion"
@@ -55,15 +55,16 @@ class MyTestCase(unittest.TestCase):
         base_death_f = 0.02
         base_inf = 900000
         abbreviation = 'TEST'
-        testregion = Region(name, inh, inf_f, ded_f, abbreviation, base_r=base_r, base_death_factor=base_death_f, base_inf=base_inf)
+        test_region = Region(name, inh, inf_f, ded_f, abbreviation,
+                            base_r=base_r, base_death_factor=base_death_f, base_inf=base_inf)
         for week in range(1, 5):
-            testregion.update_infections(week)
-            testregion.update_R(week, 1)
+            test_region.update_infections(week)
+            test_region.update_R(week, 1)
         pd.set_option('display.max_columns', 10)
         pd.set_option('display.width', 1000)
-        self.assertAlmostEqual(1000000, testregion.df["Currently infected"][1])
-        self.assertAlmostEqual(900000, testregion.df["New recoveries"][2])
-        self.assertAlmostEqual(0, testregion.df["Currently infected"][4])
+        self.assertAlmostEqual(1000000, test_region.df["Currently infected"][1])
+        self.assertAlmostEqual(900000, test_region.df["New recoveries"][2])
+        self.assertAlmostEqual(0, test_region.df["Currently infected"][4])
 
     def test_code_black(self):
         name = "TestRegion"
@@ -75,19 +76,18 @@ class MyTestCase(unittest.TestCase):
         base_death_f = 0.02
         base_inf = 5000
         abbreviation = 'TEST'
-        testregion = Region(name, inh, inf_f, ded_f, abbreviation, base_r=base_r, base_death_factor=base_death_f,
-                            base_inf=base_inf)
-        testregion.capacity = 0.01
-        testregion.code_black_effect = 3
+        test_region = Region(name, inh, inf_f, ded_f, abbreviation,
+                             base_r=base_r, base_death_factor=base_death_f, base_inf=base_inf)
+        test_region.capacity = 0.01
+        test_region.code_black_effect = 3
         for week in range(1, 10):
-            testregion.update_infections(week)
-            testregion.update_R(week, 1)
+            test_region.update_infections(week)
+            test_region.update_R(week, 1)
         pd.set_option('display.max_columns', 10)
         pd.set_option('display.width', 1000)
-        self.assertAlmostEqual(7500, testregion.df["New infections"][1])
-        self.assertAlmostEqual(12500, testregion.df["Currently infected"][1])
-        self.assertAlmostEqual(0.06 * 18750, testregion.df["New deaths"][4])
-
+        self.assertAlmostEqual(7500, test_region.df["New infections"][1])
+        self.assertAlmostEqual(12500, test_region.df["Currently infected"][1])
+        self.assertAlmostEqual(0.06 * 18750, test_region.df["New deaths"][4])
 
 
 if __name__ == '__main__':

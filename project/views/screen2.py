@@ -23,9 +23,6 @@ class Button:
 
 
 class TurnButton(Button):
-    def __init__(self, x, y, width, height):
-        super().__init__(x, y, width, height)
-
     def return_color(self):
         """
         Next turn button should be white.
@@ -109,6 +106,7 @@ class Screen:
         self.end_button = EndButton(800, 600, 100, 100)
 
     def start_turn(self, regions, week):
+        """Resets/updates the screen at the start of each turn, and handles individual sections"""
         # clear screen to black
         self.scr.fill(self.bg_colour)
 
@@ -122,6 +120,7 @@ class Screen:
         pg.display.flip()
 
     def end_turn(self, regions):
+        """Waits until end turn button is clicked, then returns relevant information"""
         self.click_button(False)
 
         return_dict = {}
@@ -136,6 +135,7 @@ class Screen:
         return return_dict
 
     def end_game(self, score):
+        """Ends the game and gives a score"""
         while True:
             # clear screen to black
             self.scr.fill(self.bg_colour)
@@ -150,6 +150,7 @@ class Screen:
 
     @staticmethod
     def draw_text(text, color, x, y, loc):
+        """Helper function to draw text on the screen"""
         font = Screen.my_font
         text_obj = font.render(text, 1, color)
         text_rect = text_obj.get_rect()
@@ -164,6 +165,7 @@ class Screen:
         Screen.scr.blit(text_obj, text_rect)
 
     def click_button(self, ending):
+        """Listener for all buttons"""
         clean_rect = pg.Rect(700, 40, 1000, 280)
 
         click = False
@@ -217,6 +219,7 @@ class Screen:
 class Map:
     @staticmethod
     def start_turn(regions):
+        """Updates the map at the start of each turn"""
         # Overlay setup
         project_path = os.path.dirname(os.path.dirname(__file__))
         dir_path = project_path + '/source_data/provinces/'
@@ -253,7 +256,7 @@ class MeasureTable:
         self.measure_buttons = self.create_measure_buttons(num_regions, num_measures)
 
     def create_measure_buttons(self, num_regions, num_measures):
-        # create button for each measure for each region
+        """Create and return button for each measure for each region"""
         measure_buttons = []
         for region_n in range(num_regions):
             for meas_n in range(num_measures):
@@ -262,6 +265,7 @@ class MeasureTable:
         return measure_buttons
 
     def start_turn(self, regions):
+        """Updates the measure table at the start of each turn"""
         # make local copy of x_loc
         x_loc_abbr = self.x_loc
         for region in regions:
@@ -277,6 +281,7 @@ class InfoTable:
         self.y_loc = y_div
 
     def start_turn(self, regions):
+        """Updates the info table at the start of each turn"""
         # make local copy of y_loc
         y_loc_table = self.y_loc
 

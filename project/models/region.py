@@ -22,7 +22,8 @@ class Region:
     Class that contains all information of a certain region.
     """
 
-    def __init__(self, name, inhabitants, regional_infection_factor, regional_death_factor, abbreviation,
+    def __init__(self, name, inhabitants,
+                 regional_infection_factor, regional_death_factor, abbreviation,
                  base_r=3, base_death_factor=0.02, base_inf=1000):
         self.name = name
         self.inhabitants = inhabitants
@@ -39,7 +40,8 @@ class Region:
         region_r = base_r * regional_infection_factor
 
         df = pd.DataFrame(data=[[base_inf, base_inf, 0, 0, 0, 0, region_r]],
-                          columns=['New infections', 'Currently infected', 'New deaths', 'Total deaths',
+                          columns=['New infections', 'Currently infected',
+                                   'New deaths', 'Total deaths',
                                    'New recoveries', 'Total recoveries', 'R value'],
                           index=[0])
         self.df = df
@@ -66,7 +68,8 @@ class Region:
         # people stay sick for two weeks; at the end, they either recover or die
         if current_week >= 2:
             prev_prev_inf_new = self.df.loc[current_week - 2, 'New infections']
-            if prev_prev_inf_new > self.capacity * self.inhabitants: # whether code black should be active or not
+            # increased deaths if code black is active
+            if prev_prev_inf_new > self.capacity * self.inhabitants:
                 new_deaths = (prev_prev_inf_new * self.death_factor * self.code_black_effect) // 1
                 self.code_black_active = True
             else:
@@ -92,6 +95,7 @@ class Region:
     def calculate_measure_effects(self, new_measure):
         pass
 
+    # pylint: disable=invalid-name
     def update_R(self, current_week: int, factor: float):
         """Fills in R in the current week, based on the previous R * factor"""
         self.df.loc[current_week, 'R value'] = factor * self.df.loc[current_week - 1, 'R value']
@@ -108,10 +112,12 @@ class Region:
 
 
 class RegionExtended(Region):
-    def __init__(self, name, inhabitants, regional_infection_factor, regional_death_factor, abbreviation,
+    def __init__(self, name, inhabitants,
+                 regional_infection_factor, regional_death_factor, abbreviation,
                  base_r=3, base_death_factor=0.02, base_inf=1000, region_measures=None):
-        super().__init__(name, inhabitants, regional_infection_factor, regional_death_factor, abbreviation,
-                         base_r=3, base_death_factor=0.02, base_inf=1000)
+        super().__init__(name, inhabitants,
+                         regional_infection_factor, regional_death_factor, abbreviation,
+                         base_r=base_r, base_death_factor=base_death_factor, base_inf=base_inf)
         self.region_measures = region_measures
         self.images = []
         self.load_pngs()

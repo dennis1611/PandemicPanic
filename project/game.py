@@ -3,12 +3,14 @@ Main game loop.
 .exe should activate this file.
 """
 
-from project.models.initialization import initialise_measures, initialise_regions, initialise_borders
+from project.models.initialization import initialise_measures, \
+    initialise_regions, \
+    initialise_borders
 from project.models.adjacency import adjust_adjacent_regions
 from project.views.choose_mode import choose_mode
 from project.views.measures_terminal import choose_measure
 from project.views.report_terminal import display_report
-from project.views.screen import Screen
+from project.views.screen2 import Screen
 from project.models.measure import Measure
 
 
