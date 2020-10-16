@@ -10,7 +10,8 @@ from project.views.measures_terminal import choose_measure
 from project.views.report_terminal import display_report
 from project.views.screen import Screen
 from project.models.measure import Measure
-
+import matplotlib.pyplot as plt
+import numpy as np
 
 # TODO: write an actual welcome message/introduction
 print('Welcome message/introduction')
@@ -93,5 +94,16 @@ score = 100
 if not VISUAL:
     print("The game has ended!")
 elif VISUAL:
+    # plotting (for balancing)
+    to_plot_cols = ["Currently infected", "Total deaths"] # column from df to plot
+    for to_plot in to_plot_cols:
+        plt.figure()
+        for region in regions:
+            region.df[to_plot].plot()
+        plt.legend([region.abbreviation for region in regions])
+        plt.title(to_plot)
+        plt.xlabel("week")
+        plt.ylabel("inhabitants")
+        plt.show()
     # display the ending window
     window.end_game(score)
