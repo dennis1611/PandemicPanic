@@ -3,6 +3,8 @@ Main game loop.
 .exe should activate this file.
 """
 
+import matplotlib.pyplot as plt
+
 from project.models.initialization import initialise_measures, \
     initialise_regions, \
     initialise_borders
@@ -12,10 +14,8 @@ from project.views.measures_terminal import choose_measure
 from project.views.report_terminal import display_report
 from project.views.screen2 import Screen
 from project.models.measure import Measure
-import matplotlib.pyplot as plt
-import numpy as np
 
-# TODO: write an actual welcome message/introduction
+
 print('Welcome message/introduction')
 
 # let the player choose to play in terminal mode or in visual mode
@@ -42,6 +42,7 @@ if VISUAL:
 
 
 # main game loop
+# pylint: disable=invalid-name
 week = 1
 running = True
 while running:
@@ -97,7 +98,7 @@ if not VISUAL:
     print("The game has ended!")
 elif VISUAL:
     # plotting (for balancing)
-    to_plot_cols = ["Currently infected", "Total deaths"] # column from df to plot
+    to_plot_cols = ["Currently infected", "Total deaths"]  # column from df to plot
     for to_plot in to_plot_cols:
         plt.figure()
         for region in regions:
