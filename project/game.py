@@ -36,7 +36,7 @@ for region in regions:
 # extended setup only for visual mode
 if VISUAL:
     # import the Screen class
-    from project.views.screen import Screen
+    from project.views.screen2 import Screen
     # create a Screen
     window = Screen(len(regions), len(measures), regions_dict)
     # set measures as attribute of each region instance (initialised as None)

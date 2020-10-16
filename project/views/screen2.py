@@ -148,7 +148,7 @@ class Screen:
 
     scr = pg.display.set_mode((x_max, y_max))
 
-    def __init__(self, num_regions, num_measures, regions_dict, unused):
+    def __init__(self, num_regions, num_measures, regions_dict):
 
         self.num_regions = num_regions
         self.num_measures = num_measures
