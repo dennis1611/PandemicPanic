@@ -80,11 +80,11 @@ class Region:
             new_deaths = 0
             new_recoveries = 0
 
-        cur_infectious = prev_data.loc['Currently infected'] + new_infections - new_recoveries - new_deaths
+        cur_inf = prev_data.loc['Currently infected'] + new_infections - new_recoveries - new_deaths
 
         # create and append the new row (with R as NaN)
         new_data = {'New infections': new_infections,
-                    'Currently infected': cur_infectious,
+                    'Currently infected': cur_inf,
                     'New deaths': new_deaths,
                     'Total deaths': new_deaths + prev_data.loc['Total deaths'],
                     'New recoveries': new_recoveries,
@@ -132,6 +132,7 @@ class RegionExtended(Region):
         """"...
             Overwrites method from parent class"""
         active_factors = 1
+        # pylint: disable=consider-using-enumerate
         for i in range(len(active_measures)):
             if active_measures[i]:
                 active_factors *= self.region_measures[i].factor

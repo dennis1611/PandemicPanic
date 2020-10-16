@@ -42,7 +42,7 @@ class MeasureButton(Button):
         """
         if self.active:
             return self.green
-        elif not self.active:
+        else:
             return self.red
 
     def clicked(self):
@@ -56,9 +56,6 @@ class MeasureButton(Button):
 
 
 class EndButton(Button):
-    def __init__(self, x, y, width, height):
-        super().__init__(x, y, width, height)
-
     def return_color(self):
         """
         Next turn button should be white.
@@ -121,7 +118,7 @@ class Screen:
 
     def end_turn(self, regions):
         """Waits until end turn button is clicked, then returns relevant information"""
-        self.click_button(False)
+        self.click_button_game()
 
         return_dict = {}
         for j in range(self.num_regions):
@@ -144,7 +141,7 @@ class Screen:
             self.draw_text(f"Tour score is {score}", self.white, 800, 500, "top_right")
             # draw the end button
             pg.draw.rect(self.scr, self.end_button.return_color(), self.end_button.rect)
-            self.click_button(True)
+            self.click_button_ending()
             pg.display.flip()
             pg.event.pump()
 
@@ -164,8 +161,8 @@ class Screen:
 
         Screen.scr.blit(text_obj, text_rect)
 
-    def click_button(self, ending):
-        """Listener for all buttons"""
+    def click_button_game(self):
+        """Listener for all buttons during the game"""
         clean_rect = pg.Rect(700, 40, 1000, 280)
 
         click = False
@@ -177,28 +174,49 @@ class Screen:
             # clean buttons with background color rectangle
             pg.draw.rect(self.scr, self.bg_colour, clean_rect)
 
-            if not ending:
-                # if next turn button is clicked return to main loop
-                if self.next_turn_button.rect.collidepoint(mouse_x, mouse_y):
+            # if next turn button is clicked return to main loop
+            if self.next_turn_button.rect.collidepoint(mouse_x, mouse_y):
+                if click:
+                    return
+            # check if one of the measure buttons is clicked
+            for i in range(len(self.measure_table.measure_buttons)):
+                if self.measure_table.measure_buttons[i].rect.collidepoint(mouse_x, mouse_y):
                     if click:
-                        return
-                # check if one of the measure buttons is clicked
-                for i in range(len(self.measure_table.measure_buttons)):
-                    if self.measure_table.measure_buttons[i].rect.collidepoint(mouse_x, mouse_y):
-                        if click:
-                            self.measure_table.measure_buttons[i].clicked()
-                    # TODO: write comment (just copied this)
-                    pg.draw.rect(self.scr, self.measure_table.measure_buttons[i].return_color(), self.measure_table.measure_buttons[i].rect)
-
-            elif ending:
-                # if the end game button is clicked
-                if self.end_button.rect.collidepoint(mouse_x, mouse_y):
-                    if click:
-                        pg.quit()
-                        sys.exit()
+                        self.measure_table.measure_buttons[i].clicked()
+                # TODO: write comment (just copied this)
+                pg.draw.rect(self.scr, self.measure_table.measure_buttons[i].return_color(),
+                             self.measure_table.measure_buttons[i].rect)
 
             # draw the next turn button
             pg.draw.rect(self.scr, self.next_turn_button.return_color(), self.next_turn_button.rect)
+
+            # flip the display and check events
+            pg.display.flip()
+
+            click = False
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    pg.quit()
+                    sys.exit()
+                if event.type == pg.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        click = True
+
+            # event pump, prevent freeze
+            pg.event.pump()
+
+    def click_button_ending(self):
+        """Listener for all buttons in the ending"""
+        click = False
+        while True:
+            # get mouse position
+            mouse_x, mouse_y = pg.mouse.get_pos()
+
+            # if the end game button is clicked
+            if self.end_button.rect.collidepoint(mouse_x, mouse_y):
+                if click:
+                    pg.quit()
+                    sys.exit()
 
             # flip the display and check events
             pg.display.flip()
@@ -228,6 +246,7 @@ class Map:
         overlay_rect.topleft = (-30, 30)
 
         # show each region in the correct colour
+        # pylint: disable=consider-using-enumerate
         for i in range(len(regions)):
             inf = regions[i].df.iat[-1, 1]
             pop = regions[i].inhabitants
@@ -261,7 +280,8 @@ class MeasureTable:
         for region_n in range(num_regions):
             for meas_n in range(num_measures):
                 measure_buttons.append(
-                    MeasureButton(self.x_loc + 50 * region_n, self.offset + self.button_y_diff * meas_n, 25, 25))
+                    MeasureButton(self.x_loc + 50 * region_n,
+                                  self.offset + self.button_y_diff * meas_n, 25, 25))
         return measure_buttons
 
     def start_turn(self, regions):
@@ -295,4 +315,5 @@ class InfoTable:
             # write region names at info table
             Screen.draw_text(region.name, Screen.white, self.x_loc, y_loc_table, "top_left")
             # write infections per region at info table
-            Screen.draw_text(str(int(region.df.iat[-1, 1])), Screen.white, self.x_loc + 300, y_loc_table, "top_right")
+            Screen.draw_text(str(int(region.df.iat[-1, 1])), Screen.white,
+                             self.x_loc + 300, y_loc_table, "top_right")
