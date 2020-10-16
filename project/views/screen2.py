@@ -235,16 +235,16 @@ class Screen:
 
 
 class Map:
-    @staticmethod
-    def start_turn(regions):
-        """Updates the map at the start of each turn"""
+    def __init__(self):
         # Overlay setup
         project_path = os.path.dirname(os.path.dirname(__file__))
         dir_path = project_path + '/source_data/provinces/'
-        overlay = pg.image.load(dir_path + "overlay.png")
-        overlay_rect = overlay.get_rect()
-        overlay_rect.topleft = (-30, 30)
+        self.overlay = pg.image.load(dir_path + "overlay.png")
+        self.overlay_rect = self.overlay.get_rect()
+        self.overlay_rect.topleft = (-30, 30)
 
+    def start_turn(self, regions):
+        """Updates the map at the start of each turn"""
         # show each region in the correct colour
         # pylint: disable=consider-using-enumerate
         for i in range(len(regions)):
@@ -260,7 +260,7 @@ class Map:
                 Screen.scr.blit(regions[i].images[0].img, regions[i].images[0].img_rect)
 
         # show overlay on screen
-        Screen.scr.blit(overlay, overlay_rect)
+        Screen.scr.blit(self.overlay, self.overlay_rect)
 
 
 class MeasureTable:
