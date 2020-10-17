@@ -123,17 +123,18 @@ class Screen:
                 if click:
                     lst[i].clicked(self.measure_table.measure_buttons, i)
             # TODO: write comment (just copied this)
-            pg.draw.rect(self.scr, lst[i].return_color(), lst[i].rect, lst[i].width)
+            pg.draw.rect(Screen.scr, lst[i].return_color(), lst[i].rect, lst[i].width)
 
-    def draw_descriptions(self, txt, loc, short: bool):
-        # TODO: check if this method can be improved/clarified
-        # pylint: disable=consider-using-enumerate
-        # pylint: disable=invalid-name
-        for d in range(len(txt)):
-            if short:
-                self.draw_text(txt[d], Screen.white, loc[d].x-6, loc[d].y-4, "top_left")
-            else:
-                self.draw_text(txt[d][0], Screen.white, loc[d].x - 6, loc[d].y - 4, "top_left")
+    @staticmethod
+    def draw_descriptions(descriptions, loc, full_description):
+        # show the entire description for the measures
+        if full_description:
+            for count, description in enumerate(descriptions):
+                Screen.draw_text(description, Screen.white, loc[count].x-6, loc[count].y-4, "top_left")
+        # or show only the number for the measures
+        else:
+            for count, description in enumerate(descriptions):
+                Screen.draw_text(description[0], Screen.white, loc[count].x - 6, loc[count].y - 4, "top_left")
 
     def click_button_game(self):
         """Listener for all buttons during the game"""
@@ -160,13 +161,14 @@ class Screen:
             self.draw_buttons(click, mouse_x, mouse_y, self.measure_table.measure_masters)
             self.draw_buttons(click, mouse_x, mouse_y, self.measure_table.province_masters)
 
+            # draw full description for measures is SPACE is pressed, else only number
             if keys[pg.K_SPACE]:
-                self.draw_descriptions(self.measure_table.measure_txt,
+                self.draw_descriptions(self.measure_table.measure_descriptions,
                                        self.measure_table.measure_masters,
                                        True)
             else:
                 self.draw_buttons(click, mouse_x, mouse_y, self.measure_table.measure_buttons)
-                self.draw_descriptions(self.measure_table.measure_txt,
+                self.draw_descriptions(self.measure_table.measure_descriptions,
                                        self.measure_table.measure_masters,
                                        False)
 
@@ -262,7 +264,7 @@ class MeasureTable:
         province_masters = []
         for region_n in range(num_regions + 1):
             for meas_n in range(num_measures + 1):
-
+                # master buttons for measures
                 if region_n == 0 and not meas_n == 0:
                     measure_masters.append(
                         MeasureMaster(self.x_loc + 50 * region_n,
@@ -270,7 +272,7 @@ class MeasureTable:
                                       self.master_size_x, self.master_size_y
                                       )
                     )
-
+                # master buttons for regions
                 elif meas_n == 0 and not region_n == 0:
                     province_masters.append(
                         ProvinceMaster(self.x_loc + 50 * region_n,
@@ -278,7 +280,7 @@ class MeasureTable:
                                        self.master_size_x, self.master_size_y
                                        )
                     )
-
+                # normal measure buttons
                 elif not (region_n == 0 and meas_n == 0):
                     measure_buttons.append(
                         MeasureButton(self.x_loc + 50 * region_n,
@@ -291,10 +293,10 @@ class MeasureTable:
         self.measure_masters = measure_masters
         self.province_masters = province_masters
 
-        measure_txt = []
+        measure_descriptions = []
         for meas in measures:
-            measure_txt.append(repr(meas))
-        self.measure_txt = measure_txt
+            measure_descriptions.append(repr(meas))
+        self.measure_descriptions = measure_descriptions
 
     def start_turn(self, regions):
         """Updates the measure table at the start of each turn"""

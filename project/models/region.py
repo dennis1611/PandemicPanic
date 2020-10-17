@@ -132,9 +132,8 @@ class RegionExtended(Region):
         """"...
             Overwrites method from parent class"""
         active_factors = 1
-        # pylint: disable=consider-using-enumerate
-        for i in range(len(active_measures)):
-            if active_measures[i]:
+        for i, measure_active in enumerate(active_measures):
+            if measure_active:
                 active_factors *= self.region_measures[i].factor
         return active_factors
 
