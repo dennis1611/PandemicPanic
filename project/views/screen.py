@@ -117,12 +117,12 @@ class Screen:
     def draw_buttons(self, click, mouse_x, mouse_y, lst):
         # TODO: check if this method can be improved
         # pylint: disable=consider-using-enumerate
-        for button in range(len(lst)):
-            if lst[button].rect.collidepoint(mouse_x, mouse_y):
+        for i in range(len(lst)):
+            if lst[i].rect.collidepoint(mouse_x, mouse_y):
                 if click:
-                    lst[button].clicked(self.measure_table.measure_buttons, button)
+                    lst[i].clicked(self.measure_table.measure_buttons, i)
             # TODO: write comment (just copied this)
-            pg.draw.rect(self.scr, lst[button].return_color(), lst[button].rect, lst[button].width)
+            pg.draw.rect(self.scr, lst[i].return_color(), lst[i].rect, lst[i].width)
 
     def click_button_game(self):
         """Listener for all buttons during the game"""
