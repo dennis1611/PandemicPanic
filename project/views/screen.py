@@ -125,8 +125,10 @@ class Screen:
             # TODO: write comment (just copied this)
             pg.draw.rect(self.scr, lst[i].return_color(), lst[i].rect, lst[i].width)
 
-    def draw_descriptions(self, txt, loc, short):
-
+    def draw_descriptions(self, txt, loc, short: bool):
+        # TODO: check if this method can be improved/clarified
+        # pylint: disable=consider-using-enumerate
+        # pylint: disable=invalid-name
         for d in range(len(txt)):
             if short:
                 self.draw_text(txt[d], Screen.white, loc[d].x-6, loc[d].y-4, "top_left")
@@ -159,10 +161,14 @@ class Screen:
             self.draw_buttons(click, mouse_x, mouse_y, self.measure_table.province_masters)
 
             if keys[pg.K_SPACE]:
-                self.draw_descriptions(self.measure_table.measure_txt,self.measure_table.measure_masters,True)
+                self.draw_descriptions(self.measure_table.measure_txt,
+                                       self.measure_table.measure_masters,
+                                       True)
             else:
                 self.draw_buttons(click, mouse_x, mouse_y, self.measure_table.measure_buttons)
-                self.draw_descriptions(self.measure_table.measure_txt, self.measure_table.measure_masters,False)
+                self.draw_descriptions(self.measure_table.measure_txt,
+                                       self.measure_table.measure_masters,
+                                       False)
 
             # draw the next turn button
             pg.draw.rect(self.scr, self.next_turn_button.return_color(), self.next_turn_button.rect)
@@ -234,7 +240,7 @@ class Map:
         # show overlay on screen
         Screen.scr.blit(self.overlay, self.overlay_rect)
 
-        # Tweede loop is nodig! Niet weghalen, anders is volgorde van blitten fout
+        # Second loop is needed for order of displaying
         for region in regions:
             # show warning sign for region if code black is active
             if region.code_black_active:

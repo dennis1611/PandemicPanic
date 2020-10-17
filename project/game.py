@@ -20,7 +20,7 @@ from project.models.measure import Measure
 print('Welcome message/introduction')
 
 # let the player choose to play in terminal mode or in visual mode
-VISUAL = True #choose_mode()
+VISUAL = choose_mode()
 
 # create general setup
 measures = initialise_measures()
