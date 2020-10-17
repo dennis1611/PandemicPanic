@@ -100,9 +100,9 @@ class Region:
         """Fills in R in the current week, based on the previous R * factor"""
         self.df.loc[current_week, 'R value'] = factor * self.df.loc[current_week - 1, 'R value']
 
-    def get_new_infections(self, week):
-        """"Returns the number of new infections in given week"""
-        return self.df.loc[week, 'New infections']
+    def get_data_row(self, week):
+        """"Returns the dataframe row for given week"""
+        return self.df.loc[week]
 
     def adjust_new_infections(self, week, amount):
         """"Adds or subtracts the given amount to latest new infections and currently infected

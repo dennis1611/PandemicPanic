@@ -6,16 +6,26 @@ def adjust_adjacent_regions(borders, regions, week, impact=20):
         region1 = list(filter(lambda elem: elem.name == region_name_1, regions))[0]
         region2 = list(filter(lambda elem: elem.name == region_name_2, regions))[0]
 
-        region1_inf = region1.get_new_infections(week)
-        region2_inf = region2.get_new_infections(week)
+        # get the new infections in current week
+        region1_inf = region1.get_data_row(week).loc["New infections"]
+        region2_inf = region2.get_data_row(week).loc["New infections"]
 
+        # calculate how many new infections will be exchanged from high to low
         exchange = abs((region1_inf - region2_inf) // impact)
 
+        # find which region has most new infections
         if region1_inf < region2_inf:
-            region_high = region2
-            region_low = region1
+            region_high, region_low = region2, region1
         elif region1_inf > region2_inf:
-            region_high = region1
-            region_low = region2
+            region_high, region_low = region1, region2
+        else:
+            return
+
+        # check that exchange does not exceed physical limitations
+        limit_exchange = region_low.inhabitants - region_low.get_data_row(week).loc["Currently infected"]
+        if exchange > limit_exchange:
+            exchange = limit_exchange
+
+        # adjust the new infections
         region_high.adjust_new_infections(week, -1 * exchange)
         region_low.adjust_new_infections(week, +1 * exchange)
