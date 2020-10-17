@@ -29,21 +29,26 @@ class ProvinceMaster(Button):
 
     def return_color(self):
         """
-        Next turn button should be white.
+        Province master button should be blue
         """
         return self.blue
 
-    def clicked(self, *args):
+    @staticmethod
+    def clicked(*args):
 
+        # check if all buttons for this region are on
         all_on = True
         for i in range(8):
             if not args[0][i + 8 * args[1]].active:
                 all_on = False
 
-        for i in range(8):
-            if all_on:
+        # if all on, turn them off
+        if all_on:
+            for i in range(8):
                 args[0][i + 8 * args[1]].active = False
-            else:
+        # if one or more are turned off, turn all on
+        else:
+            for i in range(8):
                 args[0][i + 8 * args[1]].active = True
 
 
@@ -54,21 +59,26 @@ class MeasureMaster(Button):
 
     def return_color(self):
         """
-        Next turn button should be white.
+        Measure master button should be white
         """
         return self.white
 
-    def clicked(self, *args):
+    @staticmethod
+    def clicked(*args):
 
+        # check if all buttons for this measure are on
         all_on = True
         for i in range(12):
             if not args[0][i * 8 + args[1]].active:
                 all_on = False
 
-        for i in range(12):
-            if all_on:
+        # if all on, turn them off
+        if all_on:
+            for i in range(12):
                 args[0][i * 8 + args[1]].active = False
-            else:
+        # if one or more are turned off, turn all on
+        else:
+            for i in range(12):
                 args[0][i * 8 + args[1]].active = True
 
 
