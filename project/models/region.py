@@ -24,7 +24,7 @@ class Region:
 
     def __init__(self, name, inhabitants,
                  regional_infection_factor, regional_death_factor, abbreviation,
-                 base_r=3, base_death_factor=0.02, base_inf=1000):
+                 base_r=2, base_death_factor=0.02, base_inf=10):
         self.name = name
         self.inhabitants = inhabitants
         self.abbreviation = abbreviation
@@ -114,7 +114,7 @@ class Region:
 class RegionExtended(Region):
     def __init__(self, name, inhabitants,
                  regional_infection_factor, regional_death_factor, abbreviation,
-                 base_r=3, base_death_factor=0.02, base_inf=1000, region_measures=None):
+                 base_r=2, base_death_factor=0.02, base_inf=10, region_measures=None):
         super().__init__(name, inhabitants,
                          regional_infection_factor, regional_death_factor, abbreviation,
                          base_r=base_r, base_death_factor=base_death_factor, base_inf=base_inf)
