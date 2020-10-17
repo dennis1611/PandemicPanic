@@ -12,7 +12,10 @@ class Button:
     # possible colors
     red = (255, 0, 0)
     green = (0, 255, 0)
+    blue = (0, 0, 255)
     white = (255, 255, 255)
+
+    width = 0
 
     def __init__(self, x, y, width, height):
         """
@@ -20,6 +23,56 @@ class Button:
         """
         self.rect = pg.Rect(0, 0, width, height)
         self.rect.midtop = (x, y)
+
+
+class ProvinceMaster(Button):
+    def __init__(self, x, y, width, height):
+        super().__init__(x, y, width, height)
+        self.width = 1
+
+    def return_color(self):
+        """
+        Next turn button should be white.
+        """
+        return self.blue
+
+    def clicked(self, *args):
+
+        all_on = True
+        for i in range(8):
+            if not args[0][i + 8 * args[1]].active:
+                all_on = False
+
+        for i in range(8):
+            if all_on:
+                args[0][i + 8 * args[1]].active = False
+            else:
+                args[0][i + 8 * args[1]].active = True
+
+
+class MeasureMaster(Button):
+    def __init__(self, x, y, width, height):
+        super().__init__(x, y, width, height)
+        self.width = 1
+
+    def return_color(self):
+        """
+        Next turn button should be white.
+        """
+        return self.white
+
+    def clicked(self, *args):
+
+        all_on = True
+        for i in range(12):
+            if not args[0][i * 8 + args[1]].active:
+                all_on = False
+
+        for i in range(12):
+            if all_on:
+                args[0][i * 8 + args[1]].active = False
+            else:
+                args[0][i * 8 + args[1]].active = True
 
 
 class TurnButton(Button):
@@ -45,7 +98,9 @@ class MeasureButton(Button):
         else:
             return self.red
 
-    def clicked(self):
+    # TODO: args is unused, but program crashes without
+    # pylint: disable=unused-argument
+    def clicked(self, *args):
         """
         If button is clicked, active boolean should be changed.
         """
@@ -84,7 +139,12 @@ class Screen:
     x_div = 725
     y_div = 360
 
-    # Set screen dimensions and create the surface.
+    # Create window
+    project_path = os.path.dirname(os.path.dirname(__file__))
+    dir_path = project_path + '/source_data/provinces/'
+    icon = pg.image.load(dir_path + "icon.png")
+    pg.display.set_icon(icon)
+    pg.display.set_caption('PandemicPanic')
     scr = pg.display.set_mode((x_max, y_max))
 
     def __init__(self, num_regions, num_measures, regions_dict):
@@ -163,6 +223,16 @@ class Screen:
 
         Screen.scr.blit(text_obj, text_rect)
 
+    def draw_buttons(self, click, mouse_x, mouse_y, lst):
+        # TODO: check if this method can be improved
+        # pylint: disable=consider-using-enumerate
+        for button in range(len(lst)):
+            if lst[button].rect.collidepoint(mouse_x, mouse_y):
+                if click:
+                    lst[button].clicked(self.measure_table.measure_buttons, button)
+            # TODO: write comment (just copied this)
+            pg.draw.rect(self.scr, lst[button].return_color(), lst[button].rect, lst[button].width)
+
     def click_button_game(self):
         """Listener for all buttons during the game"""
         clean_rect = pg.Rect(700, 40, 1000, 280)
@@ -180,14 +250,11 @@ class Screen:
             if self.next_turn_button.rect.collidepoint(mouse_x, mouse_y):
                 if click:
                     return
-            # check if one of the measure buttons is clicked
-            for i in range(len(self.measure_table.measure_buttons)):
-                if self.measure_table.measure_buttons[i].rect.collidepoint(mouse_x, mouse_y):
-                    if click:
-                        self.measure_table.measure_buttons[i].clicked()
-                # TODO: write comment (just copied this)
-                pg.draw.rect(self.scr, self.measure_table.measure_buttons[i].return_color(),
-                             self.measure_table.measure_buttons[i].rect)
+
+            # draw buttons in the measure choose menu
+            self.draw_buttons(click, mouse_x, mouse_y, self.measure_table.measure_buttons)
+            self.draw_buttons(click, mouse_x, mouse_y, self.measure_table.measure_masters)
+            self.draw_buttons(click, mouse_x, mouse_y, self.measure_table.province_masters)
 
             # draw the next turn button
             pg.draw.rect(self.scr, self.next_turn_button.return_color(), self.next_turn_button.rect)
@@ -256,35 +323,64 @@ class Map:
                 num = 6
             Screen.scr.blit(region.images[num].img, region.images[num].img_rect)
 
+        # show overlay on screen
+        Screen.scr.blit(self.overlay, self.overlay_rect)
+
+        # Tweede loop is nodig! Niet weghalen, anders is volgorde van blitten fout
+        for region in regions:
             # show warning sign for region if code black is active
             if region.code_black_active:
                 Screen.scr.blit(region.images[0].img, region.images[0].img_rect)
 
-        # show overlay on screen
-        Screen.scr.blit(self.overlay, self.overlay_rect)
-
 
 class MeasureTable:
-    measure_button_size = (25, 25)
+    button_size_x, button_size_y = 25, 25
+    master_size_x, master_size_y = 25, 25
     offset = 40
-    button_y_diff = 10 + measure_button_size[1]
-    x_loc = 750
+    button_y_diff = 10 + button_size_y
+    x_loc = 700
     y_loc_abbr = 0
 
     def __init__(self, num_regions, num_measures):
         # Measure buttons creation
         measure_buttons = []
-        for region_n in range(num_regions):
-            for meas_n in range(num_measures):
-                measure_buttons.append(
-                    MeasureButton(self.x_loc + 50 * region_n,
-                                  self.offset + self.button_y_diff * meas_n, 25, 25))
+        measure_masters = []
+        province_masters = []
+        for region_n in range(num_regions + 1):
+            for meas_n in range(num_measures + 1):
+
+                if region_n == 0 and not meas_n == 0:
+                    measure_masters.append(
+                        MeasureMaster(self.x_loc + 50 * region_n,
+                                      self.offset + self.button_y_diff * (meas_n - 1),
+                                      self.master_size_x, self.master_size_y
+                                      )
+                    )
+
+                elif meas_n == 0 and not region_n == 0:
+                    province_masters.append(
+                        ProvinceMaster(self.x_loc + 50 * region_n,
+                                       self.offset + self.button_y_diff * (meas_n - 1),
+                                       self.master_size_x, self.master_size_y
+                                       )
+                    )
+
+                elif not (region_n == 0 and meas_n == 0):
+                    measure_buttons.append(
+                        MeasureButton(self.x_loc + 50 * region_n,
+                                      self.offset + self.button_y_diff * (meas_n - 1),
+                                      self.button_size_x, self.button_size_y
+                                      )
+                    )
+
         self.measure_buttons = measure_buttons
+        self.measure_masters = measure_masters
+        self.province_masters = province_masters
 
     def start_turn(self, regions):
         """Updates the measure table at the start of each turn"""
         # make local copy of x_loc
-        x_loc_abbr = self.x_loc
+        x_loc_abbr = self.x_loc + 50
         for region in regions:
             # write abbreviation
             Screen.draw_text(region.abbreviation, Screen.white, x_loc_abbr, self.y_loc_abbr, "mid")
@@ -304,6 +400,8 @@ class InfoTable:
 
         # write "infected" at info table
         Screen.draw_text("Infected", Screen.white, self.x_loc + 300, y_loc_table, "top_right")
+        Screen.draw_text("%", Screen.white, self.x_loc + 400, y_loc_table, "top_right")
+        Screen.draw_text("Deaths", Screen.white, self.x_loc + 500, y_loc_table, "top_right")
 
         for region in regions:
             # go to next row
@@ -314,3 +412,7 @@ class InfoTable:
             # write infections per region at info table
             Screen.draw_text(str(int(region.df.iat[-1, 1])), Screen.white,
                              self.x_loc + 300, y_loc_table, "top_right")
+            Screen.draw_text(str(int(region.df.iat[-1, 1]/region.inhabitants*100)), Screen.white,
+                             self.x_loc + 400, y_loc_table, "top_right")
+            Screen.draw_text(str(int(region.df.iat[-1, 3])), Screen.white,
+                             self.x_loc + 500, y_loc_table, "top_right")
