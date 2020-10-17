@@ -20,7 +20,7 @@ from project.models.measure import Measure
 print('Welcome message/introduction')
 
 # let the player choose to play in terminal mode or in visual mode
-VISUAL = choose_mode()
+VISUAL = True #choose_mode()
 
 # create general setup
 measures = initialise_measures()
@@ -38,7 +38,7 @@ if VISUAL:
     # import the Screen class
     from project.views.screen import Screen
     # create a Screen
-    window = Screen(len(regions), len(measures), regions_dict)
+    window = Screen(len(regions), len(measures), regions_dict, measures)
     # set measures as attribute of each region instance (initialised as None)
     for region in regions:
         region.region_measures = measures

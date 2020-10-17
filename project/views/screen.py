@@ -17,6 +17,7 @@ class Screen:
     # Colours
     black = (0, 0, 0)
     white = (255, 255, 255)
+    blue = (0, 0, 255)
     bg_colour = black
     txt_color = white
 
@@ -38,7 +39,7 @@ class Screen:
     pg.display.set_caption('PandemicPanic')
     scr = pg.display.set_mode((x_max, y_max))
 
-    def __init__(self, num_regions, num_measures, regions_dict):
+    def __init__(self, num_regions, num_measures, regions_dict, measures):
 
         self.num_regions = num_regions
         self.num_measures = num_measures
@@ -46,7 +47,7 @@ class Screen:
 
         # create instances
         self.map = Map()
-        self.measure_table = MeasureTable(self.num_regions, self.num_measures)
+        self.measure_table = MeasureTable(self.num_regions, self.num_measures, measures)
         self.info_table = InfoTable(self.x_div, self.y_div)
 
         # TurnButton and EndButton setup and creation
@@ -124,15 +125,26 @@ class Screen:
             # TODO: write comment (just copied this)
             pg.draw.rect(self.scr, lst[i].return_color(), lst[i].rect, lst[i].width)
 
+    def draw_descriptions(self, txt, loc, short):
+
+        for d in range(len(txt)):
+            if short:
+                self.draw_text(txt[d], Screen.white, loc[d].x-6, loc[d].y-4, "top_left")
+            else:
+                self.draw_text(txt[d][0], Screen.white, loc[d].x - 6, loc[d].y - 4, "top_left")
+
     def click_button_game(self):
         """Listener for all buttons during the game"""
-        clean_rect = pg.Rect(700, 40, 1000, 280)
+        clean_rect = pg.Rect(650, 40, 1000, 280)
 
         click = False
         while True:
 
             # get mouse position
             mouse_x, mouse_y = pg.mouse.get_pos()
+
+            # get keys
+            keys = pg.key.get_pressed()
 
             # clean buttons with background color rectangle
             pg.draw.rect(self.scr, self.bg_colour, clean_rect)
@@ -143,9 +155,14 @@ class Screen:
                     return
 
             # draw buttons in the measure choose menu
-            self.draw_buttons(click, mouse_x, mouse_y, self.measure_table.measure_buttons)
             self.draw_buttons(click, mouse_x, mouse_y, self.measure_table.measure_masters)
             self.draw_buttons(click, mouse_x, mouse_y, self.measure_table.province_masters)
+
+            if keys[pg.K_SPACE]:
+                self.draw_descriptions(self.measure_table.measure_txt,self.measure_table.measure_masters,True)
+            else:
+                self.draw_buttons(click, mouse_x, mouse_y, self.measure_table.measure_buttons)
+                self.draw_descriptions(self.measure_table.measure_txt, self.measure_table.measure_masters,False)
 
             # draw the next turn button
             pg.draw.rect(self.scr, self.next_turn_button.return_color(), self.next_turn_button.rect)
@@ -232,7 +249,7 @@ class MeasureTable:
     x_loc = 700
     y_loc_abbr = 0
 
-    def __init__(self, num_regions, num_measures):
+    def __init__(self, num_regions, num_measures, measures):
         # Measure buttons creation
         measure_buttons = []
         measure_masters = []
@@ -268,6 +285,11 @@ class MeasureTable:
         self.measure_masters = measure_masters
         self.province_masters = province_masters
 
+        measure_txt = []
+        for meas in measures:
+            measure_txt.append(repr(meas))
+        self.measure_txt = measure_txt
+
     def start_turn(self, regions):
         """Updates the measure table at the start of each turn"""
         # make local copy of x_loc
@@ -291,7 +313,7 @@ class InfoTable:
 
         # write "infected" at info table
         Screen.draw_text("Infected", Screen.white, self.x_loc + 300, y_loc_table, "top_right")
-        Screen.draw_text("Per 100.000", Screen.white, self.x_loc + 400, y_loc_table, "top_right")
+        Screen.draw_text("Per 100k", Screen.white, self.x_loc + 400, y_loc_table, "top_right")
         Screen.draw_text("Deaths", Screen.white, self.x_loc + 500, y_loc_table, "top_right")
 
         for region in regions:

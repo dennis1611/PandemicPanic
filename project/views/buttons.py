@@ -56,6 +56,8 @@ class MeasureMaster(Button):
     def __init__(self, x, y, width, height):
         super().__init__(x, y, width, height)
         self.width = 1
+        self.x = x
+        self.y = y
 
     def return_color(self):
         """
