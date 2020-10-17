@@ -91,7 +91,7 @@ class Screen:
             self.scr.fill(self.bg_colour)
             # print ending message and score
             self.draw_text("The game has ended", self.white, 800, 400, "top_right")
-            self.draw_text(f"Tour score is {score}", self.white, 800, 500, "top_right")
+            self.draw_text(f"Your death count is {score}", self.white, 800, 500, "top_right")
             # draw the end button
             pg.draw.rect(self.scr, self.end_button.return_color(), self.end_button.rect)
             self.click_button_ending()
@@ -291,7 +291,7 @@ class InfoTable:
 
         # write "infected" at info table
         Screen.draw_text("Infected", Screen.white, self.x_loc + 300, y_loc_table, "top_right")
-        Screen.draw_text("%", Screen.white, self.x_loc + 400, y_loc_table, "top_right")
+        Screen.draw_text("Per 100.000", Screen.white, self.x_loc + 400, y_loc_table, "top_right")
         Screen.draw_text("Deaths", Screen.white, self.x_loc + 500, y_loc_table, "top_right")
 
         for region in regions:
@@ -303,7 +303,7 @@ class InfoTable:
             # write infections per region at info table
             Screen.draw_text(str(int(region.df.iat[-1, 1])), Screen.white,
                              self.x_loc + 300, y_loc_table, "top_right")
-            Screen.draw_text(str(int(region.df.iat[-1, 1]/region.inhabitants*100)), Screen.white,
+            Screen.draw_text(str(int(region.df.iat[-1, 1]/region.inhabitants*100000)), Screen.white,
                              self.x_loc + 400, y_loc_table, "top_right")
             Screen.draw_text(str(int(region.df.iat[-1, 3])), Screen.white,
                              self.x_loc + 500, y_loc_table, "top_right")
