@@ -96,7 +96,9 @@ while running:
     if week > 52:
         running = False
 
-score = 100
+score = 0
+for region in regions:
+    score += region.df["Total deaths"][52]
 if not VISUAL:
     print("The game has ended!")
 elif VISUAL:
