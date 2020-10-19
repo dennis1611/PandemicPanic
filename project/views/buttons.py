@@ -35,21 +35,23 @@ class ProvinceMaster(Button):
 
     @staticmethod
     def clicked(*args):
+        num_regions = args[2]
+        num_measures = args[3]
 
         # check if all buttons for this region are on
         all_on = True
-        for i in range(8):
-            if not args[0][i + 8 * args[1]].active:
+        for i in range(num_measures):
+            if not args[0][i + num_measures * args[1]].active:
                 all_on = False
 
         # if all on, turn them off
         if all_on:
-            for i in range(8):
-                args[0][i + 8 * args[1]].active = False
+            for i in range(num_measures):
+                args[0][i + num_measures * args[1]].active = False
         # if one or more are turned off, turn all on
         else:
-            for i in range(8):
-                args[0][i + 8 * args[1]].active = True
+            for i in range(num_measures):
+                args[0][i + num_measures * args[1]].active = True
 
 
 class MeasureMaster(Button):
@@ -67,21 +69,23 @@ class MeasureMaster(Button):
 
     @staticmethod
     def clicked(*args):
+        num_regions = args[2]
+        num_measures = args[3]
 
         # check if all buttons for this measure are on
         all_on = True
-        for i in range(12):
-            if not args[0][i * 8 + args[1]].active:
+        for i in range(num_regions):
+            if not args[0][i * num_measures + args[1]].active:
                 all_on = False
 
         # if all on, turn them off
         if all_on:
-            for i in range(12):
-                args[0][i * 8 + args[1]].active = False
+            for i in range(num_regions):
+                args[0][i * num_measures + args[1]].active = False
         # if one or more are turned off, turn all on
         else:
-            for i in range(12):
-                args[0][i * 8 + args[1]].active = True
+            for i in range(num_regions):
+                args[0][i * num_measures + args[1]].active = True
 
 
 class MeasureButton(Button):
