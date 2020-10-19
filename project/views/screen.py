@@ -121,7 +121,7 @@ class Screen:
         for i in range(len(lst)):
             if lst[i].rect.collidepoint(mouse_x, mouse_y):
                 if click:
-                    lst[i].clicked(self.measure_table.measure_buttons, i)
+                    lst[i].clicked(self.measure_table.measure_buttons, i, self.num_regions, self.num_measures)
             # TODO: write comment (just copied this)
             pg.draw.rect(Screen.scr, lst[i].return_color(), lst[i].rect, lst[i].width)
 
