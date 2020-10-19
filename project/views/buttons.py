@@ -35,7 +35,8 @@ class ProvinceMaster(Button):
 
     @staticmethod
     def clicked(*args):
-        num_regions = args[2]
+        # unused
+        # num_regions = args[2]
         num_measures = args[3]
 
         # check if all buttons for this region are on
