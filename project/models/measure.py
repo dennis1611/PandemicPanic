@@ -25,16 +25,12 @@ class Measure:
         """"Print the description of the measure for the player"""
         print(f"{str(self)}")
 
-    def activate(self):
-        self.active = True
-
-    def deactivate(self):
-        self.active = False
-
     def is_active(self):
+        """Returns the active status T|F of the measure"""
         return self.active
 
     def update_return_factor(self):
+        """Switches the measure status and returns the correct effect factor"""
         if not self.active:
             effect = self._activate_return_factor()
         elif self.active:
@@ -42,11 +38,13 @@ class Measure:
         return effect
 
     def _activate_return_factor(self):
+        """Helper function for update_return_factor -> activates"""
         self.active = True
         effect = self.factor
         return effect
 
     def _deactivate_return_factor(self):
+        """Helper function for update_return_factor -> deactivates"""
         self.active = False
         effect = 1 / self.factor
         return effect

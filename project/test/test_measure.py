@@ -37,28 +37,15 @@ class MyTestCase(unittest.TestCase):
         self.assertAlmostEqual(0.5, R1)
         self.assertAlmostEqual(0.25, R2)
 
-    def test_active(self):
-        number = 1
-        name = "test_measure"
-        desc = "this measure does nothing"
-        factor = 1
-        measure = Measure(number, name, desc, factor)
-        self.assertFalse(measure.active)
-        measure.activate()
-        self.assertTrue(measure.is_active())
-        measure.deactivate()
-        self.assertFalse(measure.active)
-
     def test_update_return_factor(self):
         measure = Measure(1, "name", "description", 0.8)
         self.assertFalse(measure.active)
         factor_on = measure.update_return_factor()
         self.assertEqual(0.8, factor_on)
-        self.assertTrue(measure.active)
+        self.assertTrue(measure.is_active())
         factor_off = measure.update_return_factor()
         self.assertEqual(1.25, factor_off)
-        self.assertFalse(measure.active)
-
+        self.assertFalse(measure.is_active())
 
 
 if __name__ == '__main__':
