@@ -49,6 +49,17 @@ class MyTestCase(unittest.TestCase):
         measure.deactivate()
         self.assertFalse(measure.active)
 
+    def test_update_return_factor(self):
+        measure = Measure(1, "name", "description", 0.8)
+        self.assertFalse(measure.active)
+        factor_on = measure.update_return_factor()
+        self.assertEqual(0.8, factor_on)
+        self.assertTrue(measure.active)
+        factor_off = measure.update_return_factor()
+        self.assertEqual(1.25, factor_off)
+        self.assertFalse(measure.active)
+
+
 
 if __name__ == '__main__':
     unittest.main()
