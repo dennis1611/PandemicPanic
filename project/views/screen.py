@@ -240,8 +240,6 @@ class Map:
         for region in regions:
             inf = region.df.iat[-1, 1]
             pop = region.inhabitants
-            print(f"Emergency value: {tempfunc(inf, pop)}")
-            print(f"Percentage: {(inf/pop) * 100}")
             num = int(tempfunc(inf, pop)) + 1
             if num > 6:
                 num = 6
