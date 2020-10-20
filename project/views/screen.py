@@ -231,10 +231,18 @@ class Map:
     def start_turn(self, regions):
         """Updates the map at the start of each turn"""
         # show each region in the correct colour
+
+        # This function is TEMPORARY, only until the right configuration is found -- Willem
+        def tempfunc(inf, pop):
+            percentage = (inf / pop) * 100
+            return (percentage * (1 * percentage + 10))**0.5 // 1
+
         for region in regions:
             inf = region.df.iat[-1, 1]
             pop = region.inhabitants
-            num = int(inf / pop * 6) + 1
+            print(f"Emergency value: {tempfunc(inf, pop)}")
+            print(f"Percentage: {(inf/pop) * 100}")
+            num = int(tempfunc(inf, pop)) + 1
             if num > 6:
                 num = 6
             Screen.scr.blit(region.images[num].img, region.images[num].img_rect)
