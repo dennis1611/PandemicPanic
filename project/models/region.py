@@ -81,7 +81,7 @@ class Region:
         if current_week >= 2:
             prev_prev_inf_new = self.df.loc[current_week - 2, 'New infections']
             # increased deaths if code black is active
-            if prev_inf_total + new_infections > self.capacity * self.inhabitants:
+            if prev_inf_total > self.capacity * self.inhabitants:
                 new_deaths = (prev_prev_inf_new * self.death_factor * self.code_black_effect) // 1
                 self.code_black_active = True
             else:
