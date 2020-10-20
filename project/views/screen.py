@@ -85,14 +85,15 @@ class Screen:
         # enable this to return the measure dictionary per region
         return return_dict
 
-    def end_game(self, score):
+    def end_game(self, score, deaths):
         """Ends the game and gives a score"""
         while True:
             # clear screen to black
             self.scr.fill(self.bg_colour)
             # print ending message and score
-            self.draw_text("The game has ended", self.white, 800, 400, "top_right")
-            self.draw_text(f"Your death count is {score}", self.white, 800, 500, "top_right")
+            self.draw_text("The game has ended", self.white, 800, 300, "top_right")
+            self.draw_text(f"Your death count is {deaths}", self.white, 800, 400, "top_right")
+            self.draw_text(f"Your score is {score}", self.white, 800, 500, "top_right")
             # draw the end button
             pg.draw.rect(self.scr, self.end_button.return_color(), self.end_button.rect)
             self.click_button_ending()

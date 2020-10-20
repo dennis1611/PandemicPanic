@@ -13,6 +13,7 @@ from project.views.choose_mode import choose_mode
 from project.views.measures_terminal import choose_measure
 from project.views.report_terminal import display_report
 from project.models.measure import Measure
+from project.models.score import Score
 # Screen is imported in an if VISUAL statement below
 
 
@@ -26,6 +27,7 @@ VISUAL = choose_mode()
 measures = initialise_measures()
 regions = initialise_regions(visual=VISUAL, measures=measures)
 borders = initialise_borders()
+scorekeeper = Score(measures)
 STAR_LINE = '*' * 70
 
 # Dictionary to locally store abbreviations
@@ -86,7 +88,7 @@ while running:
         # noinspection PyUnboundLocalVariable
         window.start_turn(regions, week)
         active_measures = window.end_turn(regions)
-
+        scorekeeper.penalize_measure(regions, active_measures, week)
         for region in regions:
             factor = region.calculate_measures_factor(active_measures[region.name])
             region.update_R(week, factor)
@@ -96,9 +98,10 @@ while running:
     if week > 52:
         running = False
 
-score = 0
+final_deaths = 0
+scorekeeper.reward_survivors(regions)
 for region in regions:
-    score += region.df["Total deaths"][52]
+    final_deaths += region.df["Total deaths"][52]
 if not VISUAL:
     print("The game has ended!")
 elif VISUAL:
@@ -114,4 +117,4 @@ elif VISUAL:
         plt.ylabel("inhabitants")
         plt.show()
     # display the ending window
-    window.end_game(score)
+    window.end_game(scorekeeper.score, final_deaths)

@@ -1,21 +1,27 @@
 class Score:
-    def __init__(self):
+    def __init__(self, measures):
         self.score = 0
+        self.base_penalties = [1 - measure.factor for measure in measures]
 
-    @staticmethod
-    def base_penalty(measure):
-        # determine the base penalty for a certain measure
-        return 1 - measure.factor
-
-    def penalize_measure(self, region, measures):
+    def penalize_measure(self, regions, measure_dict, week):
         # adjust the score based on measure taken and number of infections
         # TODO: figure out how to make this function read the measures currently active in a region
-        limit = 0.05
+        # use active_measures dict
+        limit = 0.05 # this is temporary until the percentages for the map color are certain
         light = 1
         heavy = 3
-        for measure in measures:
-            if measure.active:
-                if region.df["Currently Infected"] > limit * region.inhabitants:
-                    self.score -= self.base_penalty(measure) * heavy
-                else:
-                    self.score -= self.base_penalty(measure) * light
+        result = 0
+        for region in regions:
+            for i in range(len(measure_dict[region.name])):
+                if measure_dict[region.name][i]:
+                    if region.df["Currently infected"][week] <= limit * region.inhabitants:
+                        result += light * self.base_penalties[i] * region.inhabitants
+                    else:
+                        result += heavy * self.base_penalties[i] * region.inhabitants
+        self.score -= result
+
+    def reward_survivors(self, regions):
+        result = 0
+        for region in regions:
+            result += region.inhabitants - region.df["Total deaths"][52]
+        self.score += result
