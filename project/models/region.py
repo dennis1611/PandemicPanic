@@ -50,6 +50,19 @@ class Region:
         string = f"This class is for {self.name} with a population of {self.inhabitants}, "
         return string
 
+    def get_limit_new_infections(self):
+        """
+        Returns the maximum amount of new infections possible based on last row of df.
+        Note: previous week for update_infections -> limit_new_infections;
+              current week for adjust_infections -> limit_exchange
+        """
+        data_row = self.df.tail(1).iloc[0]
+        limit_new_infections = self.inhabitants - \
+                               data_row.loc['Currently infected'] - \
+                               data_row.loc["Total recoveries"] - \
+                               data_row.loc["Total deaths"]
+        return limit_new_infections
+
     def update_infections(self, current_week):
         """"Calculates how many people got infected and recovered in the past week"""
         # get references for relevant data
@@ -60,11 +73,7 @@ class Region:
         new_infections = (1 / 2) * prev_r * prev_inf_total // 1
 
         # check if calculated new infections do not exceed physical limitations
-        # may be slightly off as a result of recoveries and adjacent regions
-        limit_new_infections = self.inhabitants - prev_data.loc['Currently infected'] - \
-                               prev_data.loc["Total recoveries"] - \
-                               prev_data.loc["Total deaths"]
-
+        limit_new_infections = self.get_limit_new_infections()
         if new_infections > limit_new_infections:
             new_infections = limit_new_infections
 

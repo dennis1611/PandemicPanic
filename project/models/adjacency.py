@@ -22,16 +22,10 @@ def adjust_adjacent_regions(borders, regions, week, impact=20):
             continue
 
         # check that exchange does not exceed physical limitations
-        limit_exchange = region_low.inhabitants - \
-                         region_low.get_data_row(week).loc["Currently infected"] - \
-                         region_low.get_data_row(week).loc["Total recoveries"] - \
-                         region_low.get_data_row(week).loc["Total deaths"]
+        limit_exchange = region_low.get_limit_new_infections()
 
         if exchange > limit_exchange:
             exchange = limit_exchange
-        print(region_high.name)
-        print(region_low.name)
-        print(exchange)
 
         # adjust the new infections
         region_high.adjust_new_infections(week, -1 * exchange)
