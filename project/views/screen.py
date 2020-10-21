@@ -116,6 +116,7 @@ class Screen:
 
         Screen.scr.blit(text_obj, text_rect)
 
+    # TODO: rename method, does not only draw buttons but is also a listener
     def draw_buttons(self, click, mouse_x, mouse_y, lst):
         # TODO: check if this method can be improved
         # pylint: disable=consider-using-enumerate
@@ -233,7 +234,7 @@ class Map:
         """Updates the map at the start of each turn"""
         # show each region in the correct colour
 
-        # This function is TEMPORARY, only until the right configuration is found -- Willem
+        # TODO: This function is TEMPORARY, only until the right configuration is found -- Willem
         def tempfunc(inf, pop):
             percentage = (inf / pop) * 100
             return (percentage * (1 * percentage + 10))**0.5 // 1

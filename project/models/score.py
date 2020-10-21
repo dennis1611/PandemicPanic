@@ -1,9 +1,12 @@
+from project.models.region import RegionExtended
+
+
 class Score:
     def __init__(self, measures):
         self.score = 0
         self.base_penalties = [1 - measure.factor for measure in measures]
 
-    def penalize_measure(self, regions, week):
+    def penalize_measure(self, regions, week, global_measures=None):
         # adjust the score based on measure taken and number of infections
         # TODO: figure out how to make this function read the measures currently active in a region
         # use active_measures dict
@@ -12,8 +15,13 @@ class Score:
         heavy = 3
         result = 0
         for region in regions:
-            region_measures = region.region_measures
-            for i, measure in enumerate(region_measures):
+            # use region measures if visual mode, else use global measures
+            if isinstance(region, RegionExtended):
+                measures = region.region_measures
+            else:
+                measures = global_measures
+            # calculate penalty for each measure in current region
+            for i, measure in enumerate(measures):
                 if measure.is_active():
                     if region.df["Currently infected"][week] <= limit * region.inhabitants:
                         result += light * self.base_penalties[i] * region.inhabitants

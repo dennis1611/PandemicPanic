@@ -92,16 +92,18 @@ while running:
             factor = region.calculate_measures_factor(active_measures[region.name])
             region.update_R(week, factor)
 
-    # update score tracker
-    scorekeeper.penalize_measure(regions, week)
+    # update score tracker (global_measures argument only used for terminal mode)
+    scorekeeper.penalize_measure(regions, week, global_measures=measures)
 
     # end of week
     week += 1
     if week > 52:
         running = False
 
-final_deaths = 0
+
+# end of main game, ending starts here
 scorekeeper.reward_survivors(regions)
+final_deaths = 0
 for region in regions:
     final_deaths += region.df["Total deaths"][52]
 if not VISUAL:
