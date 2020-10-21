@@ -51,7 +51,7 @@ class Screen:
         self.info_table = InfoTable(self.x_div, self.y_div)
 
         # TurnButton and EndButton setup and creation
-        self.next_turn_button = TurnButton(25, 0, 50, 50)
+        self.next_turn_button = TurnButton(75, 45, 120, 25)
         self.end_button = EndButton(800, 600, 100, 100)
 
     def start_turn(self, regions, week):
@@ -60,7 +60,7 @@ class Screen:
         self.scr.fill(self.bg_colour)
 
         # write number of week on turn-button
-        Screen.draw_text(f"Week: {week}", self.white, 200, 0, "top_right")
+        Screen.draw_text(f"Week: {week}", self.white, 25, 10, "top_left")
 
         self.map.start_turn(regions)
         self.measure_table.start_turn(regions)
@@ -116,15 +116,14 @@ class Screen:
 
         Screen.scr.blit(text_obj, text_rect)
 
-    # TODO: rename method, does not only draw buttons but is also a listener
-    def draw_buttons(self, click, mouse_x, mouse_y, lst):
-        # TODO: check if this method can be improved
+    def update_buttons(self, click, mouse_x, mouse_y, lst):
         # pylint: disable=consider-using-enumerate
+        # update the button by invoking it's clicked function if it is clicked
         for i in range(len(lst)):
             if lst[i].rect.collidepoint(mouse_x, mouse_y):
                 if click:
                     lst[i].clicked(self.measure_table.measure_buttons, i, self.num_regions, self.num_measures)
-            # TODO: write comment (just copied this)
+            # draw button
             pg.draw.rect(Screen.scr, lst[i].return_color(), lst[i].rect, lst[i].width)
 
     @staticmethod
@@ -160,8 +159,8 @@ class Screen:
                     return
 
             # draw buttons in the measure choose menu
-            self.draw_buttons(click, mouse_x, mouse_y, self.measure_table.measure_masters)
-            self.draw_buttons(click, mouse_x, mouse_y, self.measure_table.province_masters)
+            self.update_buttons(click, mouse_x, mouse_y, self.measure_table.measure_masters)
+            self.update_buttons(click, mouse_x, mouse_y, self.measure_table.province_masters)
 
             # draw full description for measures is SPACE is pressed, else only number
             if keys[pg.K_SPACE]:
@@ -169,13 +168,14 @@ class Screen:
                                        self.measure_table.measure_masters,
                                        True)
             else:
-                self.draw_buttons(click, mouse_x, mouse_y, self.measure_table.measure_buttons)
+                self.update_buttons(click, mouse_x, mouse_y, self.measure_table.measure_buttons)
                 self.draw_descriptions(self.measure_table.measure_descriptions,
                                        self.measure_table.measure_masters,
                                        False)
 
             # draw the next turn button
             pg.draw.rect(self.scr, self.next_turn_button.return_color(), self.next_turn_button.rect)
+            self.draw_text("Next turn",self.black,75,42,"mid")
 
             # flip the display and check events
             pg.display.flip()
@@ -285,7 +285,7 @@ class MeasureTable:
                     province_masters.append(
                         ProvinceMaster(self.x_loc + 50 * region_n,
                                        self.offset + self.button_y_diff * (meas_n - 1),
-                                       self.master_size_x, self.master_size_y
+                                       self.master_size_x + 10, self.master_size_y
                                        )
                     )
                 # normal measure buttons
@@ -319,7 +319,7 @@ class MeasureTable:
 
 class InfoTable:
     def __init__(self, x_div, y_div):
-        self.x_loc = x_div
+        self.x_loc = x_div - 35
         self.y_loc = y_div
 
     def start_turn(self, regions):
@@ -328,9 +328,11 @@ class InfoTable:
         y_loc_table = self.y_loc
 
         # write "infected" at info table
-        Screen.draw_text("Infected", Screen.white, self.x_loc + 300, y_loc_table, "top_right")
-        Screen.draw_text("Per 100k", Screen.white, self.x_loc + 400, y_loc_table, "top_right")
-        Screen.draw_text("Deaths", Screen.white, self.x_loc + 500, y_loc_table, "top_right")
+        Screen.draw_text("Cases (C)", Screen.white, self.x_loc + 250, y_loc_table, "top_right")
+        Screen.draw_text("C/100k", Screen.white, self.x_loc + 350, y_loc_table, "top_right")
+        Screen.draw_text("Deaths", Screen.white, self.x_loc + 450, y_loc_table, "top_right")
+        Screen.draw_text("R-value", Screen.white, self.x_loc + 550, y_loc_table, "top_right")
+        Screen.draw_text("Recvrd", Screen.white, self.x_loc + 650, y_loc_table, "top_right")
 
         for region in regions:
             # go to next row
@@ -340,8 +342,19 @@ class InfoTable:
             Screen.draw_text(region.name, Screen.white, self.x_loc, y_loc_table, "top_left")
             # write infections per region at info table
             Screen.draw_text(str(int(region.df.iat[-1, 1])), Screen.white,
-                             self.x_loc + 300, y_loc_table, "top_right")
+                             self.x_loc + 250, y_loc_table, "top_right")
             Screen.draw_text(str(int(region.df.iat[-1, 1]/region.inhabitants*100000)), Screen.white,
-                             self.x_loc + 400, y_loc_table, "top_right")
+                             self.x_loc + 350, y_loc_table, "top_right")
             Screen.draw_text(str(int(region.df.iat[-1, 3])), Screen.white,
-                             self.x_loc + 500, y_loc_table, "top_right")
+                             self.x_loc + 450, y_loc_table, "top_right")
+
+            r_val = str(round(region.df.iat[-2, 6],2))
+            diff = 4 - len(r_val)
+            if not diff==0:
+                for i in range(diff):
+                    r_val = r_val + "0"
+            Screen.draw_text(r_val, Screen.white,
+                             self.x_loc + 550, y_loc_table, "top_right")
+
+            Screen.draw_text(str(int(region.df.iat[-1, 5])), Screen.white,
+                             self.x_loc + 650, y_loc_table, "top_right")

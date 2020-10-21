@@ -31,7 +31,7 @@ class ProvinceMaster(Button):
         """
         Province master button should be blue
         """
-        return self.blue
+        return self.white
 
     @staticmethod
     def clicked(*args):
