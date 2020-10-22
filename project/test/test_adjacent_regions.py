@@ -60,10 +60,11 @@ class MyTestCase(unittest.TestCase):
                                base_r=1, base_death_factor=0, base_inf=1000)
         test_region_3 = Region("TestRegion3", 100000, 1, 0, "T3",
                                base_r=1, base_death_factor=0, base_inf=2000)
-        # create borders list
+        # create borders list and regions list
         borders = [("TestRegion1", "TestRegion2"), ("TestRegion3", "TestRegion2")]
+        regions = [test_region_1, test_region_2, test_region_3]
         # adjust new infections and currently infected based on adjacency
-        adjust_adjacent_regions(borders, [test_region_1, test_region_2, test_region_3], 0, impact=20)
+        adjust_adjacent_regions(borders, regions, 0, impact=20)
 
         # check if new infections are adjusted correctly
         updated_new_inf_1 = test_region_1.df["New infections"][0]

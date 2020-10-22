@@ -126,7 +126,8 @@ class Screen:
         for i in range(len(lst)):
             if lst[i].rect.collidepoint(mouse_x, mouse_y):
                 if click:
-                    lst[i].clicked(self.measure_table.measure_buttons, i, self.num_regions, self.num_measures)
+                    lst[i].clicked(self.measure_table.measure_buttons,
+                                   i, self.num_regions, self.num_measures)
             # draw button
             pg.draw.rect(Screen.scr, lst[i].return_color(), lst[i].rect, lst[i].width)
 
@@ -135,11 +136,13 @@ class Screen:
         # show the entire description for the measures
         if full_description:
             for count, description in enumerate(descriptions):
-                Screen.draw_text(description, Screen.white, loc[count].x-6, loc[count].y-4, "top_left")
+                Screen.draw_text(description, Screen.white,
+                                 loc[count].x-6, loc[count].y-4, "top_left")
         # or show only the number for the measures
         else:
             for count, description in enumerate(descriptions):
-                Screen.draw_text(description[0], Screen.white, loc[count].x - 6, loc[count].y - 4, "top_left")
+                Screen.draw_text(description[0], Screen.white,
+                                 loc[count].x - 6, loc[count].y - 4, "top_left")
 
     def click_button_game(self):
         """Listener for all buttons during the game"""
@@ -351,8 +354,8 @@ class InfoTable:
 
             r_val = str(round(region.df.iat[-2, 6], 2))
             diff = 4 - len(r_val)
-            if not diff == 0:
-                for i in range(diff):
+            if diff != 0:
+                for _ in range(diff):
                     r_val = r_val + "0"
             Screen.draw_text(r_val, Screen.white,
                              self.x_loc + 550, y_loc_table, "top_right")
