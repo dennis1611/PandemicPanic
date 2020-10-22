@@ -62,8 +62,6 @@ class MyTestCase(unittest.TestCase):
         for week in range(1, 5):
             test_region.update_infections(week)
             test_region.update_R(week, 1)
-        pd.set_option('display.max_columns', 10)
-        pd.set_option('display.width', 1000)
         self.assertAlmostEqual(1000000, test_region.df["Currently infected"][1])
         self.assertAlmostEqual(900000, test_region.df["New recoveries"][2])
 

@@ -1,3 +1,5 @@
+# these are currently instable if score is balanced!
+
 import numpy as np
 # from project.models.region import RegionExtended
 
@@ -34,11 +36,11 @@ class Score:
                         self.length_mtrx[i][col] -= 1
         self.score -= self.measure_penalty * result
 
-    def reward_survivors(self, regions):
+    def reward_survivors(self, regions, week):
         survived = 0
         deaths = 0
         for region in regions:
-            deaths += region.df["Total deaths"][52]
+            deaths += region.df["Total deaths"][week]
             survived += region.inhabitants
         self.score += survived - self.death_penalty * deaths
 

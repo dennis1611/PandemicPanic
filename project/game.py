@@ -89,7 +89,6 @@ while running:
         window.start_turn(regions, week)
         active_measures = window.end_turn(regions)
         scorekeeper.penalize_measure(regions, active_measures, week)
-        print(scorekeeper.length_mtrx)
         for region in regions:
             factor = region.calculate_measures_factor(active_measures[region.name])
             region.update_R(week, factor)
@@ -105,7 +104,7 @@ while running:
 
 
 # end of main game, ending starts here
-scorekeeper.reward_survivors(regions)
+scorekeeper.reward_survivors(regions, week-1)
 scorekeeper.finalize_score()
 final_deaths = 0
 for region in regions:
