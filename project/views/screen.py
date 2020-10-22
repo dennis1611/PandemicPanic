@@ -59,7 +59,11 @@ class Screen:
         # clear screen to black
         self.scr.fill(self.bg_colour)
 
-        # write number of week on turn-button
+        # draw the next turn button
+        pg.draw.rect(self.scr, self.next_turn_button.return_color(), self.next_turn_button.rect)
+        self.draw_text("Next turn", self.black, 75, 42, "mid")
+
+        # write number of week above turn-button
         Screen.draw_text(f"Week: {week}", self.white, 25, 10, "top_left")
 
         self.map.start_turn(regions)
@@ -139,6 +143,7 @@ class Screen:
 
     def click_button_game(self):
         """Listener for all buttons during the game"""
+        # rectangle for the measures table
         clean_rect = pg.Rect(650, 40, 1000, 280)
 
         click = False
@@ -150,7 +155,7 @@ class Screen:
             # get keys
             keys = pg.key.get_pressed()
 
-            # clean buttons with background color rectangle
+            # clean buttons with background color rectangle (measures table only)
             pg.draw.rect(self.scr, self.bg_colour, clean_rect)
 
             # if next turn button is clicked return to main loop
@@ -172,10 +177,6 @@ class Screen:
                 self.draw_descriptions(self.measure_table.measure_descriptions,
                                        self.measure_table.measure_masters,
                                        False)
-
-            # draw the next turn button
-            pg.draw.rect(self.scr, self.next_turn_button.return_color(), self.next_turn_button.rect)
-            self.draw_text("Next turn",self.black,75,42,"mid")
 
             # flip the display and check events
             pg.display.flip()
@@ -348,9 +349,9 @@ class InfoTable:
             Screen.draw_text(str(int(region.df.iat[-1, 3])), Screen.white,
                              self.x_loc + 450, y_loc_table, "top_right")
 
-            r_val = str(round(region.df.iat[-2, 6],2))
+            r_val = str(round(region.df.iat[-2, 6], 2))
             diff = 4 - len(r_val)
-            if not diff==0:
+            if not diff == 0:
                 for i in range(diff):
                     r_val = r_val + "0"
             Screen.draw_text(r_val, Screen.white,
