@@ -89,13 +89,13 @@ while running:
         window.start_turn(regions, week)
         active_measures = window.end_turn(regions)
         scorekeeper.penalize_measure(regions, active_measures, week)
-        print(scorekeeper.score)
+        print(scorekeeper.length_mtrx)
         for region in regions:
             factor = region.calculate_measures_factor(active_measures[region.name])
             region.update_R(week, factor)
 
     # update score tracker (global_measures argument only used for terminal mode)
-    print(measures)
+
     # scorekeeper.penalize_measure(regions, week, global_measures=measures)
 
     # end of week
