@@ -88,12 +88,15 @@ while running:
         # noinspection PyUnboundLocalVariable
         window.start_turn(regions, week)
         active_measures = window.end_turn(regions)
+        scorekeeper.penalize_measure(regions, active_measures, week)
+        print(scorekeeper.score)
         for region in regions:
             factor = region.calculate_measures_factor(active_measures[region.name])
             region.update_R(week, factor)
 
     # update score tracker (global_measures argument only used for terminal mode)
-    scorekeeper.penalize_measure(regions, week, global_measures=measures)
+    print(measures)
+    # scorekeeper.penalize_measure(regions, week, global_measures=measures)
 
     # end of week
     week += 1
@@ -103,6 +106,7 @@ while running:
 
 # end of main game, ending starts here
 scorekeeper.reward_survivors(regions)
+scorekeeper.finalize_score()
 final_deaths = 0
 for region in regions:
     final_deaths += region.df["Total deaths"][52]
