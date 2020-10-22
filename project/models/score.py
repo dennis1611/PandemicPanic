@@ -1,5 +1,5 @@
-from project.models.region import RegionExtended
 import numpy as np
+# from project.models.region import RegionExtended
 
 
 class Score:
@@ -20,18 +20,18 @@ class Score:
         heavy = 3
         patience = 10
         result = 0
-        for r, region in enumerate(regions):
+        for col, region in enumerate(regions):
             for i in range(len(measure_dict[region.name])):
                 if measure_dict[region.name][i]:
-                    self.length_mtrx[i][r] += 1
+                    self.length_mtrx[i][col] += 1
                     if region.df["Currently infected"][week] >= limit * region.inhabitants or \
-                    self.length_mtrx[i][r] > patience:
+                            self.length_mtrx[i][col] > patience:
                         result += heavy * self.base_penalties[i] * region.inhabitants
                     else:
                         result += light * self.base_penalties[i] * region.inhabitants
                 else:
-                    if self.length_mtrx[i][r] > 0:
-                        self.length_mtrx[i][r] -= 1
+                    if self.length_mtrx[i][col] > 0:
+                        self.length_mtrx[i][col] -= 1
         self.score -= self.measure_penalty * result
 
     def reward_survivors(self, regions):
