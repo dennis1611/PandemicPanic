@@ -6,35 +6,46 @@ import numpy as np
 
 class Score:
     def __init__(self, measures):
+        # use these attribites to balance the score system
         self.score = 0
-        self.base_penalties = [1 - measure.factor for measure in measures]
         self.death_penalty = 100
-        self.measure_penalty = 0.01
+        self.effect_penalties = [1 - measure.factor for measure in measures]
+        self.base_measure_penalty = 0.01
+        self.regular_measure_modifier = 1
+        self.strict_measure_modifier = 3
+        self.limit = 0.001 # this is hardcoded to match the colours in the map.
+        self.long_measure_modifier = 2
+        self.patience = 10
+        self.both_modifier = 6
+        # this determines how the score is displayed at the end
         self.display_zeros = 3
-        self.length_mtrx = np.zeros((len(measures), 12))
+        # this should stay the same
+        self.length_matrix = np.zeros((len(measures), 12))
 
     def penalize_measure(self, regions, measure_dict, week):
         # adjust the score based on measure taken and number of infections
         # TODO: figure out how to make this function read the measures currently active in a region
         # use active_measures dict
-        limit = 0.001
-        light = 1
-        heavy = 3
-        patience = 10
         result = 0
         for col, region in enumerate(regions):
             for i in range(len(measure_dict[region.name])):
                 if measure_dict[region.name][i]:
-                    self.length_mtrx[i][col] += 1
-                    if region.df["Currently infected"][week] >= limit * region.inhabitants or \
-                            self.length_mtrx[i][col] > patience:
-                        result += heavy * self.base_penalties[i] * region.inhabitants
+                    self.length_matrix[i][col] += 1
+                    strict = region.df["Currently infected"][week] <= self.limit * region.inhabitants
+                    long = self.length_matrix[i][col] > self.patience
+                    if strict and long:
+                        penalty_factor = self.both_modifier
+                    elif strict:
+                        penalty_factor = self.strict_measure_modifier
+                    elif long:
+                        penalty_factor = self.long_measure_modifier
                     else:
-                        result += light * self.base_penalties[i] * region.inhabitants
+                        penalty_factor = self.regular_measure_modifier
+                    result += penalty_factor * self.effect_penalties[i] * region.inhabitants
                 else:
-                    if self.length_mtrx[i][col] > 0:
-                        self.length_mtrx[i][col] -= 1
-        self.score -= self.measure_penalty * result
+                    if self.length_matrix[i][col] > 0:
+                        self.length_matrix[i][col] -= 1
+        self.score -= self.base_measure_penalty * result
 
     def reward_survivors(self, regions, week):
         survived = 0
@@ -43,6 +54,14 @@ class Score:
             deaths += region.df["Total deaths"][week]
             survived += region.inhabitants
         self.score += survived - self.death_penalty * deaths
+
+    def reward_recoveries(self, regions, week):
+        recovered = 0
+        deaths = 0
+        for region in regions:
+            deaths += region.df["Total deaths"][week]
+            recovered += region.df["Total recoveries"][week]
+        self.score += recovered - self.death_penalty * deaths
 
     def finalize_score(self):
         if self.score < 0:

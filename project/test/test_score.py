@@ -13,7 +13,7 @@ class MyTestCase(unittest.TestCase):
         inh = 1000000
         inf_f = 1.25
         ded_f = 0.75
-        # following attributes are hardcoded in test, so they still work after balancing changes
+        # hardcode attributes to nullify balancing effects
         base_r = 3
         base_death_f = 0.02
         base_inf = 1000
@@ -26,21 +26,54 @@ class MyTestCase(unittest.TestCase):
         desc = "this measure does something"
         factor = 0.5
         test_measure = [Measure(number, name, desc, factor)]
-
-        return test_region, test_measure
-
-    def test_score_no_measures(self):
-        test_region, test_measure = self.generate_test_case()
+        # test score
         test_score = Score(test_measure)
+        # hardcode attributes to nullify balancing effects
+        test_score.score = 0
+        test_score.death_penalty = 100
+        test_score.effect_penalties = [1 - measure.factor for measure in test_measure]
+        test_score.base_measure_penalty = 0.01
+        test_score.regular_measure_modifier = 1
+        test_score.strict_measure_modifier = 3
+        test_score.long_measure_modifier = 2
+        test_score.patience = 10
+        return test_region, test_measure, test_score
+
+    def test_reward_survivors(self):
+        test_region, test_measure, test_score = self.generate_test_case()
         for week in range(1, 4):
             test_region[0].update_infections(week)
             test_region[0].update_R(week, 1)
         test_score.reward_survivors(test_region, 3)
         self.assertAlmostEqual((1000000 - int(1000 * 0.015 + 1000 * 3.75/2 * 0.015) * 100), test_score.score)
 
-    def test_score_with_measure(self):
-        test_region, test_measure = self.generate_test_case()
-        test_score = Score(test_measure)
+    def test_reward_recoveries(self):
+        test_region, test_measure, test_score = self.generate_test_case()
+        for week in range(1, 4):
+            test_region[0].update_infections(week)
+            test_region[0].update_R(week, 1)
+        test_score.reward_recoveries(test_region, 3)
+        total_inf = int(1000 + 1000 * 3.75/2)
+        dead = int(0.015 * total_inf)
+        recov = int(total_inf - dead)
+        self.assertAlmostEqual(recov - 100 * dead, test_score.score)
+
+    def test_regular_measure(self):
+        test_region, test_measure, test_score = self.generate_test_case()
+        test_measure_dict = {test_region[0].name: [True]}
+        test_region[0].update_infections(1)
+        test_region[0].update_R(1, test_measure[0].factor)
+        for week in range(2, 4):
+            test_region[0].update_infections(week)
+            test_region[0].update_R(week, 1)
+            test_score.penalize_measure(test_region, test_measure_dict, week)
+        self.assertAlmostEqual(-2 * 0.01 * 1000000 * 0.5, test_score.score)
+        test_score.reward_survivors(test_region, 3)
+        self.assertAlmostEqual(995700.0 - 10000, test_score.score)
+
+    def test_strict_measure(self):
+        test_region, test_measure, test_score = self.generate_test_case()
+        test_score.limit = 0.1
         test_measure_dict = {test_region[0].name: [True]}
         test_region[0].update_infections(1)
         test_region[0].update_R(1, test_measure[0].factor)
@@ -51,3 +84,17 @@ class MyTestCase(unittest.TestCase):
         self.assertAlmostEqual(-2 * 3 * 0.01 * 1000000 * 0.5, test_score.score)
         test_score.reward_survivors(test_region, 3)
         self.assertAlmostEqual(995700.0 - 30000, test_score.score)
+
+    def test_long_measure(self):
+        test_region, test_measure, test_score = self.generate_test_case()
+        test_score.patience = 0
+        test_measure_dict = {test_region[0].name: [True]}
+        test_region[0].update_infections(1)
+        test_region[0].update_R(1, test_measure[0].factor)
+        for week in range(2, 4):
+            test_region[0].update_infections(week)
+            test_region[0].update_R(week, 1)
+            test_score.penalize_measure(test_region, test_measure_dict, week)
+        self.assertAlmostEqual(-2 * 2 * 0.01 * 1000000 * 0.5, test_score.score)
+        test_score.reward_survivors(test_region, 3)
+        self.assertAlmostEqual(995700.0 - 20000, test_score.score)
