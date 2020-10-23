@@ -18,8 +18,8 @@ class Measure:
         return f"#{self.number}| {self.active}| {self.name}: {self.desc}"
 
     def __repr__(self):
-        """"Return a human readable string to display in the visual mode"""
-        return f"{self.number}    {self.name}: {self.desc}"
+        """"Return a string to display in the visual mode"""
+        return f"{self.number} {self.name}: {self.desc}"
 
     def menu(self):
         """"Print the description of the measure for the player"""

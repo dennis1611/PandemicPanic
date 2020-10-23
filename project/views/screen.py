@@ -2,8 +2,8 @@ import sys
 import os
 
 import pygame as pg
-from project.views.buttons import ProvinceMaster, \
-    MeasureMaster, \
+from project.views.buttons import RegionMasterButton, \
+    MeasureMasterButton, \
     MeasureButton, \
     TurnButton, \
     EndButton
@@ -120,34 +120,11 @@ class Screen:
 
         Screen.scr.blit(text_obj, text_rect)
 
-    def update_buttons(self, click, mouse_x, mouse_y, lst):
-        # pylint: disable=consider-using-enumerate
-        # update the button by invoking it's clicked function if it is clicked
-        for i in range(len(lst)):
-            if lst[i].rect.collidepoint(mouse_x, mouse_y):
-                if click:
-                    lst[i].clicked(self.measure_table.measure_buttons,
-                                   i, self.num_regions, self.num_measures)
-            # draw button
-            pg.draw.rect(Screen.scr, lst[i].return_color(), lst[i].rect, lst[i].width)
-
-    @staticmethod
-    def draw_descriptions(descriptions, loc, full_description):
-        # show the entire description for the measures
-        if full_description:
-            for count, description in enumerate(descriptions):
-                Screen.draw_text(description, Screen.white,
-                                 loc[count].x-6, loc[count].y-4, "top_left")
-        # or show only the number for the measures
-        else:
-            for count, description in enumerate(descriptions):
-                Screen.draw_text(description[0], Screen.white,
-                                 loc[count].x - 6, loc[count].y - 4, "top_left")
-
     def click_button_game(self):
         """Listener for all buttons during the game"""
         # rectangle for the measures table
-        clean_rect = pg.Rect(650, 40, 1000, 280)
+        # Note: includes only the non-master buttons
+        clean_rect = pg.Rect(725, 40, 1000, 280)
 
         click = False
         while True:
@@ -158,28 +135,36 @@ class Screen:
             # get keys
             keys = pg.key.get_pressed()
 
+            # if next turn button is clicked return to main loop
+            if self.next_turn_button.rect.collidepoint(mouse_x, mouse_y) and click:
+                return
+
             # clean buttons with background color rectangle (measures table only)
             pg.draw.rect(self.scr, self.bg_colour, clean_rect)
 
-            # if next turn button is clicked return to main loop
-            if self.next_turn_button.rect.collidepoint(mouse_x, mouse_y):
-                if click:
-                    return
-
-            # draw buttons in the measure choose menu
-            self.update_buttons(click, mouse_x, mouse_y, self.measure_table.measure_masters)
-            self.update_buttons(click, mouse_x, mouse_y, self.measure_table.province_masters)
-
-            # draw full description for measures is SPACE is pressed, else only number
             if keys[pg.K_SPACE]:
-                self.draw_descriptions(self.measure_table.measure_descriptions,
-                                       self.measure_table.measure_masters,
-                                       True)
+                # write full description of measures if SPACE is pressed
+                self.measure_table.draw_descriptions(self.measure_table.measure_descriptions,
+                                                     self.measure_table.measure_masters)
             else:
-                self.update_buttons(click, mouse_x, mouse_y, self.measure_table.measure_buttons)
-                self.draw_descriptions(self.measure_table.measure_descriptions,
-                                       self.measure_table.measure_masters,
-                                       False)
+                # else draw normal measure buttons
+                for button in self.measure_table.measure_buttons:
+                    pg.draw.rect(Screen.scr, button.return_color(), button.rect, button.width)
+
+            # listen to clicks for measure master buttons
+            for measure_i, button in enumerate(self.measure_table.measure_masters):
+                if button.rect.collidepoint(mouse_x, mouse_y) and click:
+                    button.clicked(self.measure_table.measure_buttons, measure_i,
+                                   self.num_measures, self.num_regions)
+            # listen to clicks for region master buttons
+            for region_i, button in enumerate(self.measure_table.region_masters):
+                if button.rect.collidepoint(mouse_x, mouse_y) and click:
+                    button.clicked(self.measure_table.measure_buttons, region_i,
+                                   self.num_measures)
+            # listen to clicks for normal measure buttons
+            for button in self.measure_table.measure_buttons:
+                if button.rect.collidepoint(mouse_x, mouse_y) and click:
+                    button.clicked()
 
             # flip the display and check events
             pg.display.flip()
@@ -189,9 +174,8 @@ class Screen:
                 if event.type == pg.QUIT:
                     pg.quit()
                     sys.exit()
-                if event.type == pg.MOUSEBUTTONDOWN:
-                    if event.button == 1:
-                        click = True
+                if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
+                    click = True
 
             # event pump, prevent freeze
             pg.event.pump()
@@ -204,10 +188,9 @@ class Screen:
             mouse_x, mouse_y = pg.mouse.get_pos()
 
             # if the end game button is clicked
-            if self.end_button.rect.collidepoint(mouse_x, mouse_y):
-                if click:
-                    pg.quit()
-                    sys.exit()
+            if self.end_button.rect.collidepoint(mouse_x, mouse_y) and click:
+                pg.quit()
+                sys.exit()
 
             # flip the display and check events
             pg.display.flip()
@@ -217,9 +200,8 @@ class Screen:
                 if event.type == pg.QUIT:
                     pg.quit()
                     sys.exit()
-                if event.type == pg.MOUSEBUTTONDOWN:
-                    if event.button == 1:
-                        click = True
+                if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
+                    click = True
 
             # event pump, prevent freeze
             pg.event.pump()
@@ -241,7 +223,7 @@ class Map:
         # TODO: This function is TEMPORARY, only until the right configuration is found -- Willem
         def tempfunc(inf, pop):
             percentage = (inf / pop) * 100
-            return (percentage * (1 * percentage + 10))**0.5 // 1
+            return (percentage * (1 * percentage + 10)) ** 0.5 // 1
 
         for region in regions:
             inf = region.df.iat[-1, 1]
@@ -269,28 +251,36 @@ class MeasureTable:
     x_loc = 700
     y_loc_abbr = 0
 
+    @staticmethod
+    def draw_descriptions(descriptions, loc):
+        """Draws the measure descriptions on the screen (excl. number)"""
+        # Note: loc is a list of MeasureMasterButtons
+        for count, description in enumerate(descriptions):
+            Screen.draw_text(description[1:], Screen.white,
+                             loc[count].x + 30, loc[count].y - 4, "top_left")
+
     def __init__(self, num_regions, num_measures, measures):
         # Measure buttons creation
         measure_buttons = []
         measure_masters = []
-        province_masters = []
+        region_masters = []
         for region_n in range(num_regions + 1):
             for meas_n in range(num_measures + 1):
                 # master buttons for measures
                 if region_n == 0 and not meas_n == 0:
                     measure_masters.append(
-                        MeasureMaster(self.x_loc + 50 * region_n,
-                                      self.offset + self.button_y_diff * (meas_n - 1),
-                                      self.master_size_x, self.master_size_y
-                                      )
+                        MeasureMasterButton(self.x_loc + 50 * region_n,
+                                            self.offset + self.button_y_diff * (meas_n - 1),
+                                            self.master_size_x, self.master_size_y
+                                            )
                     )
                 # master buttons for regions
                 elif meas_n == 0 and not region_n == 0:
-                    province_masters.append(
-                        ProvinceMaster(self.x_loc + 50 * region_n,
-                                       self.offset + self.button_y_diff * (meas_n - 1),
-                                       self.master_size_x + 10, self.master_size_y
-                                       )
+                    region_masters.append(
+                        RegionMasterButton(self.x_loc + 50 * region_n,
+                                           self.offset + self.button_y_diff * (meas_n - 1),
+                                           self.master_size_x + 10, self.master_size_y
+                                           )
                     )
                 # normal measure buttons
                 elif not (region_n == 0 and meas_n == 0):
@@ -303,7 +293,7 @@ class MeasureTable:
 
         self.measure_buttons = measure_buttons
         self.measure_masters = measure_masters
-        self.province_masters = province_masters
+        self.region_masters = region_masters
 
         measure_descriptions = []
         for meas in measures:
@@ -311,14 +301,28 @@ class MeasureTable:
         self.measure_descriptions = measure_descriptions
 
     def start_turn(self, regions):
-        """Updates the measure table at the start of each turn"""
-        # make local copy of x_loc
-        x_loc_abbr = self.x_loc + 50
+        """Updates the measure table at the start of each turn
+        Note: non-master buttons need to be drawn in click_button_game"""
+        # draw region master buttons in the measures table
+        for button in self.region_masters:
+            pg.draw.rect(Screen.scr, button.return_color(), button.rect, button.width)
+        # write the abbreviations in the buttons
+        x_loc_abbr = self.x_loc + 50  # local copy of x_loc
         for region in regions:
             # write abbreviation
             Screen.draw_text(region.abbreviation, Screen.white, x_loc_abbr, self.y_loc_abbr, "mid")
             # go to next column
             x_loc_abbr += 50
+
+        # draw measure master buttons in the measures table
+        for button in self.measure_masters:
+            pg.draw.rect(Screen.scr, button.return_color(), button.rect, button.width)
+        # write measure number in measure master button
+        for i, description in enumerate(self.measure_descriptions):
+            Screen.draw_text(description[0], Screen.white,
+                             self.measure_masters[i].x - 6,
+                             self.measure_masters[i].y - 4,
+                             "top_left")
 
 
 class InfoTable:
@@ -331,7 +335,7 @@ class InfoTable:
         # make local copy of y_loc
         y_loc_table = self.y_loc
 
-        # write "infected" at info table
+        # write column names at info table
         Screen.draw_text("Cases (C)", Screen.white, self.x_loc + 250, y_loc_table, "top_right")
         Screen.draw_text("C/100k", Screen.white, self.x_loc + 350, y_loc_table, "top_right")
         Screen.draw_text("Deaths", Screen.white, self.x_loc + 450, y_loc_table, "top_right")
@@ -344,12 +348,15 @@ class InfoTable:
 
             # write region names at info table
             Screen.draw_text(region.name, Screen.white, self.x_loc, y_loc_table, "top_left")
-            # write infections per region at info table
-            Screen.draw_text(str(int(region.df.iat[-1, 1])), Screen.white,
+            # write data columns at info table
+            cases = str(int(region.df.iat[-1, 1]))
+            Screen.draw_text(cases, Screen.white,
                              self.x_loc + 250, y_loc_table, "top_right")
-            Screen.draw_text(str(int(region.df.iat[-1, 1]/region.inhabitants*100000)), Screen.white,
+            cases_100k = str(int(region.df.iat[-1, 1] / region.inhabitants * 100000))
+            Screen.draw_text(cases_100k, Screen.white,
                              self.x_loc + 350, y_loc_table, "top_right")
-            Screen.draw_text(str(int(region.df.iat[-1, 3])), Screen.white,
+            deaths = str(int(region.df.iat[-1, 3]))
+            Screen.draw_text(deaths, Screen.white,
                              self.x_loc + 450, y_loc_table, "top_right")
 
             r_val = str(round(region.df.iat[-2, 6], 2))
@@ -359,6 +366,6 @@ class InfoTable:
                     r_val = r_val + "0"
             Screen.draw_text(r_val, Screen.white,
                              self.x_loc + 550, y_loc_table, "top_right")
-
-            Screen.draw_text(str(int(region.df.iat[-1, 5])), Screen.white,
+            recoveries = str(int(region.df.iat[-1, 5]))
+            Screen.draw_text(recoveries, Screen.white,
                              self.x_loc + 650, y_loc_table, "top_right")

@@ -88,6 +88,7 @@ while running:
         # noinspection PyUnboundLocalVariable
         window.start_turn(regions, week)
         active_measures = window.end_turn(regions)
+        print(active_measures)
         scorekeeper.penalize_measure(regions, active_measures, week)
         for region in regions:
             factor = region.calculate_measures_factor(active_measures[region.name])

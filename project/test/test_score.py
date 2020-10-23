@@ -1,8 +1,9 @@
 import unittest
+import pandas as pd
+
 from project.models.measure import Measure
 from project.models.score import Score
 from project.models.region import Region
-import pandas as pd
 
 
 class MyTestCase(unittest.TestCase):

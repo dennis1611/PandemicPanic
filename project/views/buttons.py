@@ -22,7 +22,7 @@ class Button:
         self.rect.midtop = (x, y)
 
 
-class ProvinceMaster(Button):
+class RegionMasterButton(Button):
     def __init__(self, x, y, width, height):
         super().__init__(x, y, width, height)
         self.width = 1
@@ -34,28 +34,25 @@ class ProvinceMaster(Button):
         return self.white
 
     @staticmethod
-    def clicked(*args):
-        # unused
-        # num_regions = args[2]
-        num_measures = args[3]
+    def clicked(measure_buttons, region_i, num_measures):
 
         # check if all buttons for this region are on
         all_on = True
         for i in range(num_measures):
-            if not args[0][i + num_measures * args[1]].active:
+            if not measure_buttons[i + num_measures * region_i].active:
                 all_on = False
 
         # if all on, turn them off
         if all_on:
             for i in range(num_measures):
-                args[0][i + num_measures * args[1]].active = False
+                measure_buttons[i + num_measures * region_i].active = False
         # if one or more are turned off, turn all on
         else:
             for i in range(num_measures):
-                args[0][i + num_measures * args[1]].active = True
+                measure_buttons[i + num_measures * region_i].active = True
 
 
-class MeasureMaster(Button):
+class MeasureMasterButton(Button):
     def __init__(self, x, y, width, height):
         super().__init__(x, y, width, height)
         self.width = 1
@@ -69,24 +66,22 @@ class MeasureMaster(Button):
         return self.white
 
     @staticmethod
-    def clicked(*args):
-        num_regions = args[2]
-        num_measures = args[3]
+    def clicked(measure_buttons, measure_i, num_measures, num_regions):
 
         # check if all buttons for this measure are on
         all_on = True
         for i in range(num_regions):
-            if not args[0][i * num_measures + args[1]].active:
+            if not measure_buttons[i * num_measures + measure_i].active:
                 all_on = False
 
         # if all on, turn them off
         if all_on:
             for i in range(num_regions):
-                args[0][i * num_measures + args[1]].active = False
+                measure_buttons[i * num_measures + measure_i].active = False
         # if one or more are turned off, turn all on
         else:
             for i in range(num_regions):
-                args[0][i * num_measures + args[1]].active = True
+                measure_buttons[i * num_measures + measure_i].active = True
 
 
 class MeasureButton(Button):
@@ -104,9 +99,7 @@ class MeasureButton(Button):
         else:
             return self.red
 
-    # TODO: args is unused, but program crashes without
-    # pylint: disable=unused-argument
-    def clicked(self, *args):
+    def clicked(self):
         """
         If button is clicked, active boolean should be changed.
         """
@@ -127,6 +120,6 @@ class TurnButton(Button):
 class EndButton(Button):
     def return_color(self):
         """
-        Next turn button should be white.
+        Ending button should be white.
         """
         return self.white
