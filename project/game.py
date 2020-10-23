@@ -25,7 +25,7 @@ VISUAL = choose_mode()
 
 # create general setup
 measures = initialise_measures()
-regions = initialise_regions(visual=VISUAL, measures=measures)
+regions = initialise_regions(visual=VISUAL)
 borders = initialise_borders()
 scorekeeper = Score(measures)
 STAR_LINE = '*' * 70
@@ -41,9 +41,6 @@ if VISUAL:
     from project.views.screen import Screen
     # create a Screen
     window = Screen(len(regions), len(measures), regions_dict, measures)
-    # set measures as attribute of each region instance (initialised as None)
-    for region in regions:
-        region.region_measures = measures
 
 
 # main game loop
@@ -88,7 +85,6 @@ while running:
         # noinspection PyUnboundLocalVariable
         window.start_turn(regions, week)
         active_measures = window.end_turn(regions)
-        print(active_measures)
         scorekeeper.penalize_measure(regions, active_measures, week)
         for region in regions:
             factor = region.calculate_measures_factor(active_measures[region.name])

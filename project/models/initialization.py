@@ -25,7 +25,7 @@ def initialise_measures():
     return tuple(measures)
 
 
-def initialise_regions(visual=False, measures=None):
+def initialise_regions(visual=False):
     """"Creates and returns a list of all regions"""
     project_path = os.path.dirname(os.path.dirname(__file__))
     file_path = project_path + '/source_data/regional_data.csv'
@@ -47,7 +47,7 @@ def initialise_regions(visual=False, measures=None):
                                         regions_df.loc[region_name, "inf_factor"],
                                         regions_df.loc[region_name, "death_factor"],
                                         regions_df.loc[region_name, "abbreviation"],
-                                        region_measures=measures)
+                                        initialise_measures())
             regions.append(new_region)
     return tuple(regions)
 

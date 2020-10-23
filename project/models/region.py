@@ -125,8 +125,8 @@ class Region:
 
 class RegionExtended(Region):
     def __init__(self, name, inhabitants,
-                 regional_infection_factor, regional_death_factor, abbreviation,
-                 base_r=2.2, base_death_factor=0.02, base_inf=10, region_measures=None):
+                 regional_infection_factor, regional_death_factor, abbreviation, region_measures,
+                 base_r=2.2, base_death_factor=0.02, base_inf=10):
         super().__init__(name, inhabitants,
                          regional_infection_factor, regional_death_factor, abbreviation,
                          base_r=base_r, base_death_factor=base_death_factor, base_inf=base_inf)
@@ -140,11 +140,12 @@ class RegionExtended(Region):
         for i in range(7):
             self.images.append(RegionImg(self.name, topleft, i))
 
-    def calculate_measures_factor(self, active_measures):
+    def calculate_measures_factor(self, measure_statuses):
         """"...
             Overwrites method from parent class"""
         active_factors = 1
-        for i, measure_active in enumerate(active_measures):
+        for i, measure_active in enumerate(measure_statuses):
+            self.region_measures[i].active = measure_active
             if measure_active:
                 active_factors *= self.region_measures[i].factor
         return active_factors
