@@ -126,6 +126,7 @@ class Screen:
         # Note: includes only the non-master buttons
         clean_rect = pg.Rect(725, 40, 1000, 280)
 
+        # pylint: disable=too-many-branches
         click = False
         while True:
 
