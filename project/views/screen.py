@@ -120,13 +120,13 @@ class Screen:
 
         Screen.scr.blit(text_obj, text_rect)
 
+    # pylint: disable=too-many-branches
     def click_button_game(self):
         """Listener for all buttons during the game"""
         # rectangle for the measures table
         # Note: includes only the non-master buttons
         clean_rect = pg.Rect(725, 40, 1000, 280)
 
-        # pylint: disable=too-many-branches
         click = False
         while True:
 
