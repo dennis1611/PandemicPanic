@@ -1,12 +1,12 @@
 # these are currently instable if score is balanced!
 
 import numpy as np
-# from project.models.region import RegionExtended
+from project.models.region import RegionExtended
 
 
 class Score:
     def __init__(self, measures):
-        # use these attribites to balance the score system
+        # use these attributes to balance the score system
         self.score = 0
         self.death_penalty = 100
         self.survivor_bonus = 1
@@ -24,14 +24,18 @@ class Score:
         # this should stay the same
         self.length_matrix = np.zeros((len(measures), 12))
 
-    def penalize_measure(self, regions, measure_dict, week):
-        # adjust the score based on measure taken and number of infections
-        # TODO: figure out how to make this function read the measures currently active in a region
-        # use active_measures dict
+    def penalize_measure(self, regions, week, global_measures=None):
+        """Adjust the score based on measure taken and number of infections"""
         result = 0
         for col, region in enumerate(regions):
-            for i in range(len(measure_dict[region.name])):
-                if measure_dict[region.name][i]:
+            # use region measures if visual mode, else use global measures
+            if isinstance(region, RegionExtended):
+                measures = region.region_measures
+            else:
+                measures = global_measures
+
+            for i, measure in enumerate(measures):
+                if measure.is_active():
                     self.length_matrix[i][col] += 1
                     strict = region.df["Currently infected"][week] <= self.limit * region.inhabitants
                     long = self.length_matrix[i][col] > self.patience
