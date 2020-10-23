@@ -9,6 +9,8 @@ class Score:
         # use these attribites to balance the score system
         self.score = 0
         self.death_penalty = 100
+        self.survivor_bonus = 1
+        self.recover_bonus = 1
         self.effect_penalties = [1 - measure.factor for measure in measures]
         self.base_measure_penalty = 0.01
         self.regular_measure_modifier = 1
@@ -53,7 +55,7 @@ class Score:
         for region in regions:
             deaths += region.df["Total deaths"][week]
             survived += region.inhabitants
-        self.score += survived - self.death_penalty * deaths
+        self.score += self.survivor_bonus * survived - self.death_penalty * deaths
 
     def reward_recoveries(self, regions, week):
         recovered = 0
@@ -61,7 +63,7 @@ class Score:
         for region in regions:
             deaths += region.df["Total deaths"][week]
             recovered += region.df["Total recoveries"][week]
-        self.score += recovered - self.death_penalty * deaths
+        self.score += self.recover_bonus * recovered - self.death_penalty * deaths
 
     def finalize_score(self):
         if self.score < 0:

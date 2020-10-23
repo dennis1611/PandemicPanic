@@ -31,12 +31,17 @@ class MyTestCase(unittest.TestCase):
         # hardcode attributes to nullify balancing effects
         test_score.score = 0
         test_score.death_penalty = 100
+        test_score.survivor_bonus = 1
+        test_score.recover_bonus = 1
         test_score.effect_penalties = [1 - measure.factor for measure in test_measure]
         test_score.base_measure_penalty = 0.01
         test_score.regular_measure_modifier = 1
         test_score.strict_measure_modifier = 3
+        test_score.limit = 0.001
         test_score.long_measure_modifier = 2
         test_score.patience = 10
+        test_score.both_modifier  = 6
+        test_score.display_zeros = 3
         return test_region, test_measure, test_score
 
     def test_reward_survivors(self):
@@ -98,3 +103,12 @@ class MyTestCase(unittest.TestCase):
         self.assertAlmostEqual(-2 * 2 * 0.01 * 1000000 * 0.5, test_score.score)
         test_score.reward_survivors(test_region, 3)
         self.assertAlmostEqual(995700.0 - 20000, test_score.score)
+
+    def test_finalize(self):
+        test_region, test_measure, test_score = self.generate_test_case()
+        test_score.score = -69420.1337
+        test_score.finalize_score()
+        self.assertAlmostEqual(0, test_score.score)
+        test_score.score = 69420.1337
+        test_score.finalize_score()
+        self.assertAlmostEqual(69000, test_score.score)
