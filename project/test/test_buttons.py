@@ -80,3 +80,6 @@ class MyTestCase(unittest.TestCase):
     def test_end_button(self):
         end_button = EndButton(0, 0, 20, 20)
         self.assertEqual((255, 255, 255), end_button.return_color())
+
+if __name__ == '__main__':
+    unittest.main()
