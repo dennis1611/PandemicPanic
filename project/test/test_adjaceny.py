@@ -3,6 +3,7 @@ Test file for the adjacent regions effect
 """
 
 import unittest
+from project.models.initialization import initialise_borders
 from project.models.region import Region
 from project.models.adjacency import adjust_adjacent_regions
 
@@ -94,6 +95,13 @@ class MyTestCase(unittest.TestCase):
         updated_new_inf_2 = test_region_2.df["New infections"][0]
         self.assertEqual(inh1, updated_new_inf_1)
         self.assertEqual(inh2 - 50, updated_new_inf_2)
+
+    def test_borders(self):
+        borders = initialise_borders()
+        self.assertEqual(borders[0][0], "Limburg")
+        self.assertEqual(borders[0][1], "Noord-Brabant")
+        self.assertEqual(borders[21][0], "Flevoland")
+        self.assertEqual(borders[21][1], "Gelderland")
 
 
 if __name__ == '__main__':
