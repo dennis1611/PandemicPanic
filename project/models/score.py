@@ -7,18 +7,18 @@ from project.models.region import RegionExtended
 class Score:
     def __init__(self, measures):
         # use these attributes to balance the score system
-        self.score = 0
+        self.score = 10000000
         self.death_penalty = 100
         self.survivor_bonus = 1
         self.recover_bonus = 1
         self.effect_penalties = [1 - measure.factor for measure in measures]
         self.base_measure_penalty = 0.01
         self.regular_measure_modifier = 1
-        self.strict_measure_modifier = 3
+        self.strict_measure_modifier = 5
         self.limit = 0.001 # this is hardcoded to match the colours in the map.
-        self.long_measure_modifier = 2
+        self.long_measure_modifier = 4
         self.patience = 10
-        self.both_modifier = 6
+        self.both_modifier = 25
         # this determines how the score is displayed at the end
         self.display_zeros = 3
         # this should stay the same
