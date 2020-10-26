@@ -18,7 +18,7 @@ from project.models.score import Score
 
 
 # TODO: write an actual welcome message/introduction
-print('Welcome message/introduction')
+#print('Welcome message/introduction')
 
 # let the player choose to play in terminal mode or in visual mode
 VISUAL = choose_mode()
@@ -121,15 +121,26 @@ elif VISUAL:
 # plotting (for balancing)
 to_plot_cols = ["Currently infected", "Total deaths"]  # column from df to plot
 num = 1
-plt.figure(figsize=(16,8))
+plt.figure(figsize=(18,6))
 for to_plot in to_plot_cols:
-    plt.subplot(1, 2, num)#plt.figure()
+    plt.subplot(1, 3, num)#plt.figure()
     for region in regions:
         region.df[to_plot].plot()
-    plt.legend([region.abbreviation for region in regions])
+    plt.legend([region.abbreviation for region in regions], loc=2)
     plt.title(to_plot)
-    plt.xlabel("week")
-    plt.ylabel("inhabitants")
+    plt.xlabel("Week")
+    plt.ylabel("# of people")
+    plt.ticklabel_format(axis="y", style="plain", scilimits=(0,0))
     plt.grid()
     num += 1
+plt.subplot(1, 3, 3)
+for region in regions:
+    plt.plot(region.df["Currently infected"].tolist() / region.inhabitants * 100000, label=region.abbreviation)
+plt.title("Infected per 100k")
+plt.xlabel("Week")
+plt.ylabel("# of people")
+plt.axhline(100, label="measures too strict", c="g", ls="--",)
+plt.axhline(2000, label="hospitals are full", c="r", ls="--")
+plt.legend(loc=2)
+plt.grid()
 plt.show()
