@@ -121,6 +121,7 @@ elif VISUAL:
 # plotting (for balancing)
 to_plot_cols = ["Currently infected", "Total deaths"]  # column from df to plot
 num = 1
+plt.figure(figsize=(16,8))
 for to_plot in to_plot_cols:
     plt.subplot(1, 2, num)#plt.figure()
     for region in regions:
@@ -129,5 +130,6 @@ for to_plot in to_plot_cols:
     plt.title(to_plot)
     plt.xlabel("week")
     plt.ylabel("inhabitants")
+    plt.grid()
     num += 1
 plt.show()
