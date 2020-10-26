@@ -131,6 +131,3 @@ for to_plot in to_plot_cols:
     plt.ylabel("inhabitants")
     num += 1
 plt.show()
-
-
-
