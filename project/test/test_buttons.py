@@ -1,6 +1,7 @@
 import unittest
 # import pygame as pg
 from project.views.buttons import Button, \
+    MasterButton, \
     RegionMasterButton, \
     MeasureMasterButton, \
     MeasureButton, \
@@ -29,8 +30,10 @@ class MyTestCase(unittest.TestCase):
         # start with init and color
         measure_master = MeasureMasterButton(100, 100, 20, 20)
         region_master = RegionMasterButton(200, 100, 20, 20)
+        master_button = MasterButton(300, 100, 20, 20)
         self.assertEqual((255, 255, 255), measure_master.return_color())
         self.assertEqual((255, 255, 255), region_master.return_color())
+        self.assertEqual((255, 255, 255), master_button.return_color())
 
         # 2*3 matrix of buttons (2 rows, 3 columns)
         measure_button1 = MeasureButton(0, 0, 20, 20)
@@ -72,6 +75,23 @@ class MyTestCase(unittest.TestCase):
         self.assertFalse(measure_button1.active)
         self.assertFalse(measure_button3.active)
         self.assertFalse(measure_button5.active)
+
+        # main master button
+        MasterButton.clicked(measure_buttons)
+        self.assertTrue(measure_button1.active)
+        self.assertTrue(measure_button2.active)
+        self.assertTrue(measure_button3.active)
+        self.assertTrue(measure_button4.active)
+        self.assertTrue(measure_button5.active)
+        self.assertTrue(measure_button6.active)
+
+        MasterButton.clicked(measure_buttons)
+        self.assertFalse(measure_button1.active)
+        self.assertFalse(measure_button2.active)
+        self.assertFalse(measure_button3.active)
+        self.assertFalse(measure_button4.active)
+        self.assertFalse(measure_button5.active)
+        self.assertFalse(measure_button6.active)
 
     def test_turn_button(self):
         turn_button = TurnButton(0, 0, 20, 20)

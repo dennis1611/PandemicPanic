@@ -7,7 +7,7 @@ from project.views.buttons import RegionMasterButton, \
     MeasureButton, \
     TurnButton, \
     EndButton, \
-    MasterMaster
+    MasterButton
 
 
 class Screen:
@@ -183,8 +183,8 @@ class Screen:
                 if button.rect.collidepoint(mouse_x, mouse_y) and click:
                     button.clicked()
 
-            if self.measure_table.master_master.rect.collidepoint(mouse_x, mouse_y) and click:
-                self.measure_table.master_master.clicked(self.measure_table.measure_buttons)
+            if self.measure_table.master_button.rect.collidepoint(mouse_x, mouse_y) and click:
+                self.measure_table.master_button.clicked(self.measure_table.measure_buttons)
 
             # flip the display and check events
             pg.display.flip()
@@ -319,10 +319,10 @@ class MeasureTable:
                                       )
                     )
                 else:
-                    self.master_master = MasterMaster(self.x_loc + 50 * region_n,
+                    self.master_button = MasterButton(self.x_loc + 50 * region_n,
                                                       self.offset + self.button_y_diff * (meas_n - 1),
                                                       self.button_size_x, self.button_size_y
-                                                     )
+                                                      )
 
         self.measure_buttons = measure_buttons
         self.measure_masters = measure_masters
@@ -356,8 +356,8 @@ class MeasureTable:
                              self.measure_masters[i].x - 6,
                              self.measure_masters[i].y - 4,
                              "top_left")
-        pg.draw.rect(Screen.scr, self.master_master.return_color(),
-                     self.master_master.rect, self.master_master.width)
+        pg.draw.rect(Screen.scr, self.master_button.return_color(),
+                     self.master_button.rect, self.master_button.width)
 
 class InfoTable:
     def __init__(self, x_div, y_div):

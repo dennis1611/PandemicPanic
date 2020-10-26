@@ -23,6 +23,33 @@ class Button:
         self.rect.midtop = (x, y)
 
 
+class MasterButton(Button):
+    def __init__(self, x, y, width, height):
+        super().__init__(x, y, width, height)
+        self.width = 1
+
+    def return_color(self):
+        """
+        Measure master button should be white
+        """
+        return self.white
+
+    @staticmethod
+    def clicked(measure_buttons):
+        # check if all buttons for this measure are on
+        all_on = True
+        for i in measure_buttons:
+            if not i.active:
+                all_on = False
+
+        if all_on:
+            for i in measure_buttons:
+                i.active = False
+        else:
+            for i in measure_buttons:
+                i.active = True
+
+
 class RegionMasterButton(Button):
     def __init__(self, x, y, width, height):
         super().__init__(x, y, width, height)
@@ -83,33 +110,6 @@ class MeasureMasterButton(Button):
         else:
             for i in range(num_regions):
                 measure_buttons[i * num_measures + measure_i].active = True
-
-
-class MasterMaster(Button):
-    def __init__(self, x, y, width, height):
-        super().__init__(x, y, width, height)
-        self.width = 1
-
-    def return_color(self):
-        """
-        Measure master button should be white
-        """
-        return self.white
-
-    @staticmethod
-    def clicked(measure_buttons):
-        # check if all buttons for this measure are on
-        all_on = True
-        for i in measure_buttons:
-            if not i.active:
-                all_on = False
-
-        if all_on:
-            for i in measure_buttons:
-                i.active = False
-        else:
-            for i in measure_buttons:
-                i.active = True
 
 
 class MeasureButton(Button):
