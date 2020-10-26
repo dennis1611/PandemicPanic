@@ -47,6 +47,7 @@ if VISUAL:
 # pylint: disable=invalid-name
 week = 1
 running = True
+ended_early = True
 while running:
     print('\n' + STAR_LINE)
     print(f'This is week {week}')
@@ -84,7 +85,8 @@ while running:
         # update window
         # noinspection PyUnboundLocalVariable
         window.start_turn(regions, week)
-        active_measures = window.end_turn(regions)
+
+        active_measures, running = window.end_turn(regions)
 
         for region in regions:
             factor = region.calculate_measures_factor(active_measures[region.name])
@@ -97,7 +99,7 @@ while running:
     week += 1
     if week > 52:
         running = False
-
+        ended_early = False
 
 # end of main game, ending starts here
 scorekeeper.reward_survivors(regions, week-1)
@@ -106,21 +108,29 @@ final_deaths = 0
 for region in regions:
     final_deaths += region.get_data_row(week-1).loc["Total deaths"]
 
+if not VISUAL:
+    print("The game has ended!")
+    print(f'Your score is {scorekeeper.score}')
+elif VISUAL:
+    # display the ending window
+    if ended_early:
+        window.end_game(-1, int(final_deaths))
+    else:
+        window.end_game(scorekeeper.score, int(final_deaths))
+
 # plotting (for balancing)
 to_plot_cols = ["Currently infected", "Total deaths"]  # column from df to plot
+num = 1
 for to_plot in to_plot_cols:
-    plt.figure()
+    plt.subplot(1, 2, num)#plt.figure()
     for region in regions:
         region.df[to_plot].plot()
     plt.legend([region.abbreviation for region in regions])
     plt.title(to_plot)
     plt.xlabel("week")
     plt.ylabel("inhabitants")
-    plt.show()
+    num += 1
+plt.show()
 
-if not VISUAL:
-    print("The game has ended!")
-    print(f'Your score is {scorekeeper.score}')
-elif VISUAL:
-    # display the ending window
-    window.end_game(scorekeeper.score, final_deaths)
+
+

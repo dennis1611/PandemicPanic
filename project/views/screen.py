@@ -6,7 +6,8 @@ from project.views.buttons import RegionMasterButton, \
     MeasureMasterButton, \
     MeasureButton, \
     TurnButton, \
-    EndButton
+    EndButton, \
+    MasterMaster
 
 
 class Screen:
@@ -52,7 +53,7 @@ class Screen:
 
         # TurnButton and EndButton setup and creation
         self.next_turn_button = TurnButton(75, 45, 120, 25)
-        self.end_button = EndButton(800, 600, 100, 100)
+        self.end_button = EndButton(1025, 600, 200, 40)
 
     def start_turn(self, regions, week):
         """Resets/updates the screen at the start of each turn, and handles individual sections"""
@@ -74,7 +75,7 @@ class Screen:
 
     def end_turn(self, regions):
         """Waits until end turn button is clicked, then returns relevant information"""
-        self.click_button_game()
+        running = self.click_button_game()
 
         return_dict = {}
         for j in range(self.num_regions):
@@ -87,22 +88,37 @@ class Screen:
         # print(return_dict)
 
         # enable this to return the measure dictionary per region
-        return return_dict
+        return return_dict,running
 
     def end_game(self, score, deaths):
         """Ends the game and gives a score"""
-        while True:
+
+        # load end game graphic
+        project_path = os.path.dirname(os.path.dirname(__file__))
+        dir_path = project_path + '/source_data/'
+        end_game_img = pg.image.load(dir_path + "end.png")
+        end_game_img_rect = end_game_img.get_rect()
+        end_game_img_rect.topleft = (350, 0)
+
+        wipe_rect = pg.Rect(675, 0, 1000, 1000)
+
+        running = True
+        while running:
             # clear screen to black
-            self.scr.fill(self.bg_colour)
+            pg.draw.rect(self.scr, self.bg_colour, wipe_rect)
+            self.scr.blit(end_game_img,end_game_img_rect)
             # print ending message and score
-            self.draw_text("The game has ended", self.white, 800, 300, "top_right")
-            self.draw_text(f"Your death count is {deaths}", self.white, 800, 400, "top_right")
-            self.draw_text(f"Your score is {score}", self.white, 800, 500, "top_right")
+            self.draw_text("The game has ended", self.black, 1025, 220, "mid")
+            self.draw_text(f"Death count:", self.black, 850, 260, "top_left")
+            self.draw_text(f"{deaths}", self.black, 1180, 260, "top_right")
+            self.draw_text(f"Score:", self.black, 850, 300, "top_left")
+            self.draw_text(f"{score}", self.black, 1180, 300, "top_right")
             # draw the end button
             pg.draw.rect(self.scr, self.end_button.return_color(), self.end_button.rect)
-            self.click_button_ending()
+            self.draw_text(f"Exit game", self.white, 1025, 605, "mid")
             pg.display.flip()
-            pg.event.pump()
+            running = self.click_button_ending()
+        pg.quit()
 
     @staticmethod
     def draw_text(text, color, x, y, loc):
@@ -138,7 +154,7 @@ class Screen:
 
             # if next turn button is clicked return to main loop
             if self.next_turn_button.rect.collidepoint(mouse_x, mouse_y) and click:
-                return
+                return True
 
             # clean buttons with background color rectangle (measures table only)
             pg.draw.rect(self.scr, self.bg_colour, clean_rect)
@@ -167,6 +183,9 @@ class Screen:
                 if button.rect.collidepoint(mouse_x, mouse_y) and click:
                     button.clicked()
 
+            if self.measure_table.master_master.rect.collidepoint(mouse_x, mouse_y) and click:
+                self.measure_table.master_master.clicked(self.measure_table.measure_buttons)
+
             # flip the display and check events
             pg.display.flip()
 
@@ -177,6 +196,11 @@ class Screen:
                     sys.exit()
                 if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
                     click = True
+                if event.type == pg.KEYDOWN:
+                    if event.key == pg.K_RETURN:
+                        return True
+                    if event.key == pg.K_ESCAPE:
+                        return False
 
             # event pump, prevent freeze
             pg.event.pump()
@@ -190,8 +214,7 @@ class Screen:
 
             # if the end game button is clicked
             if self.end_button.rect.collidepoint(mouse_x, mouse_y) and click:
-                pg.quit()
-                sys.exit()
+                return False
 
             # flip the display and check events
             pg.display.flip()
@@ -203,10 +226,14 @@ class Screen:
                     sys.exit()
                 if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
                     click = True
+                if event.type == pg.KEYDOWN:
+                    if event.key == pg.K_ESCAPE:
+                        return False
 
             # event pump, prevent freeze
             pg.event.pump()
 
+        return True
 
 class Map:
     def __init__(self):
@@ -291,6 +318,11 @@ class MeasureTable:
                                       self.button_size_x, self.button_size_y
                                       )
                     )
+                else:
+                    self.master_master = MasterMaster(self.x_loc + 50 * region_n,
+                                                      self.offset + self.button_y_diff * (meas_n - 1),
+                                                      self.button_size_x, self.button_size_y
+                                                     )
 
         self.measure_buttons = measure_buttons
         self.measure_masters = measure_masters
@@ -324,7 +356,8 @@ class MeasureTable:
                              self.measure_masters[i].x - 6,
                              self.measure_masters[i].y - 4,
                              "top_left")
-
+        pg.draw.rect(Screen.scr, self.master_master.return_color(),
+                     self.master_master.rect, self.master_master.width)
 
 class InfoTable:
     def __init__(self, x_div, y_div):
@@ -337,11 +370,12 @@ class InfoTable:
         y_loc_table = self.y_loc
 
         # write column names at info table
-        Screen.draw_text("Cases (C)", Screen.white, self.x_loc + 250, y_loc_table, "top_right")
-        Screen.draw_text("C/100k", Screen.white, self.x_loc + 350, y_loc_table, "top_right")
-        Screen.draw_text("Deaths", Screen.white, self.x_loc + 450, y_loc_table, "top_right")
-        Screen.draw_text("R-value", Screen.white, self.x_loc + 550, y_loc_table, "top_right")
-        Screen.draw_text("Recvrd", Screen.white, self.x_loc + 650, y_loc_table, "top_right")
+        Screen.draw_text("New", Screen.white, self.x_loc + 350, y_loc_table, "top_right")
+        Screen.draw_text("Cases", Screen.white, self.x_loc + 250, y_loc_table, "top_right")
+        Screen.draw_text("C./100k", Screen.white, self.x_loc + 450, y_loc_table, "top_right")
+        Screen.draw_text("Deaths", Screen.white, self.x_loc + 550, y_loc_table, "top_right")
+
+        Screen.draw_text("New", Screen.white, self.x_loc + 650, y_loc_table, "top_right")
 
         for region in regions:
             # go to next row
@@ -355,18 +389,14 @@ class InfoTable:
                              self.x_loc + 250, y_loc_table, "top_right")
             cases_100k = str(int(region.df.iat[-1, 1] / region.inhabitants * 100000))
             Screen.draw_text(cases_100k, Screen.white,
-                             self.x_loc + 350, y_loc_table, "top_right")
+                             self.x_loc + 450, y_loc_table, "top_right")
             deaths = str(int(region.df.iat[-1, 3]))
             Screen.draw_text(deaths, Screen.white,
-                             self.x_loc + 450, y_loc_table, "top_right")
-
-            r_val = str(round(region.df.iat[-2, 6], 2))
-            diff = 4 - len(r_val)
-            if diff != 0:
-                for _ in range(diff):
-                    r_val = r_val + "0"
-            Screen.draw_text(r_val, Screen.white,
                              self.x_loc + 550, y_loc_table, "top_right")
-            recoveries = str(int(region.df.iat[-1, 5]))
-            Screen.draw_text(recoveries, Screen.white,
+            new_cases = str(int(region.df.iat[-1, 0]))
+            Screen.draw_text(new_cases, Screen.white,
+                             self.x_loc + 350, y_loc_table, "top_right")
+            new_deaths = str(int(region.df.iat[-1, 2]))
+            Screen.draw_text(new_deaths, Screen.white,
                              self.x_loc + 650, y_loc_table, "top_right")
+

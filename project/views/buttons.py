@@ -11,6 +11,7 @@ class Button:
     green = (0, 255, 0)
     blue = (0, 0, 255)
     white = (255, 255, 255)
+    black = (0, 0, 0)
 
     width = 0
 
@@ -84,6 +85,33 @@ class MeasureMasterButton(Button):
                 measure_buttons[i * num_measures + measure_i].active = True
 
 
+class MasterMaster(Button):
+    def __init__(self, x, y, width, height):
+        super().__init__(x, y, width, height)
+        self.width = 1
+
+    def return_color(self):
+        """
+        Measure master button should be white
+        """
+        return self.white
+
+    @staticmethod
+    def clicked(measure_buttons):
+        # check if all buttons for this measure are on
+        all_on = True
+        for i in measure_buttons:
+            if not i.active:
+                all_on = False
+
+        if all_on:
+            for i in measure_buttons:
+                i.active = False
+        else:
+            for i in measure_buttons:
+                i.active = True
+
+
 class MeasureButton(Button):
     def __init__(self, x, y, width, height):
         super().__init__(x, y, width, height)
@@ -122,4 +150,4 @@ class EndButton(Button):
         """
         Ending button should be white.
         """
-        return self.white
+        return self.black
