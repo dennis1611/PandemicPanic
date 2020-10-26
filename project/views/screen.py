@@ -109,13 +109,13 @@ class Screen:
             self.scr.blit(end_game_img,end_game_img_rect)
             # print ending message and score
             self.draw_text("The game has ended", self.black, 1025, 220, "mid")
-            self.draw_text(f"Death count:", self.black, 850, 260, "top_left")
+            self.draw_text("Death count:", self.black, 850, 260, "top_left")
             self.draw_text(f"{deaths}", self.black, 1180, 260, "top_right")
-            self.draw_text(f"Score:", self.black, 850, 300, "top_left")
+            self.draw_text("Score:", self.black, 850, 300, "top_left")
             self.draw_text(f"{score}", self.black, 1180, 300, "top_right")
             # draw the end button
             pg.draw.rect(self.scr, self.end_button.return_color(), self.end_button.rect)
-            self.draw_text(f"Exit game", self.white, 1025, 605, "mid")
+            self.draw_text("Exit game", self.white, 1025, 605, "mid")
             pg.display.flip()
             running = self.click_button_ending()
         pg.quit()
@@ -399,4 +399,3 @@ class InfoTable:
             new_deaths = str(int(region.df.iat[-1, 2]))
             Screen.draw_text(new_deaths, Screen.white,
                              self.x_loc + 650, y_loc_table, "top_right")
-
