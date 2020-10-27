@@ -9,10 +9,19 @@ from project.views.buttons import Button, \
 
 class MyTestCase(unittest.TestCase):
     def test_button(self):
+        # generic button
         button = Button(10, 20, 50, 60)
         self.assertEqual(pg.Rect(-15, 20, 50, 60), button.rect)
         self.assertEqual((10, 20), button.rect.midtop)
         self.assertEqual((255, 255, 255), button.return_color())
+
+        # turn button
+        turn_button = Button(0, 0, 20, 20, color=(255, 255, 255))
+        self.assertEqual((255, 255, 255), turn_button.return_color())
+
+        # end button
+        end_button = Button(0, 0, 20, 20, color=(0, 0, 0))
+        self.assertEqual((0, 0, 0), end_button.return_color())
 
     def test_measure_button(self):
         measure_button = MeasureButton(0, 0, 20, 20)
@@ -46,9 +55,15 @@ class MyTestCase(unittest.TestCase):
         # Note: actual shape looks like [1, 3, 5] in display
         #                               [2, 4, 6]
 
+        # [F, F, F]
+        # [F, F, F]
+
         # set button 2 and 3 to active
         measure_button2.clicked()
         measure_button3.clicked()
+
+        # [F, T, F]
+        # [T, F, F]
 
         # set parameters
         num_regions = 3
@@ -59,21 +74,33 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue(measure_button3.active)
         self.assertTrue(measure_button5.active)
 
+        # [T, T, T]
+        # [T, F, F]
+
         # master buttons first column
         RegionMasterButton.clicked(measure_buttons, 0, num_measures)
         self.assertFalse(measure_button1.active)
         self.assertFalse(measure_button2.active)
+
+        # [F, T, T]
+        # [F, F, F]
 
         # master buttons first column again
         RegionMasterButton.clicked(measure_buttons, 0, num_measures)
         self.assertTrue(measure_button1.active)
         self.assertTrue(measure_button2.active)
 
+        # [T, T, T]
+        # [T, F, F]
+
         # master buttons first row
         MeasureMasterButton.clicked(measure_buttons, 0, num_measures, num_regions)
         self.assertFalse(measure_button1.active)
         self.assertFalse(measure_button3.active)
         self.assertFalse(measure_button5.active)
+
+        # [F, F, F]
+        # [T, F, F]
 
         # main master button
         MasterButton.clicked(measure_buttons)
@@ -84,6 +111,9 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue(measure_button5.active)
         self.assertTrue(measure_button6.active)
 
+        # [T, T, T]
+        # [T, T, T]
+
         MasterButton.clicked(measure_buttons)
         self.assertFalse(measure_button1.active)
         self.assertFalse(measure_button2.active)
@@ -92,13 +122,8 @@ class MyTestCase(unittest.TestCase):
         self.assertFalse(measure_button5.active)
         self.assertFalse(measure_button6.active)
 
-    def test_turn_button(self):
-        turn_button = Button(0, 0, 20, 20, color=(255, 255, 255))
-        self.assertEqual((255, 255, 255), turn_button.return_color())
-
-    def test_end_button(self):
-        end_button = Button(0, 0, 20, 20, color=(0, 0, 0))
-        self.assertEqual((0, 0, 0), end_button.return_color())
+        # [F, F, F]
+        # [F, F, F]
 
 
 if __name__ == '__main__':

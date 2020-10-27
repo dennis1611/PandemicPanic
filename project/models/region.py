@@ -7,16 +7,6 @@ import pandas as pd
 import pygame as pg
 
 
-class RegionImg:
-
-    def __init__(self, img_name, topleft, num):
-        project_path = os.path.dirname(os.path.dirname(__file__))
-        dir_path = project_path + '/source_data/provinces/'
-        self.img = pg.image.load(dir_path + img_name.lower() + str(num) + ".png")
-        self.img_rect = self.img.get_rect()
-        self.img_rect.topleft = topleft
-
-
 class Region:
     """
     Class that contains all information of a certain region.
@@ -121,6 +111,31 @@ class Region:
             (only used for adjacent regions effect)"""
         self.df.loc[week, "New infections"] += amount
         self.df.loc[week, "Currently infected"] += amount
+
+    def return_colour_code(self):
+        """Return the colour code of this region"""
+        # get current infections
+        infections = self.df.tail(1).iloc[0].loc['Currently infected']
+        # assert that the number of infections is not negative
+        if infections < 0:
+            raise ValueError("Infections cannot be negative")
+        # calculate the colour code
+        percentage = (infections / self.inhabitants) * 100
+        num = ((percentage * (1 * percentage + 10)) ** 0.5 // 1) + 1
+        if num > 6:
+            return 6
+        else:
+            return int(num)
+
+
+class RegionImg:
+
+    def __init__(self, img_name, topleft, num):
+        project_path = os.path.dirname(os.path.dirname(__file__))
+        dir_path = project_path + '/source_data/provinces/'
+        self.img = pg.image.load(dir_path + img_name.lower() + str(num) + ".png")
+        self.img_rect = self.img.get_rect()
+        self.img_rect.topleft = topleft
 
 
 class RegionExtended(Region):

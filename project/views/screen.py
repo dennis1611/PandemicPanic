@@ -247,9 +247,7 @@ class Map:
         # show each region in the correct colour
 
         for region in regions:
-            inf = region.df.iat[-1, 1]
-            pop = region.inhabitants
-            num = self.calc_picture_number(inf, pop)
+            num = region.return_colour_code()
             Screen.scr.blit(region.images[num].img, region.images[num].img_rect)
 
         # show overlay on screen
@@ -260,15 +258,6 @@ class Map:
             # show warning sign for region if code black is active
             if region.code_black_active:
                 Screen.scr.blit(region.images[0].img, region.images[0].img_rect)
-
-    @staticmethod
-    def calc_picture_number(infections, population):
-        percentage = (infections / population) * 100
-        num = ((percentage * (1 * percentage + 10)) ** 0.5 // 1) + 1
-        if num > 6:
-            return 6
-        else:
-            return int(num)
 
 
 class MeasureTable:

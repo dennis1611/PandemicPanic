@@ -17,8 +17,8 @@ from project.models.score import Score
 # Screen is imported in an if VISUAL statement below
 
 
-# TODO: write an actual welcome message/introduction
-#print('Welcome message/introduction')
+print('Welcome to PandemicPanic! '
+      'Please find the readme for instructions of this game.')
 
 # let the player choose to play in terminal mode or in visual mode
 VISUAL = choose_mode()
