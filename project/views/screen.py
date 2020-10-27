@@ -88,7 +88,7 @@ class Screen:
         # print(return_dict)
 
         # enable this to return the measure dictionary per region
-        return return_dict,running
+        return return_dict, running
 
     def end_game(self, score, deaths):
         """Ends the game and gives a score"""
@@ -106,7 +106,7 @@ class Screen:
         while running:
             # clear screen to black
             pg.draw.rect(self.scr, self.bg_colour, wipe_rect)
-            self.scr.blit(end_game_img,end_game_img_rect)
+            self.scr.blit(end_game_img, end_game_img_rect)
             # print ending message and score
             self.draw_text("The game has ended", self.black, 1025, 220, "mid")
             self.draw_text("Death count:", self.black, 850, 260, "top_left")
@@ -235,6 +235,7 @@ class Screen:
 
         return True
 
+
 class Map:
     def __init__(self):
         # Overlay setup
@@ -248,17 +249,10 @@ class Map:
         """Updates the map at the start of each turn"""
         # show each region in the correct colour
 
-        # TODO: This function is TEMPORARY, only until the right configuration is found -- Willem
-        def tempfunc(inf, pop):
-            percentage = (inf / pop) * 100
-            return (percentage * (1 * percentage + 10)) ** 0.5 // 1
-
         for region in regions:
             inf = region.df.iat[-1, 1]
             pop = region.inhabitants
-            num = int(tempfunc(inf, pop)) + 1
-            if num > 6:
-                num = 6
+            num = self.calc_picture_number(inf, pop)
             Screen.scr.blit(region.images[num].img, region.images[num].img_rect)
 
         # show overlay on screen
@@ -269,6 +263,15 @@ class Map:
             # show warning sign for region if code black is active
             if region.code_black_active:
                 Screen.scr.blit(region.images[0].img, region.images[0].img_rect)
+
+    @staticmethod
+    def calc_picture_number(infections, population):
+        percentage = (infections / population) * 100
+        num = ((percentage * (1 * percentage + 10)) ** 0.5 // 1) + 1
+        if num > 6:
+            return 6
+        else:
+            return int(num)
 
 
 class MeasureTable:
@@ -358,6 +361,7 @@ class MeasureTable:
                              "top_left")
         pg.draw.rect(Screen.scr, self.master_button.return_color(),
                      self.master_button.rect, self.master_button.width)
+
 
 class InfoTable:
     def __init__(self, x_div, y_div):
