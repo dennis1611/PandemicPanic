@@ -7,7 +7,7 @@ from project.models.region import RegionExtended
 class Score:
     def __init__(self, measures):
         # use these attributes to balance the score system
-        self.score = 10000000
+        self._score = 10000000
         self.death_penalty = 100
         self.survivor_bonus = 1
         self.recover_bonus = 1
@@ -51,7 +51,7 @@ class Score:
                 else:
                     if self.length_matrix[i][col] > 0:
                         self.length_matrix[i][col] -= 1
-        self.score -= self.base_measure_penalty * result
+        self._score -= self.base_measure_penalty * result
 
     def reward_survivors(self, regions, week):
         survived = 0
@@ -59,7 +59,7 @@ class Score:
         for region in regions:
             deaths += region.df["Total deaths"][week]
             survived += region.inhabitants
-        self.score += self.survivor_bonus * survived - self.death_penalty * deaths
+        self._score += self.survivor_bonus * survived - self.death_penalty * deaths
 
     def reward_recoveries(self, regions, week):
         recovered = 0
@@ -67,9 +67,10 @@ class Score:
         for region in regions:
             deaths += region.df["Total deaths"][week]
             recovered += region.df["Total recoveries"][week]
-        self.score += self.recover_bonus * recovered - self.death_penalty * deaths
+        self._score += self.recover_bonus * recovered - self.death_penalty * deaths
 
-    def finalize_score(self):
-        if self.score < 0:
-            self.score = 0
-        self.score = round(self.score, -1 * self.display_zeros)
+    def get_score(self):
+        if self._score < 0:
+            self._score = 0
+        self._score = round(self._score, -1 * self.display_zeros)
+        return self._score

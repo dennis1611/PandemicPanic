@@ -103,27 +103,27 @@ while running:
 
 # end of main game, ending starts here
 scorekeeper.reward_survivors(regions, week-1)
-scorekeeper.finalize_score()
 final_deaths = 0
 for region in regions:
     final_deaths += region.get_data_row(week-1).loc["Total deaths"]
 
 if not VISUAL:
     print("The game has ended!")
-    print(f'Your score is {scorekeeper.score}')
+    print(f'Your score is {scorekeeper.get_score()}')
 elif VISUAL:
     # display the ending window
     if ended_early:
         window.end_game(-1, int(final_deaths))
     else:
-        window.end_game(scorekeeper.score, int(final_deaths))
+        window.end_game(scorekeeper.get_score(), int(final_deaths))
 
 # plotting (for balancing)
 to_plot_cols = ["Currently infected", "Total deaths"]  # column from df to plot
 num = 1
 plt.figure(figsize=(18,6))
 for to_plot in to_plot_cols:
-    plt.subplot(1, 3, num)#plt.figure()
+    # plt.figure()
+    plt.subplot(1, 3, num)
     for region in regions:
         region.df[to_plot].plot()
     plt.legend([region.abbreviation for region in regions], loc=2)

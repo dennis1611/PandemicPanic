@@ -35,7 +35,7 @@ class MyTestCase(unittest.TestCase):
         # test score
         test_score = Score(test_measure)
         # hardcode attributes to nullify balancing effects
-        test_score.score = 0
+        test_score._score = 0
         test_score.death_penalty = 100
         test_score.survivor_bonus = 1
         test_score.recover_bonus = 1
@@ -57,7 +57,7 @@ class MyTestCase(unittest.TestCase):
             test_region[0].update_infections(week)
             test_region[0].update_R(week, 1)
         test_score.reward_survivors(test_region, 3)
-        self.assertAlmostEqual((1000000 - int(1000 * 0.015 + 1000 * 3.75/2 * 0.015) * 100), test_score.score)
+        self.assertAlmostEqual((1000000 - int(1000 * 0.015 + 1000 * 3.75/2 * 0.015) * 100), test_score._score)
 
     def test_reward_recoveries(self):
         """Tests the reward points for recoveries."""
@@ -69,7 +69,7 @@ class MyTestCase(unittest.TestCase):
         total_inf = int(1000 + 1000 * 3.75/2)
         dead = int(0.015 * total_inf)
         recoveries = int(total_inf - dead)
-        self.assertAlmostEqual(recoveries - 100 * dead, test_score.score)
+        self.assertAlmostEqual(recoveries - 100 * dead, test_score._score)
 
     def test_regular_measure(self):
         """Tests the penalty points for a non-strict measure."""
@@ -84,9 +84,9 @@ class MyTestCase(unittest.TestCase):
             test_region[0].update_infections(week)
             test_region[0].update_R(week, 1)
             test_score.penalize_measure(test_region, week, test_measure)
-        self.assertAlmostEqual(-2 * 0.01 * 1000000 * 0.5, test_score.score)
+        self.assertAlmostEqual(-2 * 0.01 * 1000000 * 0.5, test_score._score)
         test_score.reward_survivors(test_region, 3)
-        self.assertAlmostEqual(995700.0 - 10000, test_score.score)
+        self.assertAlmostEqual(995700.0 - 10000, test_score._score)
 
     def test_strict_measure(self):
         """Tests the penalty points for a strict measure."""
@@ -102,9 +102,9 @@ class MyTestCase(unittest.TestCase):
             test_region[0].update_infections(week)
             test_region[0].update_R(week, 1)
             test_score.penalize_measure(test_region, week, test_measure)
-        self.assertAlmostEqual(-2 * 3 * 0.01 * 1000000 * 0.5, test_score.score)
+        self.assertAlmostEqual(-2 * 3 * 0.01 * 1000000 * 0.5, test_score._score)
         test_score.reward_survivors(test_region, 3)
-        self.assertAlmostEqual(995700.0 - 30000, test_score.score)
+        self.assertAlmostEqual(995700.0 - 30000, test_score._score)
 
     def test_long_measure(self):
         """Tests the penalty points for a long-active measure."""
@@ -120,19 +120,17 @@ class MyTestCase(unittest.TestCase):
             test_region[0].update_infections(week)
             test_region[0].update_R(week, 1)
             test_score.penalize_measure(test_region, week, test_measure)
-        self.assertAlmostEqual(-2 * 2 * 0.01 * 1000000 * 0.5, test_score.score)
+        self.assertAlmostEqual(-2 * 2 * 0.01 * 1000000 * 0.5, test_score._score)
         test_score.reward_survivors(test_region, 3)
-        self.assertAlmostEqual(995700.0 - 20000, test_score.score)
+        self.assertAlmostEqual(995700.0 - 20000, test_score._score)
 
-    def test_finalize(self):
-        """Tests the final score calculation."""
+    def test_get_score(self):
+        """Tests the final score calculation and rounding."""
         test_region, test_measure, test_score = self.generate_test_case()
-        test_score.score = -69420.1337
-        test_score.finalize_score()
-        self.assertAlmostEqual(0, test_score.score)
-        test_score.score = 69420.1337
-        test_score.finalize_score()
-        self.assertAlmostEqual(69000, test_score.score)
+        test_score._score = -69420.1337
+        self.assertAlmostEqual(0, test_score.get_score())
+        test_score._score = 69420.1337
+        self.assertAlmostEqual(69000, test_score.get_score())
 
 
 if __name__ == '__main__':
