@@ -46,7 +46,6 @@ class MyTestCase(unittest.TestCase):
         self.assertAlmostEqual(28, test_region.df["New deaths"][3])
         self.assertAlmostEqual(1847, test_region.df["New recoveries"][3])
 
-
     def test_maximum_inhabitants(self):
         name = "TestRegion"
         inh = 1000000

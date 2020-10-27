@@ -94,9 +94,6 @@ class Region:
                     'R value': None}
         self.df = self.df.append(new_data, ignore_index=True)
 
-    def calculate_measure_effects(self, new_measure):
-        pass
-
     # pylint: disable=invalid-name
     def update_R(self, current_week: int, factor: float):
         """Fills in R in the current week, based on the previous R * factor"""
@@ -156,8 +153,10 @@ class RegionExtended(Region):
             self.images.append(RegionImg(self.name, topleft, i))
 
     def calculate_measures_factor(self, measure_statuses):
-        """"...
-            Overwrites method from parent class"""
+        """"
+        Calculates the measure factor from scratch based on a list of measure statuses
+        Also updates the .active parameter of each measure
+        """
         active_factors = 1
         for i, measure_active in enumerate(measure_statuses):
             self.region_measures[i].active = measure_active
