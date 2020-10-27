@@ -1,9 +1,16 @@
+"""
+Test file for the Measure class.
+"""
+
 import unittest
+
 from project.models.measure import Measure
 
 
 class MyTestCase(unittest.TestCase):
+
     def test_attributes(self):
+        """Tests the attributes of a Measure."""
         number = 1
         name = "test_measure"
         desc = "this measure does nothing"
@@ -15,6 +22,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(1, measure.factor)
 
     def test_menu(self):
+        """Tests the menu representation for a Measure."""
         number = 1
         name = "test_measure"
         desc = "this measure does nothing"
@@ -24,6 +32,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual("#1| False| test_measure: this measure does nothing", string)
 
     def test_effect(self):
+        """Tests if the effect of a Measure works correctly."""
         number = 1
         name = "test_measure"
         desc = "this measure does something"
@@ -38,6 +47,7 @@ class MyTestCase(unittest.TestCase):
         self.assertAlmostEqual(0.25, R2)
 
     def test_update_return_factor(self):
+        """Tests if Measure status gets updated and returns the right factor."""
         measure = Measure(1, "name", "description", 0.8)
         self.assertFalse(measure.active)
         factor_on = measure.update_return_factor()

@@ -1,5 +1,10 @@
+"""
+Test file for all buttons in the pygame window.
+"""
+
 import unittest
 import pygame as pg
+
 from project.views.buttons import Button, \
     MasterButton, \
     RegionMasterButton, \
@@ -8,7 +13,9 @@ from project.views.buttons import Button, \
 
 
 class MyTestCase(unittest.TestCase):
+
     def test_button(self):
+        """Test for basic button functionality."""
         # generic button
         button = Button(10, 20, 50, 60)
         self.assertEqual(pg.Rect(-15, 20, 50, 60), button.rect)
@@ -24,6 +31,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual((0, 0, 0), end_button.return_color())
 
     def test_measure_button(self):
+        """Test for individual measure buttons."""
         measure_button = MeasureButton(0, 0, 20, 20)
         self.assertEqual((255, 0, 0), measure_button.return_color())
         self.assertFalse(measure_button.active)
@@ -35,6 +43,7 @@ class MyTestCase(unittest.TestCase):
         self.assertFalse(measure_button.active)
 
     def test_master_buttons(self):
+        """Test for master buttons that control measure buttons."""
         # start with init and color
         measure_master = MeasureMasterButton(100, 100, 20, 20)
         region_master = RegionMasterButton(200, 100, 20, 20)

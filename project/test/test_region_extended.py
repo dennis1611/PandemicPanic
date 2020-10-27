@@ -3,6 +3,7 @@ Test file for the RegionExtended/RegionImg class.
 """
 
 import unittest
+
 from project.models.region import RegionImg
 from project.models.initialization import initialise_regions
 
@@ -13,10 +14,15 @@ class MyTestCase(unittest.TestCase):
     groningen = regions[0]
 
     def test_images(self):
+        """Tests if the images for a region are created."""
         image = self.groningen.images[0]
         self.assertTrue(isinstance(image, RegionImg))
 
     def test_calculations_statuses(self):
+        """
+        Tests if the calculations work as expected,
+        and if the Measure attributes are updated correctly.
+        """
         # set the factor for all measures to 0.9
         for measure in self.groningen.region_measures:
             measure.factor = 0.9

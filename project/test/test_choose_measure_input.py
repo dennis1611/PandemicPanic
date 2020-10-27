@@ -1,38 +1,43 @@
 """"
-Test file for measure choosing input
+Test file for measure choosing input.
 """
 
 import unittest
+
 from project.models.initialization import initialise_measures
 from project.views.measures_terminal import validate_measure_input
 
 
-measures = initialise_measures()
-
-
 class MyTestCase(unittest.TestCase):
 
+    measures = initialise_measures()
+
     def test_int(self):
-        self.assertTrue(validate_measure_input('0', measures))
-        self.assertTrue(validate_measure_input('1', measures))
-        self.assertTrue(validate_measure_input(str(len(measures)), measures))
-        self.assertFalse(validate_measure_input(str(len(measures) + 1), measures))
+        """Tests if integers are handled correctly."""
+        self.assertTrue(validate_measure_input('0', self.measures))
+        self.assertTrue(validate_measure_input('1', self.measures))
+        self.assertTrue(validate_measure_input(str(len(self.measures)), self.measures))
+        self.assertFalse(validate_measure_input(str(len(self.measures) + 1), self.measures))
 
     def test_float(self):
-        self.assertFalse(validate_measure_input('0.0', measures))
-        self.assertFalse(validate_measure_input('1.0', measures))
-        self.assertFalse(validate_measure_input('1.1', measures))
+        """Tests if floats are handled correctly."""
+        self.assertFalse(validate_measure_input('0.0', self.measures))
+        self.assertFalse(validate_measure_input('1.0', self.measures))
+        self.assertFalse(validate_measure_input('1.1', self.measures))
 
     def test_negative(self):
-        self.assertFalse(validate_measure_input('-1', measures))
+        """Tests negative numbers are handled correctly."""
+        self.assertFalse(validate_measure_input('-1', self.measures))
 
     def test_letters(self):
-        self.assertFalse(validate_measure_input('a', measures))
-        self.assertFalse(validate_measure_input('1a', measures))
+        """Tests if letters/strings are handled correctly."""
+        self.assertFalse(validate_measure_input('a', self.measures))
+        self.assertFalse(validate_measure_input('1a', self.measures))
 
     def test_spaces(self):
-        self.assertTrue(validate_measure_input('1 ', measures))
-        self.assertFalse(validate_measure_input('1 1', measures))
+        """Tests if spaces are handled correctly."""
+        self.assertTrue(validate_measure_input('1 ', self.measures))
+        self.assertFalse(validate_measure_input('1 1', self.measures))
 
 
 if __name__ == '__main__':

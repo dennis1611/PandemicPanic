@@ -1,8 +1,9 @@
 """"
-Test file for the adjacent regions effect
+Test file for the adjacent regions effect.
 """
 
 import unittest
+
 from project.models.initialization import initialise_borders
 from project.models.region import Region
 from project.models.adjacency import adjust_adjacent_regions
@@ -11,7 +12,8 @@ from project.models.adjacency import adjust_adjacent_regions
 class MyTestCase(unittest.TestCase):
 
     def test_adjacency_general(self):
-        """General test for adjacency"""
+        """General test for adjacency."""
+
         # create test region instances with infection factors of 1 and death factor of 0
         test_region_1 = Region("TestRegion1", 100000, 1, 0, "T1",
                                base_r=1, base_death_factor=0, base_inf=2000)
@@ -49,7 +51,8 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(1525, updated_current_infected_2)
 
     def test_equal_new_infections(self):
-        """Tests if case new_inf_1 == new_inf_2 is handled correctly"""
+        """Tests if case new_inf_1 == new_inf_2 is handled correctly."""
+
         # Note: zero new infections in both regions is included in this test
         # region1 and region2 have equal new infections and come first
         # then come region2 and region3, but region 3 has more new infections
@@ -76,7 +79,8 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(1950, updated_new_inf_3)
 
     def test_limit_exchange(self):
-        """Tests if the limit on the exchange is handled correctly"""
+        """Tests if the limit on the exchange is handled correctly."""
+
         # create test region instances with infection factors of 1 and death factor of 0
         inh1 = 100000
         test_region_1 = Region("TestRegion1", inh1, 1, 0, "T1",
@@ -97,6 +101,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(inh2 - 50, updated_new_inf_2)
 
     def test_borders(self):
+        """Tests if the .csv source file is read correctly"""
         borders = initialise_borders()
         self.assertEqual(borders[0][0], "Limburg")
         self.assertEqual(borders[0][1], "Noord-Brabant")

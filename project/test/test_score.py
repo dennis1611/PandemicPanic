@@ -1,5 +1,8 @@
+"""
+Test file for the Score class.
+"""
+
 import unittest
-import pandas as pd
 
 from project.models.measure import Measure
 from project.models.score import Score
@@ -7,7 +10,10 @@ from project.models.region import Region
 
 
 class MyTestCase(unittest.TestCase):
-    def generate_test_case(self):
+
+    @staticmethod
+    def generate_test_case():
+        """Helper function to generate a test case."""
         # test measure
         number = 1
         name = "test_measure"
@@ -25,7 +31,7 @@ class MyTestCase(unittest.TestCase):
         base_inf = 1000
         abbreviation = 'TEST'
         test_region = [Region(name, inh, inf_f, ded_f, abbreviation,
-                             base_r=base_r, base_death_factor=base_death_f, base_inf=base_inf)]
+                              base_r=base_r, base_death_factor=base_death_f, base_inf=base_inf)]
         # test score
         test_score = Score(test_measure)
         # hardcode attributes to nullify balancing effects
@@ -40,11 +46,12 @@ class MyTestCase(unittest.TestCase):
         test_score.limit = 0.001
         test_score.long_measure_modifier = 2
         test_score.patience = 10
-        test_score.both_modifier  = 6
+        test_score.both_modifier = 6
         test_score.display_zeros = 3
         return test_region, test_measure, test_score
 
     def test_reward_survivors(self):
+        """Tests the reward points for survivors."""
         test_region, test_measure, test_score = self.generate_test_case()
         for week in range(1, 4):
             test_region[0].update_infections(week)
@@ -53,6 +60,7 @@ class MyTestCase(unittest.TestCase):
         self.assertAlmostEqual((1000000 - int(1000 * 0.015 + 1000 * 3.75/2 * 0.015) * 100), test_score.score)
 
     def test_reward_recoveries(self):
+        """Tests the reward points for recoveries."""
         test_region, test_measure, test_score = self.generate_test_case()
         for week in range(1, 4):
             test_region[0].update_infections(week)
@@ -60,10 +68,11 @@ class MyTestCase(unittest.TestCase):
         test_score.reward_recoveries(test_region, 3)
         total_inf = int(1000 + 1000 * 3.75/2)
         dead = int(0.015 * total_inf)
-        recov = int(total_inf - dead)
-        self.assertAlmostEqual(recov - 100 * dead, test_score.score)
+        recoveries = int(total_inf - dead)
+        self.assertAlmostEqual(recoveries - 100 * dead, test_score.score)
 
     def test_regular_measure(self):
+        """Tests the penalty points for a non-strict measure."""
         test_region, test_measure, test_score = self.generate_test_case()
 
         # activate measure
@@ -80,6 +89,7 @@ class MyTestCase(unittest.TestCase):
         self.assertAlmostEqual(995700.0 - 10000, test_score.score)
 
     def test_strict_measure(self):
+        """Tests the penalty points for a strict measure."""
         test_region, test_measure, test_score = self.generate_test_case()
         test_score.limit = 0.1
 
@@ -97,6 +107,7 @@ class MyTestCase(unittest.TestCase):
         self.assertAlmostEqual(995700.0 - 30000, test_score.score)
 
     def test_long_measure(self):
+        """Tests the penalty points for a long-active measure."""
         test_region, test_measure, test_score = self.generate_test_case()
         test_score.patience = 0
 
@@ -114,6 +125,7 @@ class MyTestCase(unittest.TestCase):
         self.assertAlmostEqual(995700.0 - 20000, test_score.score)
 
     def test_finalize(self):
+        """Tests the final score calculation."""
         test_region, test_measure, test_score = self.generate_test_case()
         test_score.score = -69420.1337
         test_score.finalize_score()
