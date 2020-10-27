@@ -5,8 +5,7 @@ import pygame as pg
 from project.views.buttons import RegionMasterButton, \
     MeasureMasterButton, \
     MeasureButton, \
-    TurnButton, \
-    EndButton, \
+    Button, \
     MasterButton
 
 
@@ -52,8 +51,8 @@ class Screen:
         self.info_table = InfoTable(self.x_div, self.y_div)
 
         # TurnButton and EndButton setup and creation
-        self.next_turn_button = TurnButton(75, 45, 120, 25)
-        self.end_button = EndButton(1025, 600, 200, 40)
+        self.next_turn_button = Button(75, 45, 120, 25, color=(255, 255, 255))
+        self.end_button = Button(1025, 600, 200, 40, color=(0, 0, 0))
 
     def start_turn(self, regions, week):
         """Resets/updates the screen at the start of each turn, and handles individual sections"""
@@ -232,8 +231,6 @@ class Screen:
 
             # event pump, prevent freeze
             pg.event.pump()
-
-        return True
 
 
 class Map:

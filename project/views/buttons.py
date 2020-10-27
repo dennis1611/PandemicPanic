@@ -15,24 +15,25 @@ class Button:
 
     width = 0
 
-    def __init__(self, x, y, width, height):
+    def __init__(self, x, y, width, height, color=white):
         """
         Determine location and create rectangle.
         """
         self.rect = pg.Rect(0, 0, width, height)
         self.rect.midtop = (x, y)
+        self.color = color
+
+    def return_color(self):
+        """
+        Returns color corresponding to the button
+        """
+        return self.color
 
 
 class MasterButton(Button):
     def __init__(self, x, y, width, height):
-        super().__init__(x, y, width, height)
+        super().__init__(x, y, width, height, color=self.white)
         self.width = 1
-
-    def return_color(self):
-        """
-        Measure master button should be white
-        """
-        return self.white
 
     @staticmethod
     def clicked(measure_buttons):
@@ -52,14 +53,8 @@ class MasterButton(Button):
 
 class RegionMasterButton(Button):
     def __init__(self, x, y, width, height):
-        super().__init__(x, y, width, height)
+        super().__init__(x, y, width, height, color=self.white)
         self.width = 1
-
-    def return_color(self):
-        """
-        Province master button should be blue
-        """
-        return self.white
 
     @staticmethod
     def clicked(measure_buttons, region_i, num_measures):
@@ -82,16 +77,10 @@ class RegionMasterButton(Button):
 
 class MeasureMasterButton(Button):
     def __init__(self, x, y, width, height):
-        super().__init__(x, y, width, height)
+        super().__init__(x, y, width, height, color=self.white)
         self.width = 1
         self.x = x
         self.y = y
-
-    def return_color(self):
-        """
-        Measure master button should be white
-        """
-        return self.white
 
     @staticmethod
     def clicked(measure_buttons, measure_i, num_measures, num_regions):
@@ -135,19 +124,3 @@ class MeasureButton(Button):
             self.active = False
         elif not self.active:
             self.active = True
-
-
-class TurnButton(Button):
-    def return_color(self):
-        """
-        Next turn button should be white.
-        """
-        return self.white
-
-
-class EndButton(Button):
-    def return_color(self):
-        """
-        Ending button should be white.
-        """
-        return self.black

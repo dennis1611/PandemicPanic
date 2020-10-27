@@ -1,19 +1,18 @@
 import unittest
-# import pygame as pg
+import pygame as pg
 from project.views.buttons import Button, \
     MasterButton, \
     RegionMasterButton, \
     MeasureMasterButton, \
-    MeasureButton, \
-    TurnButton, \
-    EndButton
+    MeasureButton
 
 
 class MyTestCase(unittest.TestCase):
     def test_button(self):
         button = Button(10, 20, 50, 60)
-        # self.assertEqual(pg.Rect(0, 0, 50, 60), button.rect)  is pg.Rect(-15, 20, 50, 60) for some reason
+        self.assertEqual(pg.Rect(-15, 20, 50, 60), button.rect)
         self.assertEqual((10, 20), button.rect.midtop)
+        self.assertEqual((255, 255, 255), button.return_color())
 
     def test_measure_button(self):
         measure_button = MeasureButton(0, 0, 20, 20)
@@ -94,12 +93,13 @@ class MyTestCase(unittest.TestCase):
         self.assertFalse(measure_button6.active)
 
     def test_turn_button(self):
-        turn_button = TurnButton(0, 0, 20, 20)
+        turn_button = Button(0, 0, 20, 20, color=(255, 255, 255))
         self.assertEqual((255, 255, 255), turn_button.return_color())
 
     def test_end_button(self):
-        end_button = EndButton(0, 0, 20, 20)
+        end_button = Button(0, 0, 20, 20, color=(0, 0, 0))
         self.assertEqual((0, 0, 0), end_button.return_color())
+
 
 if __name__ == '__main__':
     unittest.main()
