@@ -1,3 +1,8 @@
+"""
+File that lets the user choose to play in terminal mode or in visual mode.
+"""
+
+
 def choose_mode():
     """"Return T|F if the user wants to play in visual mode, else in terminal mode"""
     print('Do you want to play in terminal/debug mode ("t") or in visual mode ("v")?')

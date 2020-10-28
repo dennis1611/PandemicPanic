@@ -1,10 +1,12 @@
-from pandas import read_csv
+"""
+File that is only used to generate regional_data.csv.
+"""
 
-import os
+from pandas import read_csv
 
 
 def density_factors(general_dataset, importance=0.3):
-    # Function to determine the multiplying factors per region on basis of the population density
+    """Function to determine the multiplying factors per region on basis of the population density."""
     # IMPORTANCE FACTOR: determines the influence of the density on the amount of infections (higher =  more influence)
 
     df = general_dataset.filter(items=['Density'])
@@ -30,7 +32,7 @@ def density_factors(general_dataset, importance=0.3):
 
 
 def youth_infection_factors(general_dataset, importance=1.5):
-    # Function to determine the multiplying factors per region on basis of the population density
+    """Function to determine the multiplying factors per region on basis of the population density."""
     # IMPORTANCE FACTOR: determines the influence of the density on the amount of infections (higher =  more influence)
 
     # Create the 'Youth' DataFrame that includes data regarding citizens between ages 15 and 25

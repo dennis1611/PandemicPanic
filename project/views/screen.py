@@ -39,11 +39,10 @@ class Screen:
     pg.display.set_caption('PandemicPanic')
     scr = pg.display.set_mode((x_max, y_max))
 
-    def __init__(self, num_regions, num_measures, regions_dict, measures):
+    def __init__(self, num_regions, num_measures, measures):
 
         self.num_regions = num_regions
         self.num_measures = num_measures
-        self.regions_dict = regions_dict
 
         # create instances
         self.map = Map()
@@ -55,7 +54,7 @@ class Screen:
         self.end_button = Button(1025, 600, 200, 40, color=(0, 0, 0))
 
     def start_turn(self, regions, week):
-        """Resets/updates the screen at the start of each turn, and handles individual sections"""
+        """Resets/updates the screen at the start of each turn, and handles individual sections."""
         # clear screen to black
         self.scr.fill(self.bg_colour)
 
@@ -73,9 +72,13 @@ class Screen:
         pg.display.flip()
 
     def end_turn(self, regions):
-        """Waits until end turn button is clicked, then returns relevant information"""
+        """Waits until end turn button is clicked, then returns relevant information."""
+
+        # running is True if the game is still ongoing, otherwise False
         running = self.click_button_game()
 
+        # create a dictionary with region names as keys,
+        # and a list with booleans for measures as values
         return_dict = {}
         for j in range(self.num_regions):
             active_array = []
@@ -84,13 +87,12 @@ class Screen:
                     self.measure_table.measure_buttons[self.num_measures * j + i].active
                 )
             return_dict[regions[j].name] = active_array
-        # print(return_dict)
 
         # enable this to return the measure dictionary per region
         return return_dict, running
 
     def end_game(self, score, deaths):
-        """Ends the game and gives a score"""
+        """Ends the game and gives a score."""
 
         # load end game graphic
         project_path = os.path.dirname(os.path.dirname(__file__))
@@ -121,7 +123,7 @@ class Screen:
 
     @staticmethod
     def draw_text(text, color, x, y, loc):
-        """Helper function to draw text on the screen"""
+        """Helper function to draw text on the screen."""
         font = Screen.my_font
         text_obj = font.render(text, 1, color)
         text_rect = text_obj.get_rect()
@@ -137,7 +139,8 @@ class Screen:
 
     # pylint: disable=too-many-branches
     def click_button_game(self):
-        """Listener for all buttons during the game"""
+        """Listener for all buttons during the game."""
+
         # rectangle for the measures table
         # Note: includes only the non-master buttons
         clean_rect = pg.Rect(725, 40, 1000, 280)
@@ -181,7 +184,7 @@ class Screen:
             for button in self.measure_table.measure_buttons:
                 if button.rect.collidepoint(mouse_x, mouse_y) and click:
                     button.clicked()
-
+            # listen to clicks for the main master button
             if self.measure_table.master_button.rect.collidepoint(mouse_x, mouse_y) and click:
                 self.measure_table.master_button.clicked(self.measure_table.measure_buttons)
 
@@ -205,7 +208,7 @@ class Screen:
             pg.event.pump()
 
     def click_button_ending(self):
-        """Listener for all buttons in the ending"""
+        """Listener for all buttons in the ending."""
         click = False
         while True:
             # get mouse position
@@ -234,6 +237,9 @@ class Screen:
 
 
 class Map:
+    """
+    Class that shows the map at the left of the screen.
+    """
     def __init__(self):
         # Overlay setup
         project_path = os.path.dirname(os.path.dirname(__file__))
@@ -244,8 +250,8 @@ class Map:
 
     def start_turn(self, regions):
         """Updates the map at the start of each turn"""
-        # show each region in the correct colour
 
+        # show each region in the correct colour
         for region in regions:
             num = region.return_colour_code()
             Screen.scr.blit(region.images[num].img, region.images[num].img_rect)
@@ -261,6 +267,9 @@ class Map:
 
 
 class MeasureTable:
+    """
+    Class that shows the table with measures at the top right of the screen.
+    """
     button_size_x, button_size_y = 25, 25
     master_size_x, master_size_y = 25, 25
     offset = 40
@@ -270,7 +279,7 @@ class MeasureTable:
 
     @staticmethod
     def draw_descriptions(descriptions, loc):
-        """Draws the measure descriptions on the screen (excl. number)"""
+        """Draws the measure descriptions on the screen (excl. number)."""
         # Note: loc is a list of MeasureMasterButtons
         for count, description in enumerate(descriptions):
             Screen.draw_text(description[1:], Screen.white,
@@ -324,7 +333,7 @@ class MeasureTable:
 
     def start_turn(self, regions):
         """Updates the measure table at the start of each turn
-        Note: non-master buttons need to be drawn in click_button_game"""
+        Note: non-master buttons need to be drawn in click_button_game."""
         # draw region master buttons in the measures table
         for button in self.region_masters:
             pg.draw.rect(Screen.scr, button.return_color(), button.rect, button.width)
@@ -345,47 +354,54 @@ class MeasureTable:
                              self.measure_masters[i].x - 6,
                              self.measure_masters[i].y - 4,
                              "top_left")
+        # draw main master button
         pg.draw.rect(Screen.scr, self.master_button.return_color(),
                      self.master_button.rect, self.master_button.width)
 
 
 class InfoTable:
+    """
+    Class that shows the table with information in the bottom right of the screen.
+    """
     def __init__(self, x_div, y_div):
         self.x_loc = x_div - 35
         self.y_loc = y_div
 
     def start_turn(self, regions):
-        """Updates the info table at the start of each turn"""
+        """Updates the info table at the start of each turn."""
         # make local copy of y_loc
         y_loc_table = self.y_loc
 
         # write column names at info table
-        Screen.draw_text("New", Screen.white, self.x_loc + 350, y_loc_table, "top_right")
         Screen.draw_text("Cases", Screen.white, self.x_loc + 250, y_loc_table, "top_right")
+        Screen.draw_text("New", Screen.white, self.x_loc + 350, y_loc_table, "top_right")
         Screen.draw_text("C./100k", Screen.white, self.x_loc + 450, y_loc_table, "top_right")
         Screen.draw_text("Deaths", Screen.white, self.x_loc + 550, y_loc_table, "top_right")
-
         Screen.draw_text("New", Screen.white, self.x_loc + 650, y_loc_table, "top_right")
 
         for region in regions:
             # go to next row
             y_loc_table += 30
 
-            # write region names at info table
+            # write region name at info table
             Screen.draw_text(region.name, Screen.white, self.x_loc, y_loc_table, "top_left")
-            # write data columns at info table
+            # write total cases at info table
             cases = str(int(region.df.iat[-1, 1]))
             Screen.draw_text(cases, Screen.white,
                              self.x_loc + 250, y_loc_table, "top_right")
-            cases_100k = str(int(region.df.iat[-1, 1] / region.inhabitants * 100000))
-            Screen.draw_text(cases_100k, Screen.white,
-                             self.x_loc + 450, y_loc_table, "top_right")
-            deaths = str(int(region.df.iat[-1, 3]))
-            Screen.draw_text(deaths, Screen.white,
-                             self.x_loc + 550, y_loc_table, "top_right")
+            # write new cases at info table
             new_cases = str(int(region.df.iat[-1, 0]))
             Screen.draw_text(new_cases, Screen.white,
                              self.x_loc + 350, y_loc_table, "top_right")
+            # write cases/100k at info table
+            cases_100k = str(int(region.df.iat[-1, 1] / region.inhabitants * 100000))
+            Screen.draw_text(cases_100k, Screen.white,
+                             self.x_loc + 450, y_loc_table, "top_right")
+            # write deaths at info table
+            deaths = str(int(region.df.iat[-1, 3]))
+            Screen.draw_text(deaths, Screen.white,
+                             self.x_loc + 550, y_loc_table, "top_right")
+            # write new deaths at info table
             new_deaths = str(int(region.df.iat[-1, 2]))
             Screen.draw_text(new_deaths, Screen.white,
                              self.x_loc + 650, y_loc_table, "top_right")

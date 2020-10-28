@@ -1,3 +1,7 @@
+"""
+File that displays a report with virus data to the terminal.
+"""
+
 import pandas as pd
 
 
@@ -6,7 +10,8 @@ def display_report(regions):
     Displays a report to the user containing recent developments of the virus.
     This function takes the sum/average of all regions.
     """
-    # these two make the DataFrame display entirely, and on one line:
+
+    # these two lines make the DataFrame display entirely, and on one line:
     pd.set_option('display.max_columns', 10)
     pd.set_option('display.width', 1000)
 

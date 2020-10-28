@@ -1,9 +1,13 @@
+"""
+File that contains all the Button (sub)classes for the visual window.
+"""
+
 import pygame as pg
 
 
 class Button:
     """
-    Class to handle buttons in order to not clutter the Screen class.
+    Class to handle buttons.
     """
 
     # possible colors
@@ -16,66 +20,72 @@ class Button:
     width = 0
 
     def __init__(self, x, y, width, height, color=white):
-        """
-        Determine location and create rectangle.
-        """
+        """Determine location and create rectangle with color."""
         self.rect = pg.Rect(0, 0, width, height)
         self.rect.midtop = (x, y)
         self.color = color
 
     def return_color(self):
-        """
-        Returns color corresponding to the button
-        """
+        """Returns color corresponding to the button."""
         return self.color
 
 
 class MasterButton(Button):
+    """
+    Button that switches all measure buttons on/off.
+    """
     def __init__(self, x, y, width, height):
         super().__init__(x, y, width, height, color=self.white)
         self.width = 1
 
     @staticmethod
     def clicked(measure_buttons):
+        """Switch all measure buttons on/off."""
         # check if all buttons for this measure are on
         all_on = True
         for i in measure_buttons:
             if not i.active:
                 all_on = False
-
+        # if all on: turn all off
         if all_on:
             for i in measure_buttons:
                 i.active = False
+        # if one or more are turned off: turn all on
         else:
             for i in measure_buttons:
                 i.active = True
 
 
 class RegionMasterButton(Button):
+    """
+    Button that switches all measure buttons in a region column on/off.
+    """
     def __init__(self, x, y, width, height):
         super().__init__(x, y, width, height, color=self.white)
         self.width = 1
 
     @staticmethod
     def clicked(measure_buttons, region_i, num_measures):
-
+        """Switch all measure buttons in a region column on/off."""
         # check if all buttons for this region are on
         all_on = True
         for i in range(num_measures):
             if not measure_buttons[i + num_measures * region_i].active:
                 all_on = False
-
-        # if all on, turn them off
+        # if all on: turn all off
         if all_on:
             for i in range(num_measures):
                 measure_buttons[i + num_measures * region_i].active = False
-        # if one or more are turned off, turn all on
+        # if one or more are turned off: turn all on
         else:
             for i in range(num_measures):
                 measure_buttons[i + num_measures * region_i].active = True
 
 
 class MeasureMasterButton(Button):
+    """
+    Button that switches all measure buttons in a measure row on/off.
+    """
     def __init__(self, x, y, width, height):
         super().__init__(x, y, width, height, color=self.white)
         self.width = 1
@@ -84,24 +94,26 @@ class MeasureMasterButton(Button):
 
     @staticmethod
     def clicked(measure_buttons, measure_i, num_measures, num_regions):
-
+        """Switch all measure buttons in a measure row on/off"""
         # check if all buttons for this measure are on
         all_on = True
         for i in range(num_regions):
             if not measure_buttons[i * num_measures + measure_i].active:
                 all_on = False
-
-        # if all on, turn them off
+        # if all on: turn all off
         if all_on:
             for i in range(num_regions):
                 measure_buttons[i * num_measures + measure_i].active = False
-        # if one or more are turned off, turn all on
+        # if one or more are turned off: turn all on
         else:
             for i in range(num_regions):
                 measure_buttons[i * num_measures + measure_i].active = True
 
 
 class MeasureButton(Button):
+    """
+    Button for a single measure in a single region.
+    """
     def __init__(self, x, y, width, height):
         super().__init__(x, y, width, height)
         self.active = False

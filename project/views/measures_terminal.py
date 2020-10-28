@@ -1,3 +1,8 @@
+"""
+File that shows the current measures status to the terminal,
+and lets the user choose a new measure.
+"""
+
 import numpy as np
 
 
