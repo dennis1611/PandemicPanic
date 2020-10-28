@@ -2,8 +2,6 @@
 Main game Controller.
 """
 
-import matplotlib.pyplot as plt
-
 from project.models.initialization import initialise_measures, \
     initialise_regions, \
     initialise_borders
@@ -37,7 +35,7 @@ if VISUAL:
     # create a Screen
     window = Screen(len(regions), len(measures), measures)
 
-# main game loop
+# HEADER: main game loop
 
 # pylint: disable=invalid-name
 week = 1
@@ -93,7 +91,7 @@ while running:
         running = False
         ended_early = False
 
-# end of main game, ending starts here
+# HEADER: end of main game
 
 # update score tracker and get ending information
 scorekeeper.reward_survivors(regions, week-1)
