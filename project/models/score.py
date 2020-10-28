@@ -1,6 +1,9 @@
-# these are currently instable if score is balanced!
+"""
+File that contains the Score class.
+"""
 
 import numpy as np
+
 from project.models.region import RegionExtended
 
 
@@ -25,7 +28,7 @@ class Score:
         self.length_matrix = np.zeros((len(measures), 12))
 
     def penalize_measure(self, regions, week, global_measures=None):
-        """Adjust the score based on measure taken and number of infections"""
+        """Adjust the score based on measure taken and number of infections."""
         result = 0
         for col, region in enumerate(regions):
             # use region measures if visual mode, else use global measures
@@ -54,6 +57,7 @@ class Score:
         self._score -= self.base_measure_penalty * result
 
     def reward_survivors(self, regions, week):
+        """Adjust the score based on survivors."""
         survived = 0
         deaths = 0
         for region in regions:
@@ -61,15 +65,8 @@ class Score:
             survived += region.inhabitants
         self._score += self.survivor_bonus * survived - self.death_penalty * deaths
 
-    def reward_recoveries(self, regions, week):
-        recovered = 0
-        deaths = 0
-        for region in regions:
-            deaths += region.df["Total deaths"][week]
-            recovered += region.df["Total recoveries"][week]
-        self._score += self.recover_bonus * recovered - self.death_penalty * deaths
-
     def get_score(self):
+        """Returns the score, or 0 if score is negative."""
         if self._score < 0:
             self._score = 0
         self._score = round(self._score, -1 * self.display_zeros)

@@ -59,18 +59,6 @@ class MyTestCase(unittest.TestCase):
         test_score.reward_survivors(test_region, 3)
         self.assertAlmostEqual((1000000 - int(1000 * 0.015 + 1000 * 3.75/2 * 0.015) * 100), test_score._score)
 
-    def test_reward_recoveries(self):
-        """Tests the reward points for recoveries."""
-        test_region, test_measure, test_score = self.generate_test_case()
-        for week in range(1, 4):
-            test_region[0].update_infections(week)
-            test_region[0].update_R(week, 1)
-        test_score.reward_recoveries(test_region, 3)
-        total_inf = int(1000 + 1000 * 3.75/2)
-        dead = int(0.015 * total_inf)
-        recoveries = int(total_inf - dead)
-        self.assertAlmostEqual(recoveries - 100 * dead, test_score._score)
-
     def test_regular_measure(self):
         """Tests the penalty points for a non-strict measure."""
         test_region, test_measure, test_score = self.generate_test_case()

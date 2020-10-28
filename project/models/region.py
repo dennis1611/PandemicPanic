@@ -1,6 +1,7 @@
 """
-File that contains the region class.
+File that contains the Region class.
 """
+
 import os
 
 import pandas as pd
@@ -10,6 +11,7 @@ import pygame as pg
 class Region:
     """
     Class that contains all information of a certain region.
+    Only has basic properties needed for terminal mode.
     """
 
     def __init__(self, name, inhabitants,
@@ -20,19 +22,21 @@ class Region:
         self.abbreviation = abbreviation
         self.inhabitants = inhabitants
         self.capacity = 0.01
-        self.code_black_effect = 3  # both of these to be balanced later
+        self.code_black_effect = 3
         self.code_black_active = False
 
-        # base_death_factor = 0.02
         self.death_factor = base_death_factor * regional_death_factor
 
-        # base_r = 3
         region_r = base_r * regional_infection_factor
 
         df = pd.DataFrame(data=[[base_inf, base_inf, 0, 0, 0, 0, region_r]],
-                          columns=['New infections', 'Currently infected',
-                                   'New deaths', 'Total deaths',
-                                   'New recoveries', 'Total recoveries', 'R value'],
+                          columns=['New infections',
+                                   'Currently infected',
+                                   'New deaths',
+                                   'Total deaths',
+                                   'New recoveries',
+                                   'Total recoveries',
+                                   'R value'],
                           index=[0])
         self.df = df
 
@@ -44,7 +48,7 @@ class Region:
         """
         Returns the maximum amount of new infections possible based on last row of df.
         Note: previous week for update_infections -> limit_new_infections;
-              current week for adjust_infections -> limit_exchange
+              current week for adjust_infections -> limit_exchange.
         """
         data_row = self.df.tail(1).iloc[0]
         limit_new_infections = self.inhabitants - \
@@ -54,7 +58,7 @@ class Region:
         return limit_new_infections
 
     def update_infections(self, current_week):
-        """"Calculates how many people got infected and recovered in the past week"""
+        """"Calculates how many people got infected and recovered in the past week."""
         # get references for relevant data
         prev_data = self.df.loc[current_week - 1]
         prev_inf_total = prev_data.loc['Currently infected']
@@ -78,6 +82,7 @@ class Region:
                 new_deaths = (prev_prev_inf_new * self.death_factor) // 1
                 self.code_black_active = False
             new_recoveries = prev_prev_inf_new - new_deaths
+        # no deaths or recoveries when there are not yet two weeks in the df
         else:
             new_deaths = 0
             new_recoveries = 0
@@ -96,16 +101,18 @@ class Region:
 
     # pylint: disable=invalid-name
     def update_R(self, current_week: int, factor: float):
-        """Fills in R in the current week, based on the previous R * factor"""
+        """Fills in R in the current week, based on the previous R * factor."""
         self.df.loc[current_week, 'R value'] = factor * self.df.loc[current_week - 1, 'R value']
 
     def get_data_row(self, week):
-        """"Returns the dataframe row for given week"""
+        """"Returns the dataframe row for given week."""
         return self.df.loc[week]
 
     def adjust_new_infections(self, week, amount):
-        """"Adds or subtracts the given amount to latest new infections and currently infected
-            (only used for adjacent regions effect)"""
+        """"
+        Adds or subtracts the given amount to latest new infections and currently infected
+        Only used for adjacent regions effect.
+        """
         self.df.loc[week, "New infections"] += amount
         self.df.loc[week, "Currently infected"] += amount
 
@@ -126,6 +133,9 @@ class Region:
 
 
 class RegionImg:
+    """
+    Class that has the properties of an image for the map.
+    """
 
     def __init__(self, img_name, topleft, num):
         project_path = os.path.dirname(os.path.dirname(__file__))
@@ -136,6 +146,10 @@ class RegionImg:
 
 
 class RegionExtended(Region):
+    """
+    Child class of Region that is extended with functionalities for visual mode.
+    """
+
     def __init__(self, name, inhabitants,
                  regional_infection_factor, regional_death_factor, abbreviation, region_measures,
                  base_r=2.2, base_death_factor=0.02, base_inf=10):
@@ -147,15 +161,15 @@ class RegionExtended(Region):
         self.load_pngs()
 
     def load_pngs(self):
-        """"..."""
+        """"Creates the images to be shown in the map."""
         topleft = (-30, 30)
         for i in range(7):
             self.images.append(RegionImg(self.name, topleft, i))
 
     def calculate_measures_factor(self, measure_statuses):
         """"
-        Calculates the measure factor from scratch based on a list of measure statuses
-        Also updates the .active parameter of each measure
+        Calculates the measure factor from scratch based on a list of measure statuses.
+        Also updates the .active parameter of each measure.
         """
         active_factors = 1
         for i, measure_active in enumerate(measure_statuses):
@@ -165,6 +179,8 @@ class RegionExtended(Region):
         return active_factors
 
     def update_R(self, current_week: int, factor: float):
-        """"Fills in R in the current week, based on the first R * factor
-            Overwrites method from parent class"""
+        """"
+        Fills in R in the current week, based on the first R * factor.
+        Overwrites method from parent class.
+        """
         self.df.loc[current_week, 'R value'] = factor * self.df.loc[0, 'R value']

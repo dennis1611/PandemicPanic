@@ -10,7 +10,7 @@ from project.models.region import Region, RegionExtended
 
 
 def initialise_measures():
-    """"Creates and returns a list of all measures"""
+    """"Creates and returns an immutable list of all measures."""
     project_path = os.path.dirname(os.path.dirname(__file__))
     file_path = project_path + '/source_data/measures_data_simple.csv'
     measures_df = read_csv(file_path, index_col=1)
@@ -26,7 +26,7 @@ def initialise_measures():
 
 
 def initialise_regions(visual=False):
-    """"Creates and returns a list of all regions"""
+    """"Creates and returns an immutable list of all regions."""
     project_path = os.path.dirname(os.path.dirname(__file__))
     file_path = project_path + '/source_data/regional_data.csv'
     regions_df = read_csv(file_path, index_col=0)
@@ -53,7 +53,7 @@ def initialise_regions(visual=False):
 
 
 def initialise_borders():
-    """"Creates and returns a list of all borders (as tuple)"""
+    """"Creates and returns an immutable list of all borders (as tuple)."""
     project_path = os.path.dirname(os.path.dirname(__file__))
     file_path = project_path + '/source_data/borders.csv'
     borders = []

@@ -1,3 +1,8 @@
+"""
+File that exchanges cross-regional infections based on given borders.
+"""
+
+
 def adjust_adjacent_regions(borders, regions, week, impact=20):
     """Adjust new infections based on adjacent regions"""
     for border in borders:
