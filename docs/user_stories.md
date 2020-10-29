@@ -175,3 +175,37 @@
     - As a: user
     - I want: that the report of new infections etc. is more useful (currently it only shows Groningen but that is not mentioned anywhere)
     - So that: terminal mode is actually playable and also useful for debugging
+
+33. Regions with 0 infections should be re-infected,
+    - As a: product owner
+    - I want: regions with 0 currently infected to receive new infections in some way
+    - So: it becomes impossible to actually reach 0 infected.
+
+34. Improve colours in map display
+    - As a: player
+    - I want: to have a useful visualisation of how well I'm performing at the game
+    - So: I need a good colour scheme to show my progress
+    
+35. Implement score system
+    - As a: player
+    - I want: a score at the end
+    - So: I can understand how wel I've done
+
+36. Beautify PyGame Window
+    - As a: developer
+    - I want: to beautify the PyGame window
+    - So: The window is besides functional also nice to look at
+
+37. Improve way of dealing with recoveries
+    - As a: developer
+    - I want: that the limit on new infections is easier to use
+    - So that: it is not super crash sensitive anymore like is the case now
+
+38. Base code black on currently infected
+    - As a: user
+    - I want: that code black is based on currently infected, instead of the new infections of two weeks back
+    - So that: the code black corresponds better to the green/yellow/red colours on the map
+    - Requirements:
+        - the new infections of two weeks back still need to be equal to deaths + recoveries
+        - the capacity factor for hospitals might need to be adjusted accordingly
+        - the test for code black might need to be adjusted accordingly

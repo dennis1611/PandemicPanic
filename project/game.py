@@ -16,7 +16,7 @@ from project.models.score import Score
 
 
 print('Welcome to PandemicPanic! '
-      'Please find the readme for instructions of this game.')
+      'Please find the user manual for instructions of this game in the docs-folder.')
 
 # let the player choose to play in terminal mode or in visual mode
 VISUAL = choose_mode()

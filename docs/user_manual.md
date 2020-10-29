@@ -32,6 +32,8 @@ Keep in mind that all measures will be unpopular, and that this unpopularity is 
 they are taken when the number of infections is still very low or when they are active for too long.
 
 ## Instruction
+Start the game by running the 'game.py' file in the project-folder.
+
 When the game is started, you'll be asked if you want to play in terminal mode or visual mode. 
 Visual mode is recommended, so input a 'v' and hit enter,
 
