@@ -34,7 +34,7 @@ def plot_graphs(regions):
     plt.xlabel("Week")
     plt.ylabel("# of people")
     plt.axhline(100, label="measures too strict", c="g", ls="--", )
-    plt.axhline(2000, label="hospitals are full", c="r", ls="--")
+    plt.axhline(1000, label="hospitals are full", c="r", ls="--")
     plt.legend(loc=2)
     plt.grid()
     plt.show()
